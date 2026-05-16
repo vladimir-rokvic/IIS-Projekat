@@ -1,0 +1,13 @@
+.login-page {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 100vh;
+}
+
+.box {
+	gap: 10px;
+	width: 300px;
+	display: flex;
+	flex-direction: column;
+}
