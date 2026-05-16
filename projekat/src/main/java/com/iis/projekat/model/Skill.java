@@ -10,7 +10,7 @@ public class Skill {
     private String name;
     private String description;
 
-    @OneToMany
+    @ManyToOne
     private Volunteer volunteer;
 
     public Skill() {}

@@ -4,7 +4,9 @@ import com.iis.projekat.dto.VolunteerDTO;
 import com.iis.projekat.dto.VolunteerUpdateDTO;
 import com.iis.projekat.repository.VolunteerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class VolunteerService {
     @Autowired
     private VolunteerRepository volunteerRepository;
