@@ -1,11 +1,9 @@
-import { useRef } from "react";
 import "./RegisterPage.css"
 import api from "../api/axios";
 import { useNavigate } from "react-router-dom";
-
+import { useRef, useState } from "react";
 
 const RegisterPage = () => {
-	//moze i useState, nisam siguran oko razlika
 	const email = useRef();
 	const password = useRef();
 	const confirmPassword = useRef();
@@ -13,10 +11,21 @@ const RegisterPage = () => {
 	const surname = useRef();
 	const phone = useRef();
 	const dateOfBirth = useRef();
+	const [passwordError, setPasswordError] = useState('');
+	const [fieldError, setFieldError] = useState('');
 
 	const navigate = useNavigate()
 
 	const register = async () => {
+		if (!name.current.value) { setFieldError('Name is required.'); return; }
+		if (!surname.current.value) { setFieldError('Surname is required.'); return; }
+		if (!email.current.value) { setFieldError('Email is required.'); return; }
+		if (!password.current.value) { setFieldError('Password is required.'); return; }
+		if (password.current.value !== confirmPassword.current.value) {
+			setPasswordError('Passwords do not match.');
+			return;
+		}
+		setPasswordError('');
 		try {
 			const res = await api.post('/auth/register', {
 				email: email.current.value,
@@ -37,50 +46,79 @@ const RegisterPage = () => {
 	return (
 		<>
 			<div className="register-page">
+				<h1 className="org-title">Humanitarian organization</h1>
 				<div className="box">
-					<label>Name</label>
-					<input 
-						type="text"
-						ref={name}
-					/>
+					<h2>Register</h2>
 
-					<label>Surname</label>
-					<input 
-						type="text" 
-						ref={surname}
-					/>
+					<div className="form-group">
+						<label>Name*</label>
+						<input
+							type="text"
+							placeholder="Enter your name"
+							ref={name}
+						/>
+						{fieldError === 'Name is required.' && <span className="error-text">{fieldError}</span>}
+					</div>
 
-					<label>Email</label>
-					<input 
-						type="text" 
-						ref={email}
-					/>
+					<div className="form-group">
+						<label>Surname*</label>
+						<input
+							type="text"
+							placeholder="Enter your surname"
+							ref={surname}
+						/>
+						{fieldError === 'Surname is required.' && <span className="error-text">{fieldError}</span>}
+					</div>
 
-					<label>Password</label>
-					<input 
-						type="password"
-						ref={password}
-					/>
+					<div className="form-group">
+						<label>Email*</label>
+						<input
+							type="text"
+							placeholder="Enter your email address"
+							ref={email}
+						/>
+						{fieldError === 'Email is required.' && <span className="error-text">{fieldError}</span>}
+					</div>
 
-					<label>Confirm password</label>
-					<input 
-						type="password"
-						ref={confirmPassword}
-					/>
+					<div className="form-group">
+						<label>Password*</label>
+						<input
+							type="password"
+							placeholder="Enter your password"
+							ref={password}
+						/>
+						{fieldError === 'Password is required.' && <span className="error-text">{fieldError}</span>}
+					</div>
 
-					<label>Phone</label>
-					<input 
-						type="text" 
-						ref={phone}
-					/>
+					<div className="form-group">
+						<label>Confirm password*</label>
+						<input
+							type="password"
+							placeholder="Confirm your password"
+							ref={confirmPassword}
+						/>
+						{passwordError && <span className="error-text">{passwordError}</span>}
+						{fieldError === 'Confirming password is required.' && <span className="error-text">{fieldError}</span>}
+					</div>
 
-					<label>Date of birth</label>
-					<input 
-						type="date" 
-						ref={dateOfBirth}
-					/>
+					<div className="form-group">
+						<label>Phone</label>
+						<input
+							type="text"
+							placeholder="Enter your phone number"
+							ref={phone}
+						/>
+					</div>
 
-					<button onClick={register} >Register</button>
+					<div className="form-group">
+						<label>Date of birth</label>
+						<input
+							type="date"
+							ref={dateOfBirth}
+						/>
+					</div>
+
+					<button className="login-btn" onClick={register}>Register</button>
 				</div>
 			</div>
 		</>
