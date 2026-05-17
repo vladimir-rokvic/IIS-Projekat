@@ -3,6 +3,7 @@ package com.iis.projekat.controller;
 import com.iis.projekat.dto.LoginRequest;
 import com.iis.projekat.dto.RegisterRequest;
 import com.iis.projekat.model.User;
+import com.iis.projekat.repository.EmployeeRepository;
 import com.iis.projekat.repository.UserRepository;
 import com.iis.projekat.security.JwtUtil;
 import com.iis.projekat.service.UserService;
@@ -23,15 +24,19 @@ public class AuthController {
     private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
 
+    private final EmployeeRepository employeeRepository;
+
     public AuthController(UserService userService,
                           AuthenticationManager authenticationManager,
                           JwtUtil jwtUtil,
-                          UserRepository userRepository) {
+                          UserRepository userRepository,
+                          EmployeeRepository employeeRepository) {
 
         this.userService = userService;
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
         this.userRepository = userRepository;
+        this.employeeRepository = employeeRepository;
     }
 
     @PostMapping("/register")
@@ -63,6 +68,12 @@ public class AuthController {
         response.put("email", user.getEmail());
         response.put("name", user.getName());
         response.put("surname", user.getSurname());
+
+        employeeRepository.findByEmail(user.getEmail()).ifPresent(emp -> {
+            response.put("role", emp.getEmployeeType().name()); // "COORDINATOR" ili "MANAGER"
+            response.put("id", emp.getId());
+        });
+
 
         return ResponseEntity.ok(response);
     }
