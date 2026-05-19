@@ -6,6 +6,10 @@ const ManagerDashboard = () => {
     const navigate = useNavigate();
     const { user, logout } = useAuth();
 
+	const registerVolunteerClick = () => {
+		navigate("/manager/registerVolunteer");
+	}
+
     return (
         <div>
             <header className="dashboard-header">
@@ -21,6 +25,7 @@ const ManagerDashboard = () => {
                 <p>Here you will see projects ready for approval.</p>
                 {/* TODO: lista projekata sa statusom SPREMAN_ZA_ODOBRENJE */}
             </div>
+			<button onClick={registerVolunteerClick}>Register volunteer</button>
         </div>
     );
 };

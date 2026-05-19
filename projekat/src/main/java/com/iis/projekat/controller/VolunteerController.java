@@ -16,8 +16,9 @@ public class VolunteerController {
 
     //TODO: iskreno ne znam sta da radim ovde kada vec imamo register request
     @PostMapping
-    public ResponseEntity<?> createVolunteer() {
-        return null;
+    public ResponseEntity<?> createVolunteer(@RequestBody VolunteerUpdateDTO dto) {
+        volunteerService.saveVolunteer(dto);
+        return ResponseEntity.ok("Alls good");
     }
 
     @PutMapping

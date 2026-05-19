@@ -11,11 +11,11 @@ public class Employee extends User {
     private EmployeeType employeeType;
     private LocalDate dateOfEmployment;
 
-    public Double getPlata() {
+    public Double getSalary() {
         return salary;
     }
 
-    public void setPlata(Double plata) {
+    public void setSalary(Double plata) {
         this.salary = plata;
     }
 

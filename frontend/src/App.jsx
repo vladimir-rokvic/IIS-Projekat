@@ -8,6 +8,7 @@ import ProjectsPage from "./pages/ProjectsPage";
 import CreateProjectPage from "./pages/CreateProjectPage";
 import ManagerDashboard from "./pages/ManagerDashboard";
 import EditProjectPage from "./pages/EditProjectPage";
+import RegisterVolunteerPage from "./pages/RegisterVolunteerPage";
 
 function App() {
 	return (
@@ -21,6 +22,7 @@ function App() {
 					<Route path="/projects/new" element={<PrivateRoute allowedRoles={["COORDINATOR"]}><CreateProjectPage /></PrivateRoute>} />
 					<Route path="/projects/:id/edit" element={<PrivateRoute allowedRoles={["COORDINATOR"]}><EditProjectPage /></PrivateRoute>} />
 					<Route path="/manager" element={<PrivateRoute allowedRoles={["MANAGER"]}><ManagerDashboard /></PrivateRoute>} />
+					<Route path="/manager/registerVolunteer" element={<PrivateRoute allowedRoles={["MANAGER"]}><RegisterVolunteerPage /></PrivateRoute>} />
 					<Route path="*" element={<Navigate to="/login" replace />} />
 				</Routes>
 			</BrowserRouter>
