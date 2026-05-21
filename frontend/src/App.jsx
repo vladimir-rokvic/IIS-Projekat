@@ -23,6 +23,8 @@ function App() {
 					<Route path="/projects/:id/edit" element={<PrivateRoute allowedRoles={["COORDINATOR"]}><EditProjectPage /></PrivateRoute>} />
 					<Route path="/manager" element={<PrivateRoute allowedRoles={["MANAGER"]}><ManagerDashboard /></PrivateRoute>} />
 					<Route path="/manager/registerVolunteer" element={<PrivateRoute allowedRoles={["MANAGER"]}><RegisterVolunteerPage /></PrivateRoute>} />
+					<Route path="/profile" element={<PrivateRoute></PrivateRoute>}/>
+					<Route path="/volunteer" />
 					<Route path="*" element={<Navigate to="/login" replace />} />
 				</Routes>
 			</BrowserRouter>

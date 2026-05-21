@@ -14,18 +14,26 @@ public class VolunteerController {
     @Autowired
     private VolunteerService volunteerService;
 
-    //TODO: iskreno ne znam sta da radim ovde kada vec imamo register request
     @PostMapping
     public ResponseEntity<?> createVolunteer(@RequestBody VolunteerUpdateDTO dto) {
-        volunteerService.saveVolunteer(dto);
-        return ResponseEntity.ok("Alls good");
+        boolean res = volunteerService.saveVolunteer(dto);
+        if(res) {
+            return ResponseEntity.ok("Alls good");
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @PutMapping
     public ResponseEntity<?> updateVolunteer(@RequestBody VolunteerUpdateDTO dto) {
         //TODO: error handling
         volunteerService.updateVolunteer(dto);
-        return ResponseEntity.ok("TODO");
+        return ResponseEntity.ok("Alls good");
+    }
+
+    @GetMapping("/")
+    public ResponseEntity<VolunteerDTO> getVolunteerProfile() {
+        return null;
     }
 
     @GetMapping("/{id}")

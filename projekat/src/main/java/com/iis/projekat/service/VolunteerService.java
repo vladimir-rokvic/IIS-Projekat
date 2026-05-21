@@ -24,9 +24,9 @@ public class VolunteerService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public void saveVolunteer(VolunteerUpdateDTO dto) {
+    public boolean saveVolunteer(VolunteerUpdateDTO dto) {
         if(volunteerRepository.existsByEmail(dto.getEmail())) {
-            throw new RuntimeException("Email already in use");
+            return false;
         }
 
         Volunteer v = new Volunteer();
@@ -61,6 +61,7 @@ public class VolunteerService {
         v.setPhone(dto.getPhone());
 
         volunteerRepository.save(v);
+        return true;
     }
 
     //TODO
