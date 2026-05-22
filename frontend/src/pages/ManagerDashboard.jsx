@@ -6,6 +6,10 @@ const ManagerDashboard = () => {
     const navigate = useNavigate();
     const { user, logout } = useAuth();
 
+	const registerVolunteerClick = () => {
+		navigate("/manager/registerVolunteer");
+	}
+
     return (
         <div className="dashboard-page">
             <header className="dashboard-header">

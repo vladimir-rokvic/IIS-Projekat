@@ -10,6 +10,8 @@ public class Volunteer extends User {
     @OneToMany
     private Set<Skill> skills;
 
+    private String bio;
+
     public Volunteer() {}
 
     public Set<Skill> getSkills() {
@@ -18,5 +20,13 @@ public class Volunteer extends User {
 
     public void setSkills(Set<Skill> skills) {
         this.skills = skills;
+    }
+
+    public String getBio() {
+        return bio;
+    }
+
+    public void setBio(String bio) {
+        this.bio = bio;
     }
 }

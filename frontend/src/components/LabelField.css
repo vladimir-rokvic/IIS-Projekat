@@ -1,0 +1,13 @@
+.label-field {
+    display: flex;
+    flex-direction: column;
+}
+
+.childLabel {
+    font-size: 20px;
+    margin-bottom: 5px;
+}
+
+.fieldLabel {
+    font-size: 15px;
+}

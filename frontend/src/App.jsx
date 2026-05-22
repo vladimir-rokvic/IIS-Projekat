@@ -7,6 +7,9 @@ import CoordinatorDashboard from "./pages/CoordinatorDashboard";
 import ProjectsPage from "./pages/ProjectsPage";
 import CreateProjectPage from "./pages/CreateProjectPage";
 import EditProjectPage from "./pages/EditProjectPage";
+import RegisterVolunteerPage from "./pages/RegisterVolunteerPage";
+import UserProfilePage from "./pages/UserProfilePage";
+import VolunteerUpdatePage from "./pages/VolunteerUpdatePage";
 import ManagerDashboard from "./pages/ManagerDashboard";
 import ManagerProjectsPage from "./pages/ManagerProjectsPage";
 import ManagerProjectDetailPage from "./pages/ManagerProjectDetailPage";
@@ -23,6 +26,10 @@ function App() {
 					<Route path="/projects/new" element={<PrivateRoute allowedRoles={["COORDINATOR"]}><CreateProjectPage /></PrivateRoute>} />
 					<Route path="/projects/:id/edit" element={<PrivateRoute allowedRoles={["COORDINATOR"]}><EditProjectPage /></PrivateRoute>} />
 					<Route path="/manager" element={<PrivateRoute allowedRoles={["MANAGER"]}><ManagerDashboard /></PrivateRoute>} />
+					<Route path="/manager/registerVolunteer" element={<PrivateRoute allowedRoles={["MANAGER"]}><RegisterVolunteerPage /></PrivateRoute>} />
+					<Route path="/profile" element={<PrivateRoute><UserProfilePage /></PrivateRoute>}/>
+					<Route path="/volunteer/update" element={<PrivateRoute><VolunteerUpdatePage /></PrivateRoute>}/>
+					<Route path="/volunteer" />
 					<Route path="*" element={<Navigate to="/login" replace />} />
 					<Route path="/manager" element={<PrivateRoute allowedRoles={["MANAGER"]}><ManagerDashboard /></PrivateRoute>} />
 					<Route path="/manager/projects" element={<PrivateRoute allowedRoles={["MANAGER"]}><ManagerProjectsPage /></PrivateRoute>} />

@@ -14,22 +14,38 @@ public class VolunteerController {
     @Autowired
     private VolunteerService volunteerService;
 
-    //TODO: iskreno ne znam sta da radim ovde kada vec imamo register request
     @PostMapping
-    public ResponseEntity<?> createVolunteer() {
-        return null;
+    public ResponseEntity<?> createVolunteer(@RequestBody VolunteerUpdateDTO dto) {
+        boolean res = volunteerService.saveVolunteer(dto);
+        if(res) {
+            return ResponseEntity.ok("Alls good");
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
-    @PutMapping
-    public ResponseEntity<?> updateVolunteer(@RequestBody VolunteerUpdateDTO dto) {
-        //TODO: error handling
-        volunteerService.updateVolunteer(dto);
-        return ResponseEntity.ok("TODO");
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateVolunteer(@PathVariable Long id, @RequestBody VolunteerUpdateDTO dto) {
+        boolean r = volunteerService.updateVolunteer(id, dto);
+        if(!r) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok("Alls good");
+    }
+
+    @GetMapping("/")
+    public ResponseEntity<VolunteerDTO> getVolunteerProfile() {
+        return null;
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<VolunteerDTO> getVolunteerById(@PathVariable Long id) {
-        return new ResponseEntity<VolunteerDTO>(volunteerService.getVolunteerById(id), HttpStatus.OK);
+        VolunteerDTO dto = volunteerService.getVolunteerById(id);
+        if(dto == null){
+            return new ResponseEntity<VolunteerDTO>((VolunteerDTO) null, HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity<VolunteerDTO>(dto, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")

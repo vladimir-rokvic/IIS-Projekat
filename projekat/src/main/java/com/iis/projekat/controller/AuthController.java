@@ -5,8 +5,10 @@ import com.iis.projekat.dto.RegisterRequest;
 import com.iis.projekat.model.User;
 import com.iis.projekat.repository.EmployeeRepository;
 import com.iis.projekat.repository.UserRepository;
+import com.iis.projekat.repository.VolunteerRepository;
 import com.iis.projekat.security.JwtUtil;
 import com.iis.projekat.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,6 +27,9 @@ public class AuthController {
     private final UserRepository userRepository;
 
     private final EmployeeRepository employeeRepository;
+
+    @Autowired
+    private VolunteerRepository volunteerRepository;
 
     public AuthController(UserService userService,
                           AuthenticationManager authenticationManager,
@@ -68,12 +73,16 @@ public class AuthController {
         response.put("email", user.getEmail());
         response.put("name", user.getName());
         response.put("surname", user.getSurname());
+        response.put("id", user.getId());
 
         employeeRepository.findByEmail(user.getEmail()).ifPresent(emp -> {
             response.put("role", emp.getEmployeeType().name()); // "COORDINATOR" ili "MANAGER"
-            response.put("id", emp.getId());
         });
 
+        //TOOD: Ovo se treba izmeniti
+        if(volunteerRepository.existsByEmail(user.getEmail())){
+            response.put("role", "VOLUNTEER");
+        }
 
         return ResponseEntity.ok(response);
     }

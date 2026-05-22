@@ -30,6 +30,9 @@ public class User {
 
     private String phone;
 
+    @ManyToOne
+    private Address address;
+
     public Long getId() {
         return id;
     }
@@ -84,5 +87,13 @@ public class User {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
     }
 }
