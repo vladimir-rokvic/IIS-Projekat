@@ -1,32 +1,18 @@
 import './UserProfilePage.css';
-import LabelField from '../components/LabelField';
 import { useEffect, useState } from 'react';
-import api from '../api/axios';
+import VolunterProfilePage from './VolunteerProfilePage';
 
 const UserProfilePage = () => {
-	const [user, setUser] = useState(null);
-
-	const onLoad = () => {
-	};
+	const [role, setRole] = useState(null);
 
 	useEffect(() => {
-		const getUser = async () => {
-			try{
-				const res = await api.get('');
-				console.log(res.data);
-				setUser(res.data);
-			} catch(err) {
-				console.log(err);
-			}
-		};
-	});
+		const u = JSON.parse(localStorage.getItem("user"));
+		setRole(u.role);
+	}, []);
 
-	return (
-		<div className='userProfilePage'>
-			<LabelField
-				field={}>First name</LabelField>
-		</div>
-	);
+	//samo dodavajte ovde braco
+	if (role === "VOLUNTEER") return <VolunterProfilePage />;
+	else return <h1>Proveri UserProfile.jsx</h1>
 }
 
 export default UserProfilePage;

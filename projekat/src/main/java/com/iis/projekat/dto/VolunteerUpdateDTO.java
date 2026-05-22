@@ -12,6 +12,7 @@ public class VolunteerUpdateDTO {
     private String phone;
     private String email;
     private String password;
+    private String bio;
 
     public String getName() {
         return name;
@@ -83,5 +84,13 @@ public class VolunteerUpdateDTO {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getBio() {
+        return bio;
+    }
+
+    public void setBio(String bio) {
+        this.bio = bio;
     }
 }

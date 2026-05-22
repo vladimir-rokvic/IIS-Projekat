@@ -24,10 +24,12 @@ public class VolunteerController {
         }
     }
 
-    @PutMapping
-    public ResponseEntity<?> updateVolunteer(@RequestBody VolunteerUpdateDTO dto) {
-        //TODO: error handling
-        volunteerService.updateVolunteer(dto);
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateVolunteer(@PathVariable Long id, @RequestBody VolunteerUpdateDTO dto) {
+        boolean r = volunteerService.updateVolunteer(id, dto);
+        if(!r) {
+            return ResponseEntity.badRequest().build();
+        }
         return ResponseEntity.ok("Alls good");
     }
 
@@ -38,7 +40,12 @@ public class VolunteerController {
 
     @GetMapping("/{id}")
     public ResponseEntity<VolunteerDTO> getVolunteerById(@PathVariable Long id) {
-        return new ResponseEntity<VolunteerDTO>(volunteerService.getVolunteerById(id), HttpStatus.OK);
+        VolunteerDTO dto = volunteerService.getVolunteerById(id);
+        if(dto == null){
+            return new ResponseEntity<VolunteerDTO>((VolunteerDTO) null, HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity<VolunteerDTO>(dto, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")

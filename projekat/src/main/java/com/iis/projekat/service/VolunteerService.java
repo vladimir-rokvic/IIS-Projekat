@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class VolunteerService {
     @Autowired
@@ -64,14 +66,47 @@ public class VolunteerService {
         return true;
     }
 
-    //TODO
-    public void updateVolunteer(VolunteerUpdateDTO dto) {
-        return;
+    public boolean updateVolunteer(Long id, VolunteerUpdateDTO dto) {
+        Optional<Volunteer> v = volunteerRepository.findById(id);
+        if(v.isEmpty()) return false;
+
+        Volunteer oldVolunteer = v.get();
+        Address a = null;
+
+        if(addressRepository.existsByCityAndStreetAndCountry(
+                dto.getCity(),
+                dto.getStreet(),
+                dto.getCountry()
+        )) {
+            a = addressRepository.findByCityAndStreetAndCountry(
+                    dto.getCity(),
+                    dto.getStreet(),
+                    dto.getCountry()
+            );
+        } else {
+            a = new Address(
+                    dto.getCity(),
+                    dto.getStreet(),
+                    dto.getCountry()
+            );
+
+            addressRepository.save(a);
+        }
+        oldVolunteer.setPhone(dto.getPhone());
+        oldVolunteer.setEmail(dto.getEmail());
+        oldVolunteer.setDateOfBirth(dto.getDob());
+        oldVolunteer.setName(dto.getName());
+        oldVolunteer.setSurname(dto.getSurname());
+        oldVolunteer.setAddress(a);
+        oldVolunteer.setBio(dto.getBio());
+
+        volunteerRepository.save(oldVolunteer);
+        return true;
     }
 
-    //TODO
     public VolunteerDTO getVolunteerById(Long id) {
-        return null;
+        Volunteer v = volunteerRepository.findById(id).orElseThrow();
+        return new VolunteerDTO(v);
     }
 
     //TODO

@@ -1,0 +1,95 @@
+.volunteer-profile {
+    padding: 30px;
+    font-family: sans-serif;
+}
+
+.header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    margin-bottom: 30px;
+}
+
+.header h2 {
+    font-weight: bold;
+}
+
+.header-buttons {
+    position: absolute;
+    right: 0;
+    display: flex;
+    gap: 8px;
+}
+
+.btn-edit, .btn-back {
+    padding: 6px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    color: white;
+    background-color: #3ab5b0;
+}
+
+.content {
+    display: flex;
+    justify-content: space-between;
+}
+
+.left {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    flex: 1;
+}
+
+.row {
+    display: flex;
+    gap: 20px;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.field label {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.field input, .field textarea {
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 14px;
+    width: 220px;
+    background-color: white;
+    color: #333;
+}
+
+.field textarea {
+    width: 440px;
+    height: 100px;
+    resize: none;
+}
+
+.field span {
+    font-size: 14px;
+    color: #333;
+    padding: 6px 0;
+}
+
+.avatar {
+    display: flex;
+    align-items: flex-start;
+    padding-left: 40px;
+}
+
+.avatar-circle {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background-color: #d9d9d9;
+}
