@@ -1,5 +1,6 @@
 package com.iis.projekat.service;
 
+import com.iis.projekat.dto.ManagerReviewRequest;
 import com.iis.projekat.dto.ProjectResponseDTO;
 import com.iis.projekat.dto.UpdateProjectRequest;
 import com.iis.projekat.model.*;
@@ -25,7 +26,6 @@ public class ProjectService {
         this.employeeRepository = employeeRepository;
     }
 
-    // ── 1. Kreiranje projekta ────────────────────────────────────────
 
     /**
      * Kreira novi projekat. Poziva ga koordinator.
@@ -76,7 +76,6 @@ public class ProjectService {
         return ProjectResponseDTO.from(projectRepository.save(p));
     }
 
-    // ── 2. Određivanje pomoćnih koordinatora ────────────────────────
 
     /**
      * Postavlja listu pomoćnih koordinatora na projektu.
@@ -89,7 +88,7 @@ public class ProjectService {
 
         Project p = nadjiProjekat(projektId);
         provjeriVlasnistvo(p, koordinatorId);
-        provjeriStatus(p);
+        provjeriEditabilnost(p);
 
         List<Employee> pomocni = pomocniIds == null
                 ? List.of()
@@ -101,19 +100,16 @@ public class ProjectService {
         return ProjectResponseDTO.from(projectRepository.save(p));
     }
 
-    // ── 3. Editovanje projekta ───────────────────────────────────────
 
     /**
-     * Edituje tekstualna polja projekta dok je u statusu U_PRIPREMI.
+     * Edituje tekstualna polja projekta dok je u statusu U PRIPREMI ili NEOPHODNA IZMENA.
      */
     public ProjectResponseDTO editujProjekat(
-            Long projektId,
-            Long koordinatorId,
-            UpdateProjectRequest req) {
+            Long projektId, Long koordinatorId, UpdateProjectRequest req) {
 
         Project p = nadjiProjekat(projektId);
         provjeriVlasnistvo(p, koordinatorId);
-        provjeriStatus(p);
+        provjeriEditabilnost(p);
 
         if (req.naziv != null)              p.setNaziv(req.naziv);
         if (req.opis != null)               p.setOpis(req.opis);
@@ -123,16 +119,26 @@ public class ProjectService {
         if (req.ciljnaGrupa != null)        p.setCiljnaGrupa(req.ciljnaGrupa);
         if (req.geografskaLokacija != null) p.setGeografskaLokacija(req.geografskaLokacija);
         if (req.izvoriFinansiranja != null)  p.setIzvoriFinansiranja(req.izvoriFinansiranja);
-        if (req.status != null) p.setStatus(ProjectStatus.valueOf(req.status));
+        if (req.status != null)             p.setStatus(ProjectStatus.valueOf(req.status));
 
         if (req.pomocniKoordinatoriIds != null) {
             List<Employee> pomocni = req.pomocniKoordinatoriIds.stream()
-                    .map(id -> nadjiKoordinatora(id))
-                    .collect(Collectors.toList());
+                    .map(id -> nadjiKoordinatora(id)).collect(Collectors.toList());
             p.setPomocniKoordinatori(pomocni);
         }
 
         return ProjectResponseDTO.from(projectRepository.save(p));
+    }
+
+    /**
+     * Edit je dozvoljen dok je projekat U_PRIPREMI ili NEOPHODNA_IZMENA.
+     */
+    private void provjeriEditabilnost(Project p) {
+        if (p.getStatus() != ProjectStatus.U_PRIPREMI
+                && p.getStatus() != ProjectStatus.NEOPHODNA_IZMENA) {
+            throw new IllegalStateException(
+                    "Projekat nije u editabilnom statusu (U_PRIPREMI ili NEOPHODNA_IZMENA).");
+        }
     }
 
     /**
@@ -145,7 +151,7 @@ public class ProjectService {
 
         Project p = nadjiProjekat(projektId);
         provjeriVlasnistvo(p, koordinatorId);
-        provjeriStatus(p);
+        provjeriEditabilnost(p);
 
         if (dokument == null || dokument.isEmpty()) {
             throw new IllegalArgumentException("Novi dokument ne može biti prazan.");
@@ -156,7 +162,6 @@ public class ProjectService {
         return ProjectResponseDTO.from(projectRepository.save(p));
     }
 
-    // ── 4. Promjena statusa u Spreman za odobrenje ───────────────────
 
     /**
      * Koordinator šalje projekat na odobrenje.
@@ -165,13 +170,53 @@ public class ProjectService {
     public ProjectResponseDTO posaljiNaOdobrenje(Long projektId, Long koordinatorId) {
         Project p = nadjiProjekat(projektId);
         provjeriVlasnistvo(p, koordinatorId);
-        provjeriStatus(p);
+        provjeriEditabilnost(p);
 
         p.setStatus(ProjectStatus.SPREMAN_ZA_ODOBRENJE);
         return ProjectResponseDTO.from(projectRepository.save(p));
     }
 
-    // ── 5. Čitanje podataka ──────────────────────────────────────────
+    /**
+     * Svi projekti — menadžer vidi sve.
+     */
+    public List<ProjectResponseDTO> sviProjekti() {
+        return projectRepository.findAll()
+                .stream()
+                .map(ProjectResponseDTO::from)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Menadžer donosi odluku o projektu.
+     * Dozvoljeno samo za projekte u statusu SPREMAN_ZA_ODOBRENJE.
+     */
+    public ProjectResponseDTO odluciOProjektu(Long projektId, ManagerReviewRequest req) {
+        Project p = nadjiProjekat(projektId);
+
+        if (p.getStatus() != ProjectStatus.SPREMAN_ZA_ODOBRENJE) {
+            throw new IllegalStateException(
+                    "Projekat nije u statusu SPREMAN_ZA_ODOBRENJE — odluka nije moguća.");
+        }
+
+        ProjectStatus noviStatus = ProjectStatus.valueOf(req.status);
+
+        if (noviStatus != ProjectStatus.ODOBREN
+                && noviStatus != ProjectStatus.NEOPHODNA_IZMENA
+                && noviStatus != ProjectStatus.ODBIJEN) {
+            throw new IllegalArgumentException("Nedozvoljen status: " + req.status);
+        }
+
+        if ((noviStatus == ProjectStatus.NEOPHODNA_IZMENA || noviStatus == ProjectStatus.ODBIJEN)
+                && (req.razlog == null || req.razlog.isBlank())) {
+            throw new IllegalArgumentException("Razlog je obavezan za ovaj status.");
+        }
+
+        p.setStatus(noviStatus);
+        p.setRazlog(noviStatus == ProjectStatus.ODOBREN ? null : req.razlog);
+
+        return ProjectResponseDTO.from(projectRepository.save(p));
+    }
+
 
     /** Svi projekti određenog koordinatora. */
     public List<ProjectResponseDTO> projektiKoordinatora(Long koordinatorId) {

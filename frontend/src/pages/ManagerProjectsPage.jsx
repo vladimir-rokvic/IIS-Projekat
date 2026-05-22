@@ -4,62 +4,41 @@ import api from "../api/axios";
 import { useAuth } from "../context/AuthContext";
 import "./Dashboard.css";
 
-// Mapiram backend status na čitljiv tekst
 const statusLabel = {
     U_PRIPREMI: "In preparation",
     SPREMAN_ZA_ODOBRENJE: "Ready for approval",
     ODOBREN: "Accepted",
-    ODBIJEN: "Denied",
     NEOPHODNA_IZMENA: "Necessary change",
+    ODBIJEN: "Denied",
 };
 
-// Statusi na kojima koordinator može da edituje projekat
-const EDITABLE_STATUSES = ["U_PRIPREMI", "NEOPHODNA_IZMENA"];
-
-const ProjectsPage = () => {
+const ManagerProjectsPage = () => {
     const navigate = useNavigate();
-    const { user, logout } = useAuth();
+    const { logout } = useAuth();
     const [projects, setProjects] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
 
     useEffect(() => {
-        const fetchProjects = async () => {
-            try {
-                const res = await api.get("/projekti/moji");
-                setProjects(res.data);
-            } catch (e) {
-                if (e.response?.status === 401) {
-                    logout();
-                    navigate('/login');
-                } else {
-                    setError("Failed to load projects.");
-                }
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchProjects();
+        api.get("/projekti/svi")
+            .then(res => setProjects(res.data))
+            .catch(e => {
+                if (e.response?.status === 401) { logout(); navigate('/login'); }
+                else setError("Failed to load projects.");
+            })
+            .finally(() => setLoading(false));
     }, []);
 
     return (
         <div>
-            <header className="dashboard-header">
-                <h1>Welcome to Our Humanitarian Organization</h1>
-                <div className="user-info" onClick={() => { logout(); navigate('/login'); }} title="Logout">
-                    <div className="avatar" />
-                    <span>{user?.name} {user?.surname}</span>
-                </div>
-            </header>
-
             <div className="projects-page">
                 <div className="projects-top">
                     <div className="projects-top-left">
                         <h1>Projects</h1>
-                        <p>Manage existing projects and create a new one.</p>
+                        <p>See all current projects and the ones that are ready for review</p>
                     </div>
-                    <button className="btn-primary" onClick={() => navigate('/projects/new')}>
-                        Create a project +
+                    <button className="btn-primary" onClick={() => navigate('/manager')}>
+                        ← Back to Home page
                     </button>
                 </div>
 
@@ -68,14 +47,13 @@ const ProjectsPage = () => {
 
                     {loading && <p className="loading-text">Loading...</p>}
                     {error && <p className="error-text">{error}</p>}
-
                     {!loading && !error && projects.length === 0 && (
-                        <p className="loading-text">No projects yet. Create your first one!</p>
+                        <p className="loading-text">No projects yet.</p>
                     )}
 
                     {!loading && !error && projects.length > 0 && (
                         <div className="projects-grid">
-                            {projects.map((project) => (
+                            {projects.filter(p => p.status !== 'U_PRIPREMI').map(project => (
                                 <div key={project.id} className="project-card">
                                     <h3>{project.naziv}</h3>
                                     <p>
@@ -88,11 +66,7 @@ const ProjectsPage = () => {
                                     <p>Coordinator: {project.koordinatorIme} {project.koordinatorPrezime}</p>
                                     <button
                                         className="btn-primary"
-                                        onClick={() =>
-                                            EDITABLE_STATUSES.includes(project.status)
-                                                ? navigate(`/projects/${project.id}/edit`)
-                                                : navigate(`/projects/${project.id}`)
-                                        }
+                                        onClick={() => navigate(`/manager/projects/${project.id}`)}
                                     >
                                         Details
                                     </button>
@@ -106,4 +80,4 @@ const ProjectsPage = () => {
     );
 };
 
-export default ProjectsPage;
+export default ManagerProjectsPage;
