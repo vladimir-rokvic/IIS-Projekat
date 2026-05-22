@@ -412,3 +412,40 @@ body {
     color: #555;
     font-size: 0.9rem;
 }
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-box {
+    background: #ffffff;
+    border-radius: 10px;
+    padding: 36px 48px;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.15);
+    min-width: 280px;
+}
+
+.modal-box p {
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.5;
+    margin-bottom: 20px;
+}
+
+.readonly-field {
+    background-color: #e0e0e0 !important;
+    color: #444 !important;
+    cursor: default !important;
+}
+
+.readonly-field:focus {
+    border-color: #bbb !important;
+    outline: none !important;
+}

@@ -14,7 +14,6 @@ public class Project {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // ── Obavezna polja ──────────────────────────────────────────────
     @Column(nullable = false)
     private String naziv;
 
@@ -30,12 +29,10 @@ public class Project {
     @Column(nullable = false)
     private LocalDate rokKraj;
 
-    // Glavni koordinator
     @ManyToOne(optional = false)
     @JoinColumn(name = "koordinator_id", nullable = false)
     private Employee koordinator;
 
-    // ── Opciona polja ───────────────────────────────────────────────
     private String ciljnaGrupa;
 
     private String geografskaLokacija;
@@ -43,20 +40,17 @@ public class Project {
     @Column(columnDefinition = "TEXT")
     private String izvoriFinansiranja;
 
-    // ── Status ──────────────────────────────────────────────────────
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private ProjectStatus status = ProjectStatus.U_PRIPREMI;
 
-    // ── Dokument ────────────────────────────────────────────────────
+    // Dokument
     // Čuvamo ime fajla i sadržaj kao bytes u bazi.
-    // Ako fajlovi budu veliki, može se prebaciti na čuvanje na disku / S3.
     private String dokumentIme;
 
     @Column(name = "dokument_sadrzaj", columnDefinition = "BYTEA")
     private byte[] dokumentSadrzaj;
 
-    // ── Pomoćni koordinatori ────────────────────────────────────────
     @ManyToMany
     @JoinTable(
             name = "project_pomocni_koordinatori",
@@ -65,7 +59,16 @@ public class Project {
     )
     private List<Employee> pomocniKoordinatori = new ArrayList<>();
 
-    // ── Getteri / Setteri ────────────────────────────────────────────
+    @Column(columnDefinition = "TEXT")
+    private String razlog;
+
+    public String getRazlog() {
+        return razlog;
+    }
+
+    public void setRazlog(String razlog) {
+        this.razlog = razlog;
+    }
 
     public Long getId() { return id; }
 

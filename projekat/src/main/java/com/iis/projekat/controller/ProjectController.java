@@ -1,8 +1,10 @@
 package com.iis.projekat.controller;
 
+import com.iis.projekat.dto.ManagerReviewRequest;
 import com.iis.projekat.dto.ProjectResponseDTO;
 import com.iis.projekat.dto.UpdateProjectRequest;
 import com.iis.projekat.model.Employee;
+import com.iis.projekat.model.EmployeeType;
 import com.iis.projekat.model.Project;
 import com.iis.projekat.repository.EmployeeRepository;
 import com.iis.projekat.service.ProjectService;
@@ -33,13 +35,12 @@ public class ProjectController {
         this.employeeRepository = employeeRepository;
     }
 
-    // ── Pomoćna metoda: izvuci Employee iz JWT principal-a ──────────
+    // Pomoćna metoda: izvuci Employee iz JWT principal-a
     private Employee getUlogovanogZaposlenog(UserDetails userDetails) {
         return employeeRepository.findByEmail(userDetails.getUsername())
                 .orElseThrow(() -> new SecurityException("Korisnik nije zaposleni."));
     }
 
-    // ── POST /api/projekti ───────────────────────────────────────────
     /**
      * Kreiranje projekta.
      * Šalje se kao multipart/form-data jer ima i fajl.
@@ -84,7 +85,6 @@ public class ProjectController {
         return ResponseEntity.ok(dto);
     }
 
-    // ── GET /api/projekti/moji ───────────────────────────────────────
     /** Koordinator vidi svoje projekte. */
     @GetMapping("/moji")
     public ResponseEntity<List<ProjectResponseDTO>> mojiProjekti(
@@ -94,13 +94,20 @@ public class ProjectController {
         return ResponseEntity.ok(projectService.projektiKoordinatora(koordinator.getId()));
     }
 
-    // ── GET /api/projekti/{id} ───────────────────────────────────────
+    @GetMapping("/svi")
+    public ResponseEntity<List<ProjectResponseDTO>> sviProjekti(
+            @AuthenticationPrincipal UserDetails userDetails) {
+        provjeriManagera(userDetails);
+        return ResponseEntity.ok(projectService.sviProjekti());
+    }
+
+
     @GetMapping("/{id}")
     public ResponseEntity<ProjectResponseDTO> getProjekat(@PathVariable Long id) {
         return ResponseEntity.ok(projectService.getProjekat(id));
     }
 
-    // ── PUT /api/projekti/{id} ───────────────────────────────────────
+
     /** Editovanje tekstualnih polja i pomoćnih koordinatora. */
     @PutMapping("/{id}")
     public ResponseEntity<ProjectResponseDTO> editujProjekat(
@@ -112,7 +119,7 @@ public class ProjectController {
         return ResponseEntity.ok(projectService.editujProjekat(id, koordinator.getId(), req));
     }
 
-    // ── PUT /api/projekti/{id}/dokument ──────────────────────────────
+
     /** Zamjena dokumenta (zasebni endpoint jer je multipart). */
     @PutMapping(value = "/{id}/dokument", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ProjectResponseDTO> zamijeniDokument(
@@ -124,7 +131,7 @@ public class ProjectController {
         return ResponseEntity.ok(projectService.zamijeniDokument(id, koordinator.getId(), dokument));
     }
 
-    // ── PUT /api/projekti/{id}/pomocni-koordinatori ──────────────────
+
     /** Postavljanje liste pomoćnih koordinatora. */
     @PutMapping("/{id}/pomocni-koordinatori")
     public ResponseEntity<ProjectResponseDTO> postaviPomocne(
@@ -138,7 +145,7 @@ public class ProjectController {
                 projectService.postaviPomocneKoordinatore(id, koordinator.getId(), pomocniIds));
     }
 
-    // ── PUT /api/projekti/{id}/spreman ───────────────────────────────
+
     /** Promjena statusa u SPREMAN_ZA_ODOBRENJE. */
     @PutMapping("/{id}/spreman")
     public ResponseEntity<ProjectResponseDTO> posaljiNaOdobrenje(
@@ -149,7 +156,7 @@ public class ProjectController {
         return ResponseEntity.ok(projectService.posaljiNaOdobrenje(id, koordinator.getId()));
     }
 
-    // ── GET /api/projekti/{id}/dokument ──────────────────────────────
+
     /** Preuzimanje dokumenta kao fajl (download). */
     @GetMapping("/{id}/dokument")
     public ResponseEntity<byte[]> preuzmiDokument(@PathVariable Long id) {
@@ -162,7 +169,7 @@ public class ProjectController {
                 .body(p.getDokumentSadrzaj());
     }
 
-    // ── GET /api/projekti/koordinatori ───────────────────────────────
+
     /**
      * Lista svih koordinatora u sistemu.
      * Frontend je koristi za odabir pomoćnih koordinatora.
@@ -179,5 +186,26 @@ public class ProjectController {
                 ))
                 .collect(Collectors.toList());
         return ResponseEntity.ok(result);
+    }
+
+    /**
+     * Menadžer donosi odluku o projektu.
+     * Body: { "status": "ODOBREN" | "NEOPHODNA_IZMENA" | "ODBIJEN", "razlog": "..." }
+     * razlog je obavezan za NEOPHODNA_IZMENA i ODBIJEN.
+     */
+    @PutMapping("/{id}/odluka")
+    public ResponseEntity<ProjectResponseDTO> odluciOProjektu(
+            @PathVariable Long id,
+            @AuthenticationPrincipal UserDetails userDetails,
+            @RequestBody ManagerReviewRequest req) {
+        provjeriManagera(userDetails);
+        return ResponseEntity.ok(projectService.odluciOProjektu(id, req));
+    }
+
+    private void provjeriManagera(UserDetails userDetails) {
+        Employee e = getUlogovanogZaposlenog(userDetails);
+        if (e.getEmployeeType() != EmployeeType.MANAGER) {
+            throw new SecurityException("Samo menadžer može da izvrši ovu akciju.");
+        }
     }
 }
