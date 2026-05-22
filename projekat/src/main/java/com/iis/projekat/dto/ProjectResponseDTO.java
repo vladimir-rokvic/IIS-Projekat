@@ -21,12 +21,10 @@ public class ProjectResponseDTO {
     public LocalDate rokKraj;
     public ProjectStatus status;
 
-    // Koordinator
     public Long koordinatorId;
     public String koordinatorIme;
     public String koordinatorPrezime;
 
-    // Opciona polja
     public String ciljnaGrupa;
     public String geografskaLokacija;
     public String izvoriFinansiranja;
@@ -36,6 +34,8 @@ public class ProjectResponseDTO {
 
     // Pomoćni koordinatori — lista ID-eva
     public List<Long> pomocniKoordinatoriIds;
+
+    public String razlog;
 
     public static ProjectResponseDTO from(Project p) {
         ProjectResponseDTO dto = new ProjectResponseDTO();
@@ -53,6 +53,7 @@ public class ProjectResponseDTO {
         dto.geografskaLokacija = p.getGeografskaLokacija();
         dto.izvoriFinansiranja = p.getIzvoriFinansiranja();
         dto.dokumentIme = p.getDokumentIme();
+        dto.razlog = p.getRazlog();
         dto.pomocniKoordinatoriIds = p.getPomocniKoordinatori()
                 .stream()
                 .map(e -> e.getId())
