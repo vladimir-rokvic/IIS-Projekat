@@ -11,9 +11,9 @@ const VolunterProfilePage = () => {
 			try {
 				const id = JSON.parse(localStorage.getItem("user")).id;
 				const res = await api.get("/volunteer/" + id);
-				console.log(res.data);
+				//console.log(res.data);
 				//console.log(id);
-				//setUser(res.data);
+				setUser(res.data);
 			} catch(err) {
 				console.log(err);
 			}

@@ -1,4 +1,3 @@
-
 import { useEffect, useRef, useState } from "react";
 import api from "../api/axios";
 import "./VolunteerUpdatePage.css";
@@ -17,6 +16,11 @@ const VolunteerUpdatePage = () => {
     const country = useRef();
     const phone = useRef();
     const email = useRef();
+	const skills = [];
+	const [skill, setSkill] = useState('');
+
+    const [password, setPassword] = useState(null);
+    const [confirmPassword, setConfirmPassword] = useState(null);
 
     useEffect(() => {
         const fetchVolunteer = async () => {
@@ -31,6 +35,10 @@ const VolunteerUpdatePage = () => {
         fetchVolunteer();
     }, []);
 
+	const addSkill = () => {
+		skills.push(skill);
+	}
+
     const handleSave = async () => {
         const id = JSON.parse(localStorage.getItem("user")).id;
         const body = {
@@ -43,7 +51,8 @@ const VolunteerUpdatePage = () => {
             country: country.current.value,
             phone: phone.current.value,
             email: email.current.value,
-			password: null,
+			password: password,
+			skills: skills,
         };
         console.log(body);
 		
@@ -156,6 +165,47 @@ const VolunteerUpdatePage = () => {
                             placeholder="Volunteer email"
                         />
                     </div>
+
+                    <div className="input-group">
+						<div className="row">
+                    		<div className="field">
+                    		    <label>New password</label>
+                    		    <input
+                    		        type="password"
+                    		        value={password}
+                    		        onChange={(e) => setPassword(e.target.value)}
+                    		        placeholder="Enter new password"
+                    		    />
+                    		</div>
+
+                    		<div className="field">
+                    		    <label>Confirm new password</label>
+                    		    <input
+                    		        type="password"
+                    		        value={confirmPassword}
+                    		        onChange={(e) => setConfirmPassword(e.target.value)}
+                    		        placeholder="Confirm password"
+                    		    />
+                    		</div>
+                    	</div>
+						{((password !== confirmPassword)
+						&& <span className="error-text">Passwords must match</span>)}
+					</div>
+
+                    <div className="input-group">
+						<div className="row">
+                    		<div className="field">
+                    		    <label>Skill</label>
+                    		    <input
+                    		        type="text"
+                    		        value={password}
+                    		        onChange={(e) => setSkill(e.target.value)}
+                    		        placeholder="Enter new skills"
+                    		    />
+								<button className="btn-save">Add</button>
+                    		</div>
+                    	</div>
+					</div>
                 </div>
 
                 <div className="avatar">

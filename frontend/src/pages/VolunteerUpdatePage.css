@@ -22,13 +22,13 @@
     gap: 8px;
 }
 
-.btn-save, .btn-back {
+.btn-save {
     padding: 6px 16px;
     border: none;
     border-radius: 6px;
     cursor: pointer;
-    color: white;
-    background-color: #3ab5b0;
+    color: black;
+    background-color: #369FBC;
 }
 
 .content {
