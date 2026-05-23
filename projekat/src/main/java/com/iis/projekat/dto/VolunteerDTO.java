@@ -3,6 +3,7 @@ package com.iis.projekat.dto;
 import com.iis.projekat.model.Address;
 import com.iis.projekat.model.Volunteer;
 import java.time.LocalDate;
+import java.util.List;
 
 public class VolunteerDTO {
     private Long id;
@@ -13,6 +14,7 @@ public class VolunteerDTO {
     private String bio;
     private LocalDate dateOfBirth;
     private AddressDTO address;
+    private List<SkillDTO> skills;
 
     public VolunteerDTO(Volunteer v) {
         this.id = v.getId();

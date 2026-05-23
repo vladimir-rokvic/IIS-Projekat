@@ -99,6 +99,7 @@ public class VolunteerService {
         oldVolunteer.setSurname(dto.getSurname());
         oldVolunteer.setAddress(a);
         oldVolunteer.setBio(dto.getBio());
+        oldVolunteer.setPassword(passwordEncoder.encode(dto.getPassword()));
 
         volunteerRepository.save(oldVolunteer);
         return true;
