@@ -14,6 +14,8 @@ import ManagerDashboard from "./pages/ManagerDashboard";
 import ManagerProjectsPage from "./pages/ManagerProjectsPage";
 import ManagerProjectDetailPage from "./pages/ManagerProjectDetailPage";
 import VolunteerDashboard from "./pages/VolunteerDashboard";
+import ProjectDeniedPage from "./pages/ProjectDeniedPage";
+import ProjectAcceptedPage from "./pages/ProjectAcceptedPage";
 
 function App() {
 	return (
@@ -26,6 +28,8 @@ function App() {
 					<Route path="/projects" element={<PrivateRoute allowedRoles={["COORDINATOR"]}><ProjectsPage /></PrivateRoute>} />
 					<Route path="/projects/new" element={<PrivateRoute allowedRoles={["COORDINATOR"]}><CreateProjectPage /></PrivateRoute>} />
 					<Route path="/projects/:id/edit" element={<PrivateRoute allowedRoles={["COORDINATOR"]}><EditProjectPage /></PrivateRoute>} />
+					<Route path="/projects/:id/denied" element={<PrivateRoute allowedRoles={["COORDINATOR"]}><ProjectDeniedPage /></PrivateRoute>} />
+					<Route path="/projects/:id/accepted" element={<PrivateRoute allowedRoles={["COORDINATOR"]}><ProjectAcceptedPage /></PrivateRoute>} />
 					<Route path="/manager" element={<PrivateRoute allowedRoles={["MANAGER"]}><ManagerDashboard /></PrivateRoute>} />
 					<Route path="/manager/registerVolunteer" element={<PrivateRoute allowedRoles={["MANAGER"]}><RegisterVolunteerPage /></PrivateRoute>} />
 					<Route path="/profile" element={<PrivateRoute><UserProfilePage /></PrivateRoute>}/>

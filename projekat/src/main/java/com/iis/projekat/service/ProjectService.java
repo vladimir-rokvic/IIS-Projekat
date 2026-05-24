@@ -1,10 +1,9 @@
 package com.iis.projekat.service;
 
-import com.iis.projekat.dto.ManagerReviewRequest;
-import com.iis.projekat.dto.ProjectResponseDTO;
-import com.iis.projekat.dto.UpdateProjectRequest;
+import com.iis.projekat.dto.*;
 import com.iis.projekat.model.*;
 import com.iis.projekat.repository.EmployeeRepository;
+import com.iis.projekat.repository.KpiRepository;
 import com.iis.projekat.repository.ProjectRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,10 +19,14 @@ public class ProjectService {
     private final ProjectRepository projectRepository;
     private final EmployeeRepository employeeRepository;
 
+    private final KpiRepository kpiRepository;
+
     public ProjectService(ProjectRepository projectRepository,
-                          EmployeeRepository employeeRepository) {
+                          EmployeeRepository employeeRepository,
+                          KpiRepository kpiRepository) {
         this.projectRepository = projectRepository;
         this.employeeRepository = employeeRepository;
+        this.kpiRepository = kpiRepository;
     }
 
 
@@ -270,5 +273,34 @@ public class ProjectService {
             throw new IllegalStateException(
                     "Projekat nije u statusu U_PRIPREMI — izmjene nisu dozvoljene.");
         }
+    }
+
+    public KpiResponseDTO saveKpi(Long projektId, Long koordinatorId, KpiRequest req) {
+        Project p = nadjiProjekat(projektId);
+        provjeriVlasnistvo(p, koordinatorId);
+
+        if (p.getStatus() != ProjectStatus.ODOBREN) {
+            throw new IllegalStateException("KPI can only be configured for accepted projects.");
+        }
+        if (req.opis == null || req.opis.isBlank()) {
+            throw new IllegalArgumentException("KPI description is required.");
+        }
+        if (req.intervalMerenja == null || req.intervalMerenja.isBlank()) {
+            throw new IllegalArgumentException("Measurement interval is required.");
+        }
+
+        // Ako već postoji KPI za ovaj projekat, ažuriraj ga
+        Kpi kpi = kpiRepository.findByProjectId(projektId).orElse(new Kpi());
+        kpi.setOpis(req.opis);
+        kpi.setIntervalMerenja(NotificationFrequency.valueOf(req.intervalMerenja));
+        kpi.setProject(p);
+
+        return KpiResponseDTO.from(kpiRepository.save(kpi));
+    }
+
+    public KpiResponseDTO getKpi(Long projektId) {
+        return kpiRepository.findByProjectId(projektId)
+                .map(KpiResponseDTO::from)
+                .orElse(null);
     }
 }
