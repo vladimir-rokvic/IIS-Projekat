@@ -13,6 +13,7 @@ import VolunteerUpdatePage from "./pages/VolunteerUpdatePage";
 import ManagerDashboard from "./pages/ManagerDashboard";
 import ManagerProjectsPage from "./pages/ManagerProjectsPage";
 import ManagerProjectDetailPage from "./pages/ManagerProjectDetailPage";
+import VolunteerDashboard from "./pages/VolunteerDashboard";
 
 function App() {
 	return (
@@ -29,7 +30,7 @@ function App() {
 					<Route path="/manager/registerVolunteer" element={<PrivateRoute allowedRoles={["MANAGER"]}><RegisterVolunteerPage /></PrivateRoute>} />
 					<Route path="/profile" element={<PrivateRoute><UserProfilePage /></PrivateRoute>}/>
 					<Route path="/volunteer/update" element={<PrivateRoute><VolunteerUpdatePage /></PrivateRoute>}/>
-					<Route path="/volunteer" />
+					<Route path="/volunteer" element={<PrivateRoute allowedRoles={["VOLUNTEER"]}><VolunteerDashboard /></PrivateRoute>}/>
 					<Route path="*" element={<Navigate to="/login" replace />} />
 					<Route path="/manager" element={<PrivateRoute allowedRoles={["MANAGER"]}><ManagerDashboard /></PrivateRoute>} />
 					<Route path="/manager/projects" element={<PrivateRoute allowedRoles={["MANAGER"]}><ManagerProjectsPage /></PrivateRoute>} />
