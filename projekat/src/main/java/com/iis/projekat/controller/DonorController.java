@@ -2,6 +2,7 @@ package com.iis.projekat.controller;
 
 import com.iis.projekat.dto.DonorCreateDTO;
 import com.iis.projekat.dto.DonorDTO;
+import com.iis.projekat.dto.DonorProfileDTO;
 import com.iis.projekat.service.DonorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -31,8 +32,8 @@ public class DonorController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DonorDTO> getDonor(@PathVariable Long id) {
-        DonorDTO dto = donorService.getDonorById(id);
+    public ResponseEntity<DonorProfileDTO> getDonor(@PathVariable Long id) {
+        DonorProfileDTO dto = donorService.getDonorProfileById(id);
         return ResponseEntity.ok(dto);
     }
 
