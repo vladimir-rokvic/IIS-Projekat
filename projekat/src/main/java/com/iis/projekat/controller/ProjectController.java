@@ -8,6 +8,8 @@ import com.iis.projekat.model.EmployeeType;
 import com.iis.projekat.model.Project;
 import com.iis.projekat.repository.EmployeeRepository;
 import com.iis.projekat.service.ProjectService;
+import com.iis.projekat.dto.KpiRequest;
+import com.iis.projekat.dto.KpiResponseDTO;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -207,5 +209,22 @@ public class ProjectController {
         if (e.getEmployeeType() != EmployeeType.MANAGER) {
             throw new SecurityException("Samo menadžer može da izvrši ovu akciju.");
         }
+    }
+
+    @PutMapping("/{id}/kpi")
+    public ResponseEntity<KpiResponseDTO> saveKpi(
+            @PathVariable Long id,
+            @AuthenticationPrincipal UserDetails userDetails,
+            @RequestBody KpiRequest req) {
+        Employee koordinator = getUlogovanogZaposlenog(userDetails);
+        return ResponseEntity.ok(projectService.saveKpi(id, koordinator.getId(), req));
+    }
+
+    // endpoint za čitanje KPI (koristi ProjectAcceptedPage pri učitavanju)
+    @GetMapping("/{id}/kpi")
+    public ResponseEntity<KpiResponseDTO> getKpi(@PathVariable Long id) {
+        KpiResponseDTO kpi = projectService.getKpi(id);
+        if (kpi == null) return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(kpi);
     }
 }
