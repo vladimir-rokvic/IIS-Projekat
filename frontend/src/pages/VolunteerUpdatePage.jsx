@@ -16,7 +16,7 @@ const VolunteerUpdatePage = () => {
     const country = useRef();
     const phone = useRef();
     const email = useRef();
-	const skills = [];
+	const [skills, setSkills] = useState([]);
 	const [skill, setSkill] = useState('');
 
     const [password, setPassword] = useState(null);
@@ -28,6 +28,9 @@ const VolunteerUpdatePage = () => {
                 const id = JSON.parse(localStorage.getItem("user")).id;
                 const res = await api.get("/volunteer/" + id);
                 setUser(res.data);
+				if(res.data.skills) {
+					setSkills(res.data.skills);
+				}
             } catch (err) {
                 console.log(err);
             }
@@ -35,9 +38,16 @@ const VolunteerUpdatePage = () => {
         fetchVolunteer();
     }, []);
 
+
 	const addSkill = () => {
-		skills.push(skill);
-	}
+	    if (!skill.trim()) return;
+	    setSkills([...skills, { name: skill, desc: "" }]);
+	    setSkill('');
+	};
+
+	const removeSkill = (index) => {
+	    setSkills(skills.filter((_, i) => i !== index));
+	};
 
     const handleSave = async () => {
         const id = JSON.parse(localStorage.getItem("user")).id;
@@ -192,21 +202,29 @@ const VolunteerUpdatePage = () => {
 						&& <span className="error-text">Passwords must match</span>)}
 					</div>
 
-                    <div className="input-group">
-						<div className="row">
-                    		<div className="field">
-                    		    <label>Skill</label>
-                    		    <input
-                    		        type="text"
-                    		        value={password}
-                    		        onChange={(e) => setSkill(e.target.value)}
-                    		        placeholder="Enter new skills"
-                    		    />
-								<button className="btn-save">Add</button>
-                    		</div>
-                    	</div>
-					</div>
-                </div>
+				<div className="input-group">
+				    <label className="group-label">Skills</label>
+				    <div className="row">
+				        <div className="field">
+				            <input
+				                type="text"
+				                value={skill}
+				                onChange={(e) => setSkill(e.target.value)}
+				                placeholder="Enter a skill"
+				            />
+				        </div>
+				        <button className="btn-save" onClick={addSkill}>Add</button>
+				    </div>
+				    <div className="skills-list">
+				        {skills.map((s, index) => (
+				            <div key={index} className="skill-item">
+				                <span>{s.name}</span>
+				                <button className="btn-remove" onClick={() => removeSkill(index)}>x</button>
+				            </div>
+				        ))}
+				    </div>
+				</div>
+				</div>
 
                 <div className="avatar">
                     <div className="avatar-circle" />

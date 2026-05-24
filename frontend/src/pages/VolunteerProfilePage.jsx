@@ -11,7 +11,36 @@ const VolunterProfilePage = () => {
 			try {
 				const id = JSON.parse(localStorage.getItem("user")).id;
 				const res = await api.get("/volunteer/" + id);
-				//console.log(res.data);
+package com.iis.projekat.dto;
+
+import com.iis.projekat.model.Skill;
+
+//da li mi je ovo uopste i potrebno ili samo da sve radim preko skill klase
+public class SkillDTO {
+    private String name;
+    private String desc;
+
+    public SkillDTO(Skill s) {
+        this.name = s.getName();
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDesc() {
+        return desc;
+    }
+
+    public void setDesc(String desc) {
+        this.desc = desc;
+    }
+}
+				console.log(res.data);
 				//console.log(id);
 				setUser(res.data);
 			} catch(err) {
@@ -80,6 +109,22 @@ const VolunterProfilePage = () => {
                         <label>Email</label>
                         <span>{user.email}</span>
                     </div>
+
+				<div className="field">
+				    <label>Skills</label>
+				    {user.skills && user.skills.length > 0 ? (
+				        <div className="skills-list">
+				            {user.skills.map((s, index) => (
+				                <div key={index} className="skill-item">
+				                    <span>{s.name}</span>
+				                </div>
+				            ))}
+				        </div>
+				    ) : (
+				        <span>No skills added yet</span>
+				    )}
+				</div>
+
                 </div>
 
                 <div className="avatar">

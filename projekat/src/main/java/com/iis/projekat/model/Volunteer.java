@@ -7,7 +7,7 @@ import java.util.Set;
 @Entity
 @Table(name = "volunteers")
 public class Volunteer extends User {
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private Set<Skill> skills;
 
     private String bio;

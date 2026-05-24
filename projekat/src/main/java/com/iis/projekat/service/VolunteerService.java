@@ -3,6 +3,7 @@ package com.iis.projekat.service;
 import com.iis.projekat.dto.VolunteerDTO;
 import com.iis.projekat.dto.VolunteerUpdateDTO;
 import com.iis.projekat.model.Address;
+import com.iis.projekat.model.Skill;
 import com.iis.projekat.model.Volunteer;
 import com.iis.projekat.repository.AddressRepository;
 import com.iis.projekat.repository.VolunteerRepository;
@@ -11,6 +12,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class VolunteerService {
@@ -99,7 +102,19 @@ public class VolunteerService {
         oldVolunteer.setSurname(dto.getSurname());
         oldVolunteer.setAddress(a);
         oldVolunteer.setBio(dto.getBio());
-        oldVolunteer.setPassword(passwordEncoder.encode(dto.getPassword()));
+        if(dto.getPassword() != null && !dto.getPassword().isEmpty()) {
+            oldVolunteer.setPassword(passwordEncoder.encode(dto.getPassword()));
+        }
+
+        if (dto.getSkills() != null) {
+            Set<Skill> skills = dto.getSkills().stream().map(skillDTO -> {
+                Skill s = new Skill();
+                s.setName(skillDTO.getName());
+                s.setDescription(skillDTO.getDesc());
+                return s;
+            }).collect(Collectors.toSet());
+            oldVolunteer.setSkills(skills);
+        }
 
         volunteerRepository.save(oldVolunteer);
         return true;
