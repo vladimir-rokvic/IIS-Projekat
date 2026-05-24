@@ -3,6 +3,7 @@ package com.iis.projekat.controller;
 import com.iis.projekat.dto.LoginRequest;
 import com.iis.projekat.dto.RegisterRequest;
 import com.iis.projekat.model.User;
+import com.iis.projekat.repository.DonorRepository;
 import com.iis.projekat.repository.EmployeeRepository;
 import com.iis.projekat.repository.UserRepository;
 import com.iis.projekat.repository.VolunteerRepository;
@@ -27,6 +28,7 @@ public class AuthController {
     private final UserRepository userRepository;
 
     private final EmployeeRepository employeeRepository;
+    private final DonorRepository donorRepository;
 
     @Autowired
     private VolunteerRepository volunteerRepository;
@@ -35,13 +37,15 @@ public class AuthController {
                           AuthenticationManager authenticationManager,
                           JwtUtil jwtUtil,
                           UserRepository userRepository,
-                          EmployeeRepository employeeRepository) {
+                          EmployeeRepository employeeRepository,
+                          DonorRepository donorRepository) {
 
         this.userService = userService;
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
         this.userRepository = userRepository;
         this.employeeRepository = employeeRepository;
+        this.donorRepository = donorRepository;
     }
 
     @PostMapping("/register")
@@ -75,13 +79,12 @@ public class AuthController {
         response.put("surname", user.getSurname());
         response.put("id", user.getId());
 
-        employeeRepository.findByEmail(user.getEmail()).ifPresent(emp -> {
-            response.put("role", emp.getEmployeeType().name()); // "COORDINATOR" ili "MANAGER"
-        });
+        employeeRepository.findByEmail(user.getEmail()).ifPresent(emp -> response.put("role", emp.getEmployeeType().name()));
 
-        //TOOD: Ovo se treba izmeniti
-        if(volunteerRepository.existsByEmail(user.getEmail())){
+        if (volunteerRepository.existsByEmail(user.getEmail())) {
             response.put("role", "VOLUNTEER");
+        } else if (donorRepository.existsByEmail(user.getEmail())) {
+            response.put("role", "DONOR");
         }
 
         return ResponseEntity.ok(response);

@@ -20,7 +20,8 @@ const LoginPage = () => {
 			const role = res.data.role;
 			if (role === "COORDINATOR") navigate('/');
 			else if (role === "MANAGER") navigate('/manager');
-			else if (role === "VOLUNTEER") navigate('/volunteer')
+			else if (role === "VOLUNTEER") navigate('/volunteer');
+			else if (role === "DONOR") navigate('/donor');
 			else navigate('/');
 		} catch (e) {
 			setError('Invalid email or password.');
