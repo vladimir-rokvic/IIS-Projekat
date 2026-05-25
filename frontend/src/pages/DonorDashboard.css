@@ -1,0 +1,332 @@
+.donor-shell {
+	min-height: 100vh;
+	display: flex;
+	background: linear-gradient(135deg, #f4efe6 0%, #f7f9fc 100%);
+	color: #1f2937;
+}
+
+.donor-main {
+	flex: 1;
+	padding: 36px 40px 40px;
+	overflow: auto;
+}
+
+.donor-content {
+	max-width: 1120px;
+	margin: 0 auto;
+}
+
+.donor-page-title {
+	font-size: 2.2rem;
+	font-weight: 700;
+	margin-bottom: 28px;
+	letter-spacing: -0.02em;
+}
+
+.donor-stats-grid {
+	display: grid;
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+	gap: 18px;
+}
+
+.donor-stat-card {
+	background: rgba(255, 255, 255, 0.95);
+	border: 1px solid #c7c1b8;
+	border-radius: 12px;
+	min-height: 104px;
+	padding: 16px 14px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+	box-shadow: 0 16px 30px rgba(15, 23, 42, 0.06);
+}
+
+.donor-stat-label {
+	font-size: 1rem;
+	line-height: 1.2;
+	margin-bottom: 12px;
+	max-width: 120px;
+}
+
+.donor-stat-value {
+	font-size: 1.65rem;
+	font-weight: 700;
+	line-height: 1;
+}
+
+.donor-section {
+	margin-top: 40px;
+}
+
+.donor-section-title {
+	font-size: 1.28rem;
+	font-weight: 700;
+	margin-bottom: 18px;
+}
+
+.donor-project-grid {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 18px;
+}
+
+.donor-project-card,
+.donor-panel {
+	background: rgba(255, 255, 255, 0.97);
+	border: 1px solid #c7c1b8;
+	border-radius: 12px;
+	box-shadow: 0 16px 30px rgba(15, 23, 42, 0.06);
+}
+
+.donor-project-card {
+	padding: 18px;
+	min-height: 178px;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.donor-project-name {
+	font-size: 1.03rem;
+	font-weight: 700;
+	text-align: center;
+	margin-bottom: 4px;
+}
+
+.donor-small-text {
+	font-size: 0.84rem;
+	color: #4b5563;
+	line-height: 1.35;
+}
+
+.donor-progress-row {
+	display: flex;
+	justify-content: space-between;
+	font-size: 0.78rem;
+	color: #4b5563;
+}
+
+.donor-progress-bar {
+	height: 14px;
+	border: 1px solid #9ea0a3;
+	border-radius: 2px;
+	background: #f0f0f0;
+	overflow: hidden;
+}
+
+.donor-progress-fill {
+	height: 100%;
+	background: linear-gradient(90deg, #c9c9c9 0%, #8c8c8c 100%);
+}
+
+.donor-chart-panel {
+	margin-top: 30px;
+	padding: 16px 18px 20px;
+	min-height: 180px;
+}
+
+.donor-chart {
+	display: grid;
+	grid-template-columns: 1.2fr 0.8fr;
+	gap: 22px;
+	align-items: center;
+	margin-top: 8px;
+}
+
+.donor-chart-bars {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	padding-left: 8px;
+}
+
+.donor-bar-row {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 8px;
+}
+
+.donor-bar-track {
+	height: 18px;
+	background: #e8e6e0;
+	border: 1px solid #b5b0a5;
+	border-radius: 1px;
+	position: relative;
+	overflow: hidden;
+}
+
+.donor-bar-fill {
+	height: 100%;
+	background: #9a9a9a;
+}
+
+.donor-bar-labels {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	gap: 24px;
+	font-size: 1.1rem;
+	padding-right: 20px;
+}
+
+.donor-campaign-grid {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 20px;
+}
+
+.donor-campaign-card {
+	padding: 18px 16px 14px;
+	min-height: 300px;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.donor-campaign-card h3 {
+	font-size: 1.06rem;
+	font-weight: 700;
+	text-align: center;
+	margin-bottom: 4px;
+}
+
+.donor-campaign-progress {
+	display: flex;
+	justify-content: space-between;
+	font-size: 0.78rem;
+	color: #4b5563;
+}
+
+.donor-btn {
+	align-self: center;
+	margin-top: auto;
+	padding: 8px 20px;
+	border: 1px solid #7f7f7f;
+	border-radius: 8px;
+	background: #fff;
+	cursor: pointer;
+	font-size: 0.9rem;
+}
+
+.donor-profile-card {
+	padding: 22px 24px;
+	margin-top: 10px;
+}
+
+.donor-profile-top {
+	display: grid;
+	grid-template-columns: 120px 1fr;
+	gap: 22px;
+	align-items: start;
+	margin-bottom: 24px;
+}
+
+.donor-avatar {
+	width: 96px;
+	height: 96px;
+	border-radius: 50%;
+	border: 1px solid #7f7f7f;
+	background: #fff;
+}
+
+.donor-profile-name {
+	font-size: 1.2rem;
+	font-weight: 700;
+	margin-bottom: 6px;
+}
+
+.donor-profile-email,
+.donor-profile-meta {
+	font-size: 1rem;
+	color: #64748b;
+	margin-bottom: 12px;
+}
+
+.donor-profile-stats {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 18px;
+	margin-top: 16px;
+}
+
+.donor-profile-stat {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	font-size: 0.98rem;
+}
+
+.donor-profile-stat strong {
+	display: block;
+	font-size: 1.3rem;
+	margin-top: 2px;
+}
+
+.donor-history-panel {
+	margin-top: 18px;
+	padding: 18px 20px 20px;
+}
+
+.donor-history-table {
+	width: 100%;
+	border-collapse: collapse;
+	margin-top: 12px;
+	font-size: 0.9rem;
+}
+
+.donor-history-table th,
+.donor-history-table td {
+	border: 1px solid #a7a29a;
+	padding: 8px 10px;
+	text-align: left;
+}
+
+.donor-history-table th {
+	background: #d5d0c7;
+	font-weight: 700;
+}
+
+.donor-history-table tbody tr:nth-child(even) {
+	background: #f5f4f1;
+}
+
+@media (max-width: 1200px) {
+	.donor-stats-grid,
+	.donor-project-grid,
+	.donor-campaign-grid,
+	.donor-profile-stats {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+
+	.donor-chart {
+		grid-template-columns: 1fr;
+	}
+}
+
+@media (max-width: 900px) {
+	.donor-shell {
+		flex-direction: column;
+	}
+
+	.sidebar-menu {
+		width: 100%;
+		min-height: auto;
+	}
+
+	.donor-main {
+		padding: 24px 18px 28px;
+	}
+
+	.donor-stats-grid,
+	.donor-project-grid,
+	.donor-campaign-grid,
+	.donor-profile-stats {
+		grid-template-columns: 1fr;
+	}
+
+	.donor-profile-top {
+		grid-template-columns: 1fr;
+	}
+}
