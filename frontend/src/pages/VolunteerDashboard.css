@@ -1,0 +1,36 @@
+.volunteer-dash {
+	margin: 15px;
+}
+
+.volunteer-dash h2 {
+	margin-top: 15px;
+}
+
+.volunteer-dash-btns {
+	margin-top: 35px;
+	display: flex;
+	flex-direction: column;
+	gap: 15px;
+}
+
+.volunteer-dash button {
+    padding: 6px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    color: black;
+    background-color: #369FBC;
+	width: 150px;
+	display: block;
+}
+
+.top-bar {
+    display: flex;
+    justify-content: flex-end;
+    padding: 10px;
+}
+
+.user-name {
+    cursor: pointer;
+    font-weight: 500;
+}

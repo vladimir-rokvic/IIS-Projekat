@@ -88,11 +88,17 @@ const ProjectsPage = () => {
                                     <p>Coordinator: {project.koordinatorIme} {project.koordinatorPrezime}</p>
                                     <button
                                         className="btn-primary"
-                                        onClick={() =>
-                                            EDITABLE_STATUSES.includes(project.status)
-                                                ? navigate(`/projects/${project.id}/edit`)
-                                                : navigate(`/projects/${project.id}`)
-                                        }
+                                        onClick={() => {
+                                            if (['U_PRIPREMI', 'NEOPHODNA_IZMENA'].includes(project.status)) {
+                                                navigate(`/projects/${project.id}/edit`);
+                                            } else if (project.status === 'ODBIJEN') {
+                                                navigate(`/projects/${project.id}/denied`);
+                                            } else if (project.status === 'ODOBREN') {
+                                                navigate(`/projects/${project.id}/accepted`);
+                                            } else {
+                                                navigate(`/projects/${project.id}`);
+                                            }
+                                        }}
                                     >
                                         Details
                                     </button>

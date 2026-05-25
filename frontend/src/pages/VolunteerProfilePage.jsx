@@ -13,7 +13,7 @@ const VolunterProfilePage = () => {
 				const res = await api.get("/volunteer/" + id);
 				console.log(res.data);
 				//console.log(id);
-				//setUser(res.data);
+				setUser(res.data);
 			} catch(err) {
 				console.log(err);
 			}
@@ -80,6 +80,22 @@ const VolunterProfilePage = () => {
                         <label>Email</label>
                         <span>{user.email}</span>
                     </div>
+
+				<div className="field">
+				    <label>Skills</label>
+				    {user.skills && user.skills.length > 0 ? (
+				        <div className="skills-list">
+				            {user.skills.map((s, index) => (
+				                <div key={index} className="skill-item">
+				                    <span>{s.name}</span>
+				                </div>
+				            ))}
+				        </div>
+				    ) : (
+				        <span>No skills added yet</span>
+				    )}
+				</div>
+
                 </div>
 
                 <div className="avatar">

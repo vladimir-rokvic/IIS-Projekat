@@ -17,6 +17,9 @@ import DonorDashboardPage from "./pages/DonorDashboardPage";
 import DonorHomePage from "./pages/DonorHomePage";
 import DonorCampaignsPage from "./pages/DonorCampaignsPage";
 import DonorProfilePage from "./pages/DonorProfilePage";
+import VolunteerDashboard from "./pages/VolunteerDashboard";
+import ProjectDeniedPage from "./pages/ProjectDeniedPage";
+import ProjectAcceptedPage from "./pages/ProjectAcceptedPage";
 
 function App() {
 	return (
@@ -29,16 +32,19 @@ function App() {
 					<Route path="/projects" element={<PrivateRoute allowedRoles={["COORDINATOR"]}><ProjectsPage /></PrivateRoute>} />
 					<Route path="/projects/new" element={<PrivateRoute allowedRoles={["COORDINATOR"]}><CreateProjectPage /></PrivateRoute>} />
 					<Route path="/projects/:id/edit" element={<PrivateRoute allowedRoles={["COORDINATOR"]}><EditProjectPage /></PrivateRoute>} />
+					<Route path="/projects/:id/denied" element={<PrivateRoute allowedRoles={["COORDINATOR"]}><ProjectDeniedPage /></PrivateRoute>} />
+					<Route path="/projects/:id/accepted" element={<PrivateRoute allowedRoles={["COORDINATOR"]}><ProjectAcceptedPage /></PrivateRoute>} />
 					<Route path="/manager" element={<PrivateRoute allowedRoles={["MANAGER"]}><ManagerDashboard /></PrivateRoute>} />
 					<Route path="/manager/registerVolunteer" element={<PrivateRoute allowedRoles={["MANAGER"]}><RegisterVolunteerPage /></PrivateRoute>} />
 					<Route path="/profile" element={<PrivateRoute><UserProfilePage /></PrivateRoute>}/>
 					<Route path="/volunteer/update" element={<PrivateRoute><VolunteerUpdatePage /></PrivateRoute>}/>
-					<Route path="/volunteer" />
+
 					<Route path="/donor" element={<PrivateRoute allowedRoles={["DONOR"]}><DonorDashboardPage /></PrivateRoute>}>
 						<Route index element={<DonorHomePage />} />
 						<Route path="campaigns" element={<DonorCampaignsPage />} />
 						<Route path="profile" element={<DonorProfilePage />} />
 					</Route>
+					<Route path="/volunteer" element={<PrivateRoute allowedRoles={["VOLUNTEER"]}><VolunteerDashboard /></PrivateRoute>}/>
 					<Route path="*" element={<Navigate to="/login" replace />} />
 					<Route path="/manager" element={<PrivateRoute allowedRoles={["MANAGER"]}><ManagerDashboard /></PrivateRoute>} />
 					<Route path="/manager/projects" element={<PrivateRoute allowedRoles={["MANAGER"]}><ManagerProjectsPage /></PrivateRoute>} />

@@ -1,6 +1,7 @@
 package com.iis.projekat.dto;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public class VolunteerUpdateDTO {
     private String name;
@@ -13,6 +14,7 @@ public class VolunteerUpdateDTO {
     private String email;
     private String password;
     private String bio;
+    private List<SkillDTO> skills;
 
     public String getName() {
         return name;
@@ -92,5 +94,13 @@ public class VolunteerUpdateDTO {
 
     public void setBio(String bio) {
         this.bio = bio;
+    }
+
+    public List<SkillDTO> getSkills() {
+        return skills;
+    }
+
+    public void setSkills(List<SkillDTO> skills) {
+        this.skills = skills;
     }
 }
