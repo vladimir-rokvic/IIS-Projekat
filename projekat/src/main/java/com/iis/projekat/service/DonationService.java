@@ -4,8 +4,10 @@ import com.iis.projekat.dto.DonationCreateDTO;
 import com.iis.projekat.dto.DonationDTO;
 import com.iis.projekat.model.Donation;
 import com.iis.projekat.model.Donor;
+import com.iis.projekat.model.Project;
 import com.iis.projekat.repository.DonationRepository;
 import com.iis.projekat.repository.DonorRepository;
+import com.iis.projekat.repository.ProjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +22,9 @@ public class DonationService {
 
     @Autowired
     private DonorRepository donorRepository;
+
+    @Autowired
+    private ProjectRepository projectRepository;
 
     @Autowired
     private DtoMapperService mapper;
@@ -37,6 +42,11 @@ public class DonationService {
         if(dto.getDonorId() != null) {
             Donor donor = donorRepository.findById(dto.getDonorId()).orElse(null);
             d.setDonor(donor);
+        }
+
+        if (dto.getProjectId() != null) {
+            Project project = projectRepository.findById(dto.getProjectId()).orElse(null);
+            d.setProject(project);
         }
 
         donationRepository.save(d);
@@ -74,4 +84,9 @@ public class DonationService {
     }
 
     public void deleteDonation(Long id) { donationRepository.deleteById(id); }
+
+    public java.util.Optional<DonationDTO> findByDonorAndProject(Long donorId, Long projectId) {
+        return donationRepository.findByDonor_IdAndProject_Id(donorId, projectId)
+                .map(mapper::toDonationDto);
+    }
 }
