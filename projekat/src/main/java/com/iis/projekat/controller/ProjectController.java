@@ -227,4 +227,10 @@ public class ProjectController {
         if (kpi == null) return ResponseEntity.noContent().build();
         return ResponseEntity.ok(kpi);
     }
+
+    @GetMapping("/odobreni")
+    public ResponseEntity<List<ProjectResponseDTO>> odobreniProjekti() {
+        return ResponseEntity.ok(projectService.odobreniProjekti());
+    }
+
 }

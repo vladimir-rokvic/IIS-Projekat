@@ -17,6 +17,9 @@ public class DonationCreateDTO {
     private NotificationChannel notificationChannel;
     private Long donorId;
 
+    private Long projectId;
+
+
     public DonationCreateDTO() {}
 
     public Double getAmount() { return amount; }
@@ -42,4 +45,12 @@ public class DonationCreateDTO {
 
     public Long getDonorId() { return donorId; }
     public void setDonorId(Long donorId) { this.donorId = donorId; }
+
+    public Long getProjectId() {
+        return projectId;
+    }
+
+    public void setProjectId(Long projectId) {
+        this.projectId = projectId;
+    }
 }
