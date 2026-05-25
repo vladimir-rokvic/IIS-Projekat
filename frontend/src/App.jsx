@@ -20,6 +20,9 @@ import DonorProfilePage from "./pages/DonorProfilePage";
 import VolunteerDashboard from "./pages/VolunteerDashboard";
 import ProjectDeniedPage from "./pages/ProjectDeniedPage";
 import ProjectAcceptedPage from "./pages/ProjectAcceptedPage";
+import BeneficiaryHomePage from "./pages/BeneficiaryHomePage";
+import BeneficiaryMyAccountPage from "./pages/BeneficiaryMyAccountPage";
+import BeneficiaryRegisterPage from "./pages/BeneficiaryRegisterPage"
 
 function App() {
 	return (
@@ -44,6 +47,12 @@ function App() {
 						<Route path="campaigns" element={<DonorCampaignsPage />} />
 						<Route path="profile" element={<DonorProfilePage />} />
 					</Route>
+
+					<Route path="/beneficiary" element={<PrivateRoute allowedRoles={["BENEFICIARY"]}><BeneficiaryHomePage /></PrivateRoute>} />
+					<Route path="/beneficiary/profile" element={<PrivateRoute allowedRoles={["BENEFICIARY"]}><BeneficiaryMyAccountPage /></PrivateRoute>} />
+					<Route path="/beneficiary/register" element={<BeneficiaryRegisterPage />}/>
+
+
 					<Route path="/volunteer" element={<PrivateRoute allowedRoles={["VOLUNTEER"]}><VolunteerDashboard /></PrivateRoute>}/>
 					<Route path="*" element={<Navigate to="/login" replace />} />
 					<Route path="/manager" element={<PrivateRoute allowedRoles={["MANAGER"]}><ManagerDashboard /></PrivateRoute>} />
