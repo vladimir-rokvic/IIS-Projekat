@@ -31,7 +31,7 @@ const ProjectDeniedPage = () => {
                 This project has been denied.
             </p>
 
-            {/* ── Basic information ─────────────────────── */}
+            {/* Basic information */}
             <div className="form-section disabled">
                 <div className="form-section-header">
                     <h3>Basic information</h3>
@@ -96,7 +96,7 @@ const ProjectDeniedPage = () => {
                 </div>
             </div>
 
-            {/* ── Additional information ────────────────── */}
+            {/* Additional information */}
             <div className="form-section disabled">
                 <h3 style={{ marginBottom: 16 }}>Additional information</h3>
                 <div className="form-row">
@@ -118,7 +118,7 @@ const ProjectDeniedPage = () => {
                 </div>
             </div>
 
-            {/* ── KPI — disabled ────────────────────────── */}
+            {/* KPI - disabled */}
             <div className="form-section disabled">
                 <h3 style={{ marginBottom: 8 }}>KPI configuration</h3>
                 <p style={{ fontSize: '0.82rem', color: '#666', marginBottom: 16 }}>

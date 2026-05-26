@@ -82,7 +82,7 @@ const ProjectAcceptedPage = () => {
                 This project has been accepted.
             </p>
 
-            {/* ── Basic information — sve disabled ──────── */}
+            {/* Basic information — sve disabled */}
             <div className="form-section disabled">
                 <div className="form-section-header">
                     <h3>Basic information</h3>
@@ -135,7 +135,7 @@ const ProjectAcceptedPage = () => {
                 </div>
             </div>
 
-            {/* ── Additional information — disabled ─────── */}
+            {/* Additional information — disabled*/}
             <div className="form-section disabled">
                 <h3 style={{ marginBottom: 16 }}>Additional information</h3>
                 <div className="form-row">
@@ -157,7 +157,7 @@ const ProjectAcceptedPage = () => {
                 </div>
             </div>
 
-            {/* ── KPI — editabilno ──────────────────────── */}
+            {/* KPI - editabilno */}
             <div className="form-section">
                 <h3 style={{ marginBottom: 8 }}>KPI configuration</h3>
                 <p style={{ fontSize: '0.82rem', color: '#555', marginBottom: 16 }}>

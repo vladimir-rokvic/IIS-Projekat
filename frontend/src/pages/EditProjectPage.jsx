@@ -166,7 +166,7 @@ const EditProjectPage = () => {
                     </div>
                 </div>
 
-                {/* Razlog od menadžera — read-only, prikazan samo ako postoji */}
+                {/* Razlog od menadžera - read-only, prikazan samo ako postoji */}
                 {razlog && (
                     <div className="form-field" style={{ marginTop: 14 }}>
                         <label>Reason from manager</label>
