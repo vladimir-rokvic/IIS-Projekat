@@ -1,0 +1,114 @@
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+body {
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+	background-color: #ffffff;
+}
+
+.register-page {
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: center;
+	height: 100vh;
+	padding-top: 80px;
+}
+
+.org-title {
+	font-size: 2.2rem;
+	font-weight: 700;
+	color: #000000;
+	margin-bottom: 60px;
+	text-align: center;
+}
+
+.box {
+	gap: 10px;
+	width: 320px;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+}
+
+.box h2 {
+	font-size: 1.5rem;
+	font-weight: 700;
+	color: #000000;
+	margin-bottom: 16px;
+	align-self: center;
+}
+
+.form-group {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	width: 100%;
+}
+
+.form-group label {
+	font-size: 0.95rem;
+	font-weight: 500;
+	color: #000000;
+}
+
+.form-group input {
+	width: 100%;
+	padding: 10px 14px;
+	font-size: 0.9rem;
+	color: #9e9e9e;
+	background-color: #d9d9d9;
+	border: 1px solid #9e9e9e;
+	border-radius: 6px;
+	outline: none;
+	transition: border-color 0.2s;
+}
+
+.form-group input::placeholder {
+	color: #888888;
+}
+
+.form-group input:focus {
+	border-color: #4a9db5;
+	background-color: #d8d8d8;
+}
+
+.login-btn {
+	margin-top: 16px;
+	margin-bottom: 16px;
+	width: 160px;
+	padding: 12px 0;
+	align-self: center;
+	background-color: #369FBC;
+	color: #000000;
+	font-size: 1rem;
+	font-weight: 500;
+	border: 1px solid #000000;
+	border-radius: 8px;
+	cursor: pointer;
+	transition: background-color 0.2s, transform 0.1s;
+}
+
+.login-btn:hover {
+	background-color: #2e8aa0;
+}
+
+.login-btn:active {
+	transform: scale(0.98);
+}
+
+.form-group input {
+	color: #000000;
+}
+
+.form-group input::placeholder {
+	color: #9e9e9e;
+}
+
+.error-text {
+	color: #cc0000;
+	font-size: 0.85rem;
+}

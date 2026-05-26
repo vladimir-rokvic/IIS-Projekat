@@ -1,0 +1,67 @@
+.volunteer-select-page {
+    padding: 30px;
+    font-family: sans-serif;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.header h2 {
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.volunteer-list {
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.volunteer-row {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 8px;
+}
+
+.avatar-small {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background-color: #d9d9d9;
+    flex-shrink: 0;
+}
+
+.volunteer-name {
+    width: 150px;
+    font-weight: 500;
+}
+
+.volunteer-address {
+    width: 150px;
+    color: #555;
+    font-size: 14px;
+}
+
+.volunteer-phone {
+    width: 150px;
+    color: #555;
+    font-size: 14px;
+}
+
+.btn-details {
+    margin-left: auto;
+    padding: 6px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    color: black;
+    background-color: #369FBC;
+}

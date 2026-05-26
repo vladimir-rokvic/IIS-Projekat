@@ -6,6 +6,8 @@ import java.time.LocalDate;
 
 @Entity
 @Table(name = "users")
+//I oko ovoga treba da se dogovorimo ali mislim da svakog ovo ne zanima
+@Inheritance(strategy = InheritanceType.JOINED)
 public class User {
 
     @Id
@@ -27,6 +29,9 @@ public class User {
     private LocalDate dateOfBirth;
 
     private String phone;
+
+    @ManyToOne
+    private Address address;
 
     public Long getId() {
         return id;
@@ -82,5 +87,13 @@ public class User {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
     }
 }
