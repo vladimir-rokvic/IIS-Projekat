@@ -95,11 +95,6 @@ const VolunterProfilePage = () => {
 				        <span>No skills added yet</span>
 				    )}
 				</div>
-
-                </div>
-
-                <div className="avatar">
-                    <div className="avatar-circle" />
                 </div>
             </div>
         </div>

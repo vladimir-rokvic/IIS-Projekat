@@ -63,6 +63,14 @@ const ManagerDashboard = () => {
                     </button>
                 </div>
 
+                <div className="dashboard-card" style={{ marginTop: 16 }}>
+                    <h2>Register a volunteer</h2>
+                    <p>Register a new volunteer for the organization</p>
+                    <button className="btn-primary" onClick={registerVolunteerClick}>
+						Register volunteer
+                    </button>
+                </div>
+
             </main>
         </div>
     );

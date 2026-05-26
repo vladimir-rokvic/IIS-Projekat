@@ -10,8 +10,13 @@ public class EmailService {
     @Autowired
     private JavaMailSender mailSender;
 
-    //TODO: ako je ikada potrebno
-    private void sendMail(String sendTo, String subject, String body) {}
+    public void sendMail(String sendTo, String subject, String body) {
+        SimpleMailMessage mailMessage = new SimpleMailMessage();
+        mailMessage.setTo(sendTo);
+        mailMessage.setSubject(subject);
+        mailMessage.setText(body);
+        mailSender.send(mailMessage);
+    }
 
     public void sendVolunteerWelcomeMail(String sendTo, String name, String surname){
         SimpleMailMessage mailMessage = new SimpleMailMessage();
