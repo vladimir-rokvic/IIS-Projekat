@@ -1,6 +1,8 @@
 .sidebar-menu {
 	width: 250px;
-	min-height: 100vh;
+	height: 100vh;
+	min-height: 0;
+	flex-shrink: 0;
 	background: rgba(255, 255, 255, 0.9);
 	border-right: 1px solid rgba(31, 41, 55, 0.14);
 	display: flex;
