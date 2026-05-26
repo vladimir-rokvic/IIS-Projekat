@@ -69,6 +69,21 @@ public class TaskService {
         return new TaskDTO(t);
     }
 
+    public List<TaskDTO> getTasksForVolunteer(Long volunteerId) {
+        List<Task> tasks = taskRepository.findAllByVolunteerId(volunteerId);
+
+        List<TaskDTO> ret = new ArrayList<>();
+        for(Task t: tasks){
+            ret.add(new TaskDTO(t));
+        }
+
+        return ret;
+    }
+
+    public Task findById(Long id) {
+        return taskRepository.findById(id).orElse(null);
+    }
+
     public Task updateTaskById(Long id, UpdateTaskDTO dto) {
         Task t = taskRepository.findById(id).orElse(null);
         if(t == null) return null;

@@ -60,7 +60,7 @@ const CreateTaskPage = () => {
     };
 
 	const handleAddVolunteer = () => {
-		navigate('/coord/createTask/addVolunteer');
+		navigate('/coord/createTask/addVolunteer', {state: {from: 'create'}});
 	}
 
     return (

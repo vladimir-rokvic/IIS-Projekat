@@ -225,11 +225,6 @@ const VolunteerUpdatePage = () => {
 				    </div>
 				</div>
 				</div>
-
-                <div className="avatar">
-                    <div className="avatar-circle" />
-                    <p>Upload photo</p>
-                </div>
             </div>
         </div>
     );

@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import api from "../api/axios";
 import "./VolunteerSelectPage.css";
 
 const VolunteerSelectPage = () => {
     const [volunteers, setVolunteers] = useState([]);
     const navigate = useNavigate();
+
+	const location = useLocation();
 
     useEffect(() => {
         const fetchVolunteers = async () => {
@@ -24,7 +26,11 @@ const VolunteerSelectPage = () => {
 	}
 
 	const handleSelect = (id) => {
-		navigate('/coord/createTask', { state: {v_id: id} });
+		if(location.state?.from === "edit") {
+			navigate(`/coord/tasksEdit/${location.state?.taskId}`, { state: {v_id: id} });
+		} else {
+			navigate('/coord/createTask', { state: {v_id: id} });
+		}
 	}
 
     return (

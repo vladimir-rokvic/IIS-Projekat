@@ -1,6 +1,6 @@
 import api from "../api/axios";
 import { useEffect, useState, useRef } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import "./TaskDetailsEdit.css";
 
 const TaskDetailsEdit = () => {
@@ -10,6 +10,9 @@ const TaskDetailsEdit = () => {
     const [skills, setSkills] = useState([]);
     const [skill, setSkill] = useState("");
     const navigate = useNavigate();
+
+	const location = useLocation();
+	const v_id = location.state?.v_id;
 
     const taskName = useRef();
     const description = useRef();
@@ -21,13 +24,18 @@ const TaskDetailsEdit = () => {
 				setTask(res.data);
 				console.log(res.data);
                 setSkills(res.data.requiredSkills ? [...res.data.requiredSkills] : []);
-                setVolunteer(res.data.volunteer);
+				if(v_id != null) {
+					const v = await api.get(`volunteer/${v_id}`);
+					setVolunteer(v.data);
+				} else {
+                	setVolunteer(res.data.volunteer);
+				}
 			} catch (err){
 				console.log(err);
 			}
 		};
 		fetchTask();
-	}, []);
+	}, [v_id]);
 
 	const addSkill = () => {
         if (!skill.trim()) return;
@@ -48,7 +56,7 @@ const TaskDetailsEdit = () => {
         };
         try {
             await api.put(`/tasks/${id}`, body);
-            navigate(-1);
+            navigate('/tasks');
         } catch (err) {
             console.log(err);
         }
@@ -79,7 +87,7 @@ const TaskDetailsEdit = () => {
                         <div className="volunteer-name-box">{volunteer.name} {volunteer.surname}</div>
                         <button
                             className="btn-change"
-                            onClick={() => navigate('/coord/createTask/addVolunteer', { state: { taskId: id } })}
+                            onClick={() => navigate('/coord/createTask/addVolunteer', { state: {from: "edit", taskId: id } })}
                         >Change</button>
                         <button
                             className="btn-details"
