@@ -3,6 +3,7 @@ package com.iis.projekat.service;
 import com.iis.projekat.dto.CreateTaskDTO;
 import com.iis.projekat.dto.SkillDTO;
 import com.iis.projekat.dto.TaskDTO;
+import com.iis.projekat.dto.UpdateTaskDTO;
 import com.iis.projekat.model.Skill;
 import com.iis.projekat.model.Task;
 import com.iis.projekat.model.Volunteer;
@@ -12,10 +13,7 @@ import com.iis.projekat.repository.VolunteerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class TaskService {
@@ -63,5 +61,40 @@ public class TaskService {
         }
 
         return ret;
+    }
+
+    public TaskDTO getById(Long id) {
+        Task t = taskRepository.findById(id).orElse(null);
+        if(t == null) return null;
+        return new TaskDTO(t);
+    }
+
+    public Task updateTaskById(Long id, UpdateTaskDTO dto) {
+        Task t = taskRepository.findById(id).orElse(null);
+        if(t == null) return null;
+        t.setName(dto.getName());
+        t.setDescription(dto.getDescription());
+        if(dto.getVolunteerId() != null) {
+            t.setVolunteer(volunteerRepository.findById(dto.getVolunteerId()).orElse(null));
+        } else {
+            t.setVolunteer(null);
+        }
+
+        Set<Skill> skills = new HashSet<>();
+        for(SkillDTO skillDTO: dto.getRequiredSkills()){
+            Skill s = skillRepository.findByName(skillDTO.getName()).orElse(null);
+            if(s == null){
+                Skill nSkill = new Skill();
+                nSkill.setName(skillDTO.getName());
+                nSkill.setDescription(skillDTO.getDesc());
+                skills.add(skillRepository.save(nSkill));
+            } else {
+                skills.add(s);
+            }
+        }
+
+        t.setRequiredSkills(skills);
+        taskRepository.save(t);
+        return t;
     }
 }

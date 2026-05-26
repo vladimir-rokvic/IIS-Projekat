@@ -32,6 +32,8 @@ import BeneficiaryRegisterPage from "./pages/BeneficiaryRegisterPage";
 import DonorProjectsPage from "./pages/DonorProjectsPage";
 import DonorProjectDetailPage from "./pages/DonorProjectDetailPage";
 import DonorProjectFullDetailPage from "./pages/DonorProjectFullDetailPage";
+import TaskDetailsPage from "./pages/TaskDetailsPage";
+import TaskDetailsEdit from "./pages/TaskDetailsEdit";
 
 function App() {
 	return (
@@ -73,6 +75,8 @@ function App() {
 					<Route path="/coord/createTask/addVolunteer" element={<PrivateRoute allowedRoles={["COORDINATOR"]}><VolunteerSelectPage /></PrivateRoute>}/>
 					<Route path="/volunteer/details/:id" element={<PrivateRoute allowedRoles={["COORDINATOR"]}><VolunteerDetailsPage /></PrivateRoute>}/>
 					<Route path="/tasks" element={<PrivateRoute allowedRoles={["COORDINATOR"]}><TasksPage /></PrivateRoute>}/>
+					<Route path="/coord/tasks/:id" element={<PrivateRoute allowedRoles={["COORDINATOR"]}><TaskDetailsPage /></PrivateRoute>}/>
+					<Route path="/coord/tasksEdit/:id" element={<PrivateRoute allowedRoles={["COORDINATOR"]}><TaskDetailsEdit /></PrivateRoute>}/>
 
 					<Route path="*" element={<Navigate to="/login" replace />} />
 				</Routes>
