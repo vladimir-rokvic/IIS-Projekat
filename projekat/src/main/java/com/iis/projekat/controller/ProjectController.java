@@ -43,19 +43,7 @@ public class ProjectController {
                 .orElseThrow(() -> new SecurityException("Korisnik nije zaposleni."));
     }
 
-    /**
-     * Kreiranje projekta.
-     * Šalje se kao multipart/form-data jer ima i fajl.
-     *
-     * Primjer (Postman form-data):
-     *   naziv=Test projekat
-     *   opis=Opis projekta
-     *   ciljevi=Ciljevi projekta
-     *   rokPocetak=2025-09-01
-     *   rokKraj=2025-12-31
-     *   dokument=(file)
-     *   // ostala opciona polja po potrebi
-     */
+
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ProjectResponseDTO> kreirajProjekat(
             @AuthenticationPrincipal UserDetails userDetails,
@@ -119,7 +107,6 @@ public class ProjectController {
     }
 
 
-    /** Editovanje tekstualnih polja i pomoćnih koordinatora. */
     @PutMapping("/{id}")
     public ResponseEntity<ProjectResponseDTO> editujProjekat(
             @PathVariable Long id,
@@ -143,7 +130,6 @@ public class ProjectController {
     }
 
 
-    /** Postavljanje liste pomoćnih koordinatora. */
     @PutMapping("/{id}/pomocni-koordinatori")
     public ResponseEntity<ProjectResponseDTO> postaviPomocne(
             @PathVariable Long id,
@@ -182,7 +168,6 @@ public class ProjectController {
 
 
     /**
-     * Lista svih koordinatora u sistemu.
      * Frontend je koristi za odabir pomoćnih koordinatora.
      */
     @GetMapping("/koordinatori")
@@ -199,11 +184,6 @@ public class ProjectController {
         return ResponseEntity.ok(result);
     }
 
-    /**
-     * Menadžer donosi odluku o projektu.
-     * Body: { "status": "ODOBREN" | "NEOPHODNA_IZMENA" | "ODBIJEN", "razlog": "..." }
-     * razlog je obavezan za NEOPHODNA_IZMENA i ODBIJEN.
-     */
     @PutMapping("/{id}/odluka")
     public ResponseEntity<ProjectResponseDTO> odluciOProjektu(
             @PathVariable Long id,

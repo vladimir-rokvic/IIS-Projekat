@@ -104,7 +104,7 @@ const CreateProjectPage = () => {
             <h1 className="create-title">Create a new project</h1>
             <p className="create-subtitle">Fill in the required information to create a new project.</p>
 
-            {/* ── Basic information ─────────────────────────── */}
+            {/* Basic information */}
             <div className="form-section">
                 <div className="form-section-header">
                     <h3>Basic information</h3>
@@ -196,7 +196,7 @@ const CreateProjectPage = () => {
                 </div>
             </div>
 
-            {/* ── Additional information ────────────────────── */}
+            {/* Additional information */}
             <div className="form-section">
                 <h3 style={{ marginBottom: 16 }}>Additional information</h3>
 
@@ -249,7 +249,7 @@ const CreateProjectPage = () => {
                 </div>
             </div>
 
-            {/* ── KPI (disabled — tek nakon odobrenja) ─────── */}
+            {/* KPI (disabled — tek nakon odobrenja) */}
             <div className="form-section disabled">
                 <h3 style={{ marginBottom: 8 }}>KPI configuration</h3>
                 <p style={{ fontSize: '0.82rem', color: '#666', marginBottom: 16 }}>
@@ -271,7 +271,7 @@ const CreateProjectPage = () => {
                 </div>
             </div>
 
-            {/* ── Actions ──────────────────────────────────── */}
+            {/* Actions */}
             {error && <p className="error-text" style={{ marginBottom: 8 }}>{error}</p>}
             <div className="form-actions">
                 <button className="btn-cancel" onClick={() => navigate('/projects')}>

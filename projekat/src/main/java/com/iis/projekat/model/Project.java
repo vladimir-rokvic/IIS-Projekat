@@ -44,8 +44,7 @@ public class Project {
     @Column(nullable = false)
     private ProjectStatus status = ProjectStatus.U_PRIPREMI;
 
-    // Dokument
-    // Čuvamo ime fajla i sadržaj kao bytes u bazi.
+    // Dokument - čuvamo ime fajla i sadržaj kao bytes u bazi.
     private String dokumentIme;
 
     @Column(name = "dokument_sadrzaj", columnDefinition = "BYTEA")

@@ -82,7 +82,7 @@ const ManagerProjectDetailPage = () => {
 
     return (
         <div className="create-page">
-            {/* ── Modali ─────────────────────────────────── */}
+            {/* Modali */}
             {showSuccessModal && (
                 <div className="modal-overlay">
                     <div className="modal-box">
@@ -111,7 +111,7 @@ const ManagerProjectDetailPage = () => {
             <h1 className="create-title">Project information</h1>
             <p className="create-subtitle">See all the information about selected project</p>
 
-            {/* ── Basic information ─────────────────────── */}
+            {/* Basic information */}
             <div className="form-section">
                 <div className="form-section-header">
                     <h3>Basic information</h3>
@@ -168,7 +168,7 @@ const ManagerProjectDetailPage = () => {
                     </div>
                 </div>
 
-                {/* Razlog — pojavljuje se samo kad je odabran NEOPHODNA_IZMENA ili ODBIJEN */}
+                {/* Razlog - pojavljuje se samo kad je odabran NEOPHODNA_IZMENA ili ODBIJEN */}
                 {(needsReason || (project.razlog && !canDecide)) && (
                     <div className="form-field" style={{ marginTop: 14 }}>
                         <label>Reason</label>
@@ -195,7 +195,7 @@ const ManagerProjectDetailPage = () => {
                 </div>
             </div>
 
-            {/* ── Additional information ────────────────── */}
+            {/* Additional information */}
             <div className="form-section">
                 <h3 style={{ marginBottom: 16 }}>Additional information</h3>
                 <div className="form-row">
@@ -225,7 +225,7 @@ const ManagerProjectDetailPage = () => {
                 </div>
             </div>
 
-            {/* ── Actions ──────────────────────────────── */}
+            {/* Actions */}
             {error && <p className="error-text" style={{ marginBottom: 8 }}>{error}</p>}
             {canDecide && (
                 <div className="form-actions">

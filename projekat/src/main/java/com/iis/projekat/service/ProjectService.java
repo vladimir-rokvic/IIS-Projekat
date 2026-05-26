@@ -22,8 +22,6 @@ public class ProjectService {
 
     private final KpiRepository kpiRepository;
 
-
-
     public ProjectService(ProjectRepository projectRepository,
                           EmployeeRepository employeeRepository,
                           KpiRepository kpiRepository) {
@@ -32,21 +30,6 @@ public class ProjectService {
         this.kpiRepository = kpiRepository;
     }
 
-
-    /**
-     * Kreira novi projekat. Poziva ga koordinator.
-     *
-     * @param koordinatorId  ID koordinatora koji kreira projekat
-     * @param naziv          obavezno
-     * @param opis           obavezno
-     * @param ciljevi        obavezno
-     * @param rokPocetak     obavezno
-     * @param rokKraj        obavezno
-     * @param ciljnaGrupa    opciono
-     * @param geoLokacija    opciono
-     * @param finansiranje   opciono
-     * @param dokument       obavezno (multipart fajl)
-     */
     public ProjectResponseDTO kreirajProjekat(
             Long koordinatorId,
             String naziv,
@@ -182,9 +165,6 @@ public class ProjectService {
         return ProjectResponseDTO.from(projectRepository.save(p));
     }
 
-    /**
-     * Svi projekti — menadžer vidi sve.
-     */
     public List<ProjectResponseDTO> sviProjekti() {
         return projectRepository.findAll()
                 .stream()
@@ -193,8 +173,7 @@ public class ProjectService {
     }
 
     /**
-     * Menadžer donosi odluku o projektu.
-     * Dozvoljeno samo za projekte u statusu SPREMAN_ZA_ODOBRENJE.
+     * Menadžer donosi odluku o projektu. Dozvoljeno samo za projekte u statusu SPREMAN_ZA_ODOBRENJE.
      */
     public ProjectResponseDTO odluciOProjektu(Long projektId, ManagerReviewRequest req) {
         Project p = nadjiProjekat(projektId);
@@ -232,7 +211,6 @@ public class ProjectService {
                 .collect(Collectors.toList());
     }
 
-    /** Jedan projekat po ID-u. */
     public ProjectResponseDTO getProjekat(Long projektId) {
         return ProjectResponseDTO.from(nadjiProjekat(projektId));
     }
@@ -242,14 +220,14 @@ public class ProjectService {
         return nadjiProjekat(projektId);
     }
 
-    /** Svi koordinatori u sistemu — za odabir pomoćnih. */
+    /** Svi koordinatori u sistemu (za odabir pomoćnih) */
     public List<Employee> sviKoordinatori() {
         return employeeRepository.findAll().stream()
                 .filter(e -> e.getEmployeeType() == EmployeeType.COORDINATOR)
                 .collect(Collectors.toList());
     }
 
-    // ── Privatne pomoćne metode ──────────────────────────────────────
+    // Privatne pomoćne metode
 
     private Project nadjiProjekat(Long id) {
         return projectRepository.findById(id)
