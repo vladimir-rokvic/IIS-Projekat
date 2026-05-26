@@ -47,6 +47,14 @@ const ManagerDashboard = () => {
                         See all funding applications
                     </button>
                 </div>
+
+                <div className="dashboard-card" style={{ marginTop: 16 }}>
+                    <h2>Create new distribution location</h2>
+                    <p>Create a new distribution location so that it may be used for future distributions.</p>
+                    <button className="btn-primary" onClick={() => navigate('/manager/distributionlocation')}>
+                        Create
+                    </button>
+                </div>
             </main>
         </div>
     );
