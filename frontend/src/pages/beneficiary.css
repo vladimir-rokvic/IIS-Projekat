@@ -325,3 +325,98 @@
   color: #c0392b;
   text-align: center;
 }
+
+.pkg-card {
+  max-width: 760px;
+  margin: 30px auto;
+  position: relative;
+  padding-top: 28px;
+}
+ 
+.pkg-back {
+  position: absolute;
+  top: 28px;
+  left: 44px;
+}
+ 
+.pkg-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #111;
+  text-align: center;
+  margin-bottom: 24px;
+}
+ 
+/* bordered inner box */
+.pkg-box {
+  border: 1.5px solid #ccc;
+  border-radius: 8px;
+  padding: 28px 32px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+ 
+/* label + input row */
+.pkg-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+ 
+.pkg-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #222;
+  width: 110px;
+  flex-shrink: 0;
+}
+ 
+.pkg-input-wide { width: 260px; }
+.pkg-input-mid  { width: 200px; }
+.pkg-input-sm   { width: 120px; }
+ 
+/* separator between item groups */
+.pkg-item-group {
+  border-top: 1px dashed #e0e0e0;
+  padding-top: 12px;
+  margin-top: 4px;
+}
+.pkg-item-group:first-of-type {
+  border-top: none;
+  padding-top: 0;
+  margin-top: 0;
+}
+ 
+/* remove item button */
+.pkg-remove {
+  background: none;
+  border: none;
+  color: #aaa;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 4px;
+  line-height: 1;
+  transition: color 0.15s;
+}
+.pkg-remove:hover { color: #c0392b; }
+ 
+/* new product button */
+.pkg-new-product {
+  margin-top: 8px;
+  align-self: flex-start;
+}
+ 
+/* save row */
+.pkg-save-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 24px;
+}
+ 
+.pkg-save {
+  padding: 10px 36px;
+}
+ 

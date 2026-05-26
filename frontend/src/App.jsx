@@ -42,6 +42,7 @@ import TaskDetailsPage from "./pages/TaskDetailsPage";
 import TaskDetailsEdit from "./pages/TaskDetailsEdit";
 
 import NewDistributionLocation from "./pages/DistributionLocationPage";
+import CreatePackage from "./pages/CreatePackage";
 
 function App() {
 	return (
@@ -80,7 +81,7 @@ function App() {
 					<Route path="/beneficiary/profile" element={<PrivateRoute allowedRoles={["BENEFICIARY"]}><BeneficiaryMyAccountPage /></PrivateRoute>} />
 					<Route path="/beneficiary/register" element={<BeneficiaryRegisterPage />}/>
 					<Route path="/manager/distributionlocation" element={<PrivateRoute allowedRoles={["MANAGER"]}><NewDistributionLocation /></PrivateRoute>}/>
-
+					<Route path="/manager/createpackage" element={<PrivateRoute allowedRoles={["MANAGER"]}><CreatePackage /></PrivateRoute>}/>
 
 					<Route path="/volunteer" element={<PrivateRoute allowedRoles={["VOLUNTEER"]}><VolunteerDashboard /></PrivateRoute>}/>
 					<Route path="/manager/projects" element={<PrivateRoute allowedRoles={["MANAGER"]}><ManagerProjectsPage /></PrivateRoute>} />
