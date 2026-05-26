@@ -5,6 +5,7 @@ import com.iis.projekat.model.*;
 import com.iis.projekat.repository.EmployeeRepository;
 import com.iis.projekat.repository.KpiRepository;
 import com.iis.projekat.repository.ProjectRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,6 +21,8 @@ public class ProjectService {
     private final EmployeeRepository employeeRepository;
 
     private final KpiRepository kpiRepository;
+
+
 
     public ProjectService(ProjectRepository projectRepository,
                           EmployeeRepository employeeRepository,
@@ -303,4 +306,12 @@ public class ProjectService {
                 .map(KpiResponseDTO::from)
                 .orElse(null);
     }
+
+    public List<ProjectResponseDTO> odobreniProjekti() {
+        return projectRepository.findByStatus(ProjectStatus.ODOBREN)
+                .stream()
+                .map(ProjectResponseDTO::from)
+                .collect(Collectors.toList());
+    }
+
 }

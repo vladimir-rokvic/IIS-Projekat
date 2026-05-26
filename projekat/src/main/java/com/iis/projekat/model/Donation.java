@@ -52,6 +52,10 @@ public class Donation {
     @JoinColumn(name = "donor_id")
     private Donor donor;
 
+    @ManyToOne
+    @JoinColumn(name = "project_id")
+    private Project project;
+
     public Long getId() {
         return id;
     }
@@ -122,5 +126,13 @@ public class Donation {
 
     public void setDonor(Donor donor) {
         this.donor = donor;
+    }
+
+    public Project getProject() {
+        return project;
+    }
+
+    public void setProject(Project project) {
+        this.project = project;
     }
 }

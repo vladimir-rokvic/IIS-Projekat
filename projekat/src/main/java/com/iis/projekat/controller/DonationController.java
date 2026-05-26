@@ -45,4 +45,13 @@ public class DonationController {
         donationService.deleteDonation(id);
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/donor/{donorId}/project/{projectId}")
+    public ResponseEntity<DonationDTO> getByDonorAndProject(
+            @PathVariable Long donorId,
+            @PathVariable Long projectId) {
+        return donationService.findByDonorAndProject(donorId, projectId)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.noContent().build());
+    }
 }

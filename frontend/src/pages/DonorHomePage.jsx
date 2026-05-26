@@ -1,4 +1,5 @@
 import "./DonorDashboard.css";
+import { useNavigate } from "react-router-dom";
 
 const stats = [
 	{ label: "Total donated", value: "6,400$" },
@@ -16,9 +17,12 @@ const projects = [
 const donorBars = [72, 58, 81];
 
 const DonorHomePage = () => {
+	const navigate = useNavigate();
 	return (
 		<div className="donor-content">
-			<h1 className="donor-page-title">Welcome back!</h1>
+			<div style={{display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 28}}>
+				<h1 className="donor-page-title" style={{marginBottom: 0}}>Welcome back!</h1>
+			</div>
 
 			<section className="donor-stats-grid" aria-label="Donor summary stats">
 				{stats.map((stat) => (

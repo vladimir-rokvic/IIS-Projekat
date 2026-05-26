@@ -22,11 +22,16 @@ import ProjectDeniedPage from "./pages/ProjectDeniedPage";
 import ProjectAcceptedPage from "./pages/ProjectAcceptedPage";
 import BeneficiaryHomePage from "./pages/BeneficiaryHomePage";
 import BeneficiaryMyAccountPage from "./pages/BeneficiaryMyAccountPage";
-import BeneficiaryRegisterPage from "./pages/BeneficiaryRegisterPage"
+
 import CreateTaskPage from "./pages/CreateTaskPage";
 import VolunteerSelectPage from "./pages/VolunteerSelectPage";
 import VolunteerDetailsPage from "./pages/VolunteerDetailsPage";
 import TasksPage from "./pages/TasksPage";
+
+import BeneficiaryRegisterPage from "./pages/BeneficiaryRegisterPage";
+import DonorProjectsPage from "./pages/DonorProjectsPage";
+import DonorProjectDetailPage from "./pages/DonorProjectDetailPage";
+import DonorProjectFullDetailPage from "./pages/DonorProjectFullDetailPage";
 
 function App() {
 	return (
@@ -50,6 +55,9 @@ function App() {
 						<Route index element={<DonorHomePage />} />
 						<Route path="campaigns" element={<DonorCampaignsPage />} />
 						<Route path="profile" element={<DonorProfilePage />} />
+						<Route path="projects" element={<DonorProjectsPage />} />
+						<Route path="projects/:id" element={<DonorProjectDetailPage />} />
+						<Route path="projects/:id/details" element={<DonorProjectFullDetailPage />} />
 					</Route>
 
 					<Route path="/beneficiary" element={<PrivateRoute allowedRoles={["BENEFICIARY"]}><BeneficiaryHomePage /></PrivateRoute>} />
@@ -58,8 +66,6 @@ function App() {
 
 
 					<Route path="/volunteer" element={<PrivateRoute allowedRoles={["VOLUNTEER"]}><VolunteerDashboard /></PrivateRoute>}/>
-					<Route path="*" element={<Navigate to="/login" replace />} />
-					<Route path="/manager" element={<PrivateRoute allowedRoles={["MANAGER"]}><ManagerDashboard /></PrivateRoute>} />
 					<Route path="/manager/projects" element={<PrivateRoute allowedRoles={["MANAGER"]}><ManagerProjectsPage /></PrivateRoute>} />
 					<Route path="/manager/projects/:id" element={<PrivateRoute allowedRoles={["MANAGER"]}><ManagerProjectDetailPage /></PrivateRoute>} />
 
@@ -67,6 +73,8 @@ function App() {
 					<Route path="/coord/createTask/addVolunteer" element={<PrivateRoute allowedRoles={["COORDINATOR"]}><VolunteerSelectPage /></PrivateRoute>}/>
 					<Route path="/volunteer/details/:id" element={<PrivateRoute allowedRoles={["COORDINATOR"]}><VolunteerDetailsPage /></PrivateRoute>}/>
 					<Route path="/tasks" element={<PrivateRoute allowedRoles={["COORDINATOR"]}><TasksPage /></PrivateRoute>}/>
+
+					<Route path="*" element={<Navigate to="/login" replace />} />
 				</Routes>
 			</BrowserRouter>
 		</AuthProvider>
