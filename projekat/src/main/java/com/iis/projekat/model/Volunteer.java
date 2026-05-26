@@ -10,6 +10,9 @@ public class Volunteer extends User {
     @OneToMany(cascade = CascadeType.ALL)
     private Set<Skill> skills;
 
+    @OneToMany(mappedBy = "volunteer")
+    private Set<Task> tasks;
+
     private String bio;
 
     public Volunteer() {}

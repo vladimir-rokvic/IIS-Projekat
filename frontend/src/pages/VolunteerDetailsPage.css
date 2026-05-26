@@ -1,0 +1,105 @@
+.volunteer-details-page {
+    padding: 30px;
+    font-family: sans-serif;
+}
+
+.header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    margin-bottom: 30px;
+}
+
+.header h2 {
+    font-weight: bold;
+}
+
+.content {
+    display: flex;
+    justify-content: space-between;
+}
+
+.left {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    flex: 1;
+}
+
+.row {
+    display: flex;
+    gap: 20px;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.field label {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.value-box {
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 14px;
+    width: 220px;
+    min-height: 32px;
+    color: #333;
+    background-color: white;
+}
+
+.bio-box {
+    width: 440px;
+    min-height: 80px;
+}
+
+.field input[type="date"] {
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 14px;
+    width: 150px;
+    background-color: white;
+}
+
+.skills-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 10px;
+}
+
+.skill-entry {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.skill-name {
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.skill-desc {
+    font-size: 13px;
+    color: #555;
+}
+
+.avatar {
+    display: flex;
+    align-items: flex-start;
+    padding-left: 40px;
+}
+
+.avatar-circle {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background-color: #d9d9d9;
+}

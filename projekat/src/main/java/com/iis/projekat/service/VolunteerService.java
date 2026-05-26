@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -120,15 +122,20 @@ public class VolunteerService {
         return true;
     }
 
+    public List<VolunteerDTO> getAll() {
+        List<VolunteerDTO> ret = new ArrayList<>();
+        for(Volunteer v: volunteerRepository.findAll()) {
+            ret.add(new VolunteerDTO(v));
+        }
+        return ret;
+    }
+
     public VolunteerDTO getVolunteerById(Long id) {
         Volunteer v = volunteerRepository.findById(id).orElseThrow();
         return new VolunteerDTO(v);
     }
 
-    //TODO
     public void deleteVolunteer(Long id) {
-        return;
+        volunteerRepository.delete(volunteerRepository.getReferenceById(id));
     }
-
-
 }
