@@ -1,0 +1,168 @@
+.create-task-page {
+    padding: 30px;
+    font-family: sans-serif;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.task-name-input {
+    font-size: 24px;
+    font-weight: bold;
+    background-color: #d9d9d9;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    width: 300px;
+}
+
+.header-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-save {
+    padding: 6px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    color: black;
+    background-color: #369FBC;
+}
+
+.btn-add-volunteer {
+	width: fit-content;
+    padding: 6px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    color: black;
+    background-color: #369FBC;
+}
+
+.volunteer-section {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.volunteer-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.avatar-small {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background-color: #d9d9d9;
+}
+
+.volunteer-input {
+    background-color: #d9d9d9;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 16px;
+    width: 250px;
+}
+
+.description-input {
+    background-color: #d9d9d9;
+    border: none;
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 14px;
+    height: 120px;
+    resize: none;
+    width: 350px;
+}
+
+.date-row {
+    display: flex;
+    gap: 20px;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.field label {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.field input {
+    background-color: #d9d9d9;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 10px;
+}
+
+.skills-section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.group-label {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.skills-input-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.skills-input-row input {
+    background-color: #d9d9d9;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 14px;
+}
+
+.skills-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.skill-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background-color: #d9d9d9;
+    border-radius: 20px;
+    padding: 4px 10px;
+    font-size: 14px;
+}
+
+.btn-remove {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    color: #555;
+}
+
+.volunteer-placeholder {
+    font-size: 14px;
+    color: #aaa;
+}
+
+.volunteer-name {
+    font-size: 14px;
+    font-weight: 500;
+}

@@ -2,19 +2,28 @@ package com.iis.projekat.model;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
+import java.util.Set;
+
 @Entity
-public class Skill {
+public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private String description;
 
-    @ManyToOne
-    private Volunteer volunteer;
+    @OneToMany(cascade = CascadeType.ALL)
+    private Set<Skill> requiredSkills;
 
     @ManyToOne
-    private Task task;
+    @JoinColumn(name = "volunteer_id")
+    private Volunteer volunteer;
+
+    private LocalDate startDate;
+    private LocalDate endDate;
+
+    public Task() {}
 
     public Long getId() {
         return id;
@@ -40,6 +49,14 @@ public class Skill {
         this.description = description;
     }
 
+    public Set<Skill> getRequiredSkills() {
+        return requiredSkills;
+    }
+
+    public void setRequiredSkills(Set<Skill> requiredSkills) {
+        this.requiredSkills = requiredSkills;
+    }
+
     public Volunteer getVolunteer() {
         return volunteer;
     }
@@ -48,11 +65,19 @@ public class Skill {
         this.volunteer = volunteer;
     }
 
-    public Task getTask() {
-        return task;
+    public LocalDate getStartDate() {
+        return startDate;
     }
 
-    public void setTask(Task task) {
-        this.task = task;
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
+    }
+
+    public LocalDate getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
     }
 }

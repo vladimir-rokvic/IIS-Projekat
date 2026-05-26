@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/volunteer")
 public class VolunteerController {
@@ -42,9 +44,9 @@ public class VolunteerController {
         return ResponseEntity.ok("Alls good");
     }
 
-    @GetMapping("/")
-    public ResponseEntity<VolunteerDTO> getVolunteerProfile() {
-        return null;
+    @GetMapping
+    public ResponseEntity<List<VolunteerDTO>> getAll() {
+        return ResponseEntity.ok(volunteerService.getAll());
     }
 
     @GetMapping("/{id}")

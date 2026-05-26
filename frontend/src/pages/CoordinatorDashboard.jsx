@@ -32,6 +32,17 @@ const CoordinatorDashboard = () => {
                         See all projects
                     </button>
                 </div>
+				<br />
+                <div className="dashboard-card">
+                    <h2>See tasks</h2>
+                    <p>See a full list of all tasks outside the projects in this organization.</p>
+                    <button
+                        className="btn-primary"
+                        onClick={() => navigate('/tasks')}
+                    >
+                        See all tasks
+                    </button>
+                </div>
             </main>
         </div>
     );
