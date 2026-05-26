@@ -17,6 +17,11 @@ import DonorDashboardPage from "./pages/DonorDashboardPage";
 import DonorHomePage from "./pages/DonorHomePage";
 import DonorCampaignsPage from "./pages/DonorCampaignsPage";
 import DonorProfilePage from "./pages/DonorProfilePage";
+import CampaignCoordinatorDashboard from "./pages/CampaignCoordinatorDashboard";
+import CampaignCoordinatorHomePage from "./pages/CampaignCoordinatorHomePage";
+import CampaignCoordinatorAllCampaignsPage from "./pages/CampaignCoordinatorAllCampaignsPage";
+import CampaignCoordinatorCreateCampaignPage from "./pages/CampaignCoordinatorCreateCampaignPage";
+import CampaignCoordinatorStatisticsPage from "./pages/CampaignCoordinatorStatisticsPage";
 
 function App() {
 	return (
@@ -31,6 +36,12 @@ function App() {
 					<Route path="/projects/:id/edit" element={<PrivateRoute allowedRoles={["COORDINATOR"]}><EditProjectPage /></PrivateRoute>} />
 					<Route path="/manager" element={<PrivateRoute allowedRoles={["MANAGER"]}><ManagerDashboard /></PrivateRoute>} />
 					<Route path="/manager/registerVolunteer" element={<PrivateRoute allowedRoles={["MANAGER"]}><RegisterVolunteerPage /></PrivateRoute>} />
+					<Route path="/campaign-coordinator" element={<PrivateRoute allowedRoles={["CAMPAIGN_COORDINATOR"]}><CampaignCoordinatorDashboard /></PrivateRoute>}>
+						<Route index element={<CampaignCoordinatorHomePage />} />
+						<Route path="all-campaigns" element={<CampaignCoordinatorAllCampaignsPage />} />
+						<Route path="create-campaign" element={<CampaignCoordinatorCreateCampaignPage />} />
+						<Route path="statistics" element={<CampaignCoordinatorStatisticsPage />} />
+					</Route>
 					<Route path="/profile" element={<PrivateRoute><UserProfilePage /></PrivateRoute>}/>
 					<Route path="/volunteer/update" element={<PrivateRoute><VolunteerUpdatePage /></PrivateRoute>}/>
 					<Route path="/volunteer" />

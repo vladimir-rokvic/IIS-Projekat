@@ -13,6 +13,7 @@ const PrivateRoute = ({ children, allowedRoles }) => {
     if (allowedRoles && !allowedRoles.includes(user.role)) {
         // Ulogovan ali nema pravo — šalje na svoju početnu stranicu
         if (user.role === "MANAGER") return <Navigate to="/manager" replace />;
+        if (user.role === "CAMPAIGN_COORDINATOR") return <Navigate to="/campaign-coordinator" replace />;
         if (user.role === "DONOR") return <Navigate to="/donor" replace />;
         return <Navigate to="/" replace />;
     }

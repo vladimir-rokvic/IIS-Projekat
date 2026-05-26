@@ -101,6 +101,15 @@ public class ProjectController {
         return ResponseEntity.ok(projectService.sviProjekti());
     }
 
+    /**
+     * Lista svih projekata za dropdownove i ostale selektore.
+     * Namjerno je read-only i ne ograničava se na menadžera.
+     */
+    @GetMapping("/sve")
+    public ResponseEntity<List<ProjectResponseDTO>> sviProjektiZaOdabir() {
+        return ResponseEntity.ok(projectService.sviProjekti());
+    }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<ProjectResponseDTO> getProjekat(@PathVariable Long id) {
