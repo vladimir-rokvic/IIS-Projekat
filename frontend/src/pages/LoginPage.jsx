@@ -23,6 +23,8 @@ const LoginPage = () => {
 			else if (role === "CAMPAIGN_COORDINATOR") navigate('/campaign-coordinator');
 			else if (role === "VOLUNTEER") navigate('/volunteer');
 			else if (role === "DONOR") navigate('/donor');
+			else if (role === "VOLUNTEER") navigate('/volunteer');
+			else if (role === "BENEFICIARY") navigate ('/beneficiary')
 			else navigate('/');
 		} catch (e) {
 			setError('Invalid email or password.');

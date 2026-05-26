@@ -2,6 +2,7 @@ package com.iis.projekat.controller;
 
 import com.iis.projekat.dto.VolunteerDTO;
 import com.iis.projekat.dto.VolunteerUpdateDTO;
+import com.iis.projekat.service.EmailService;
 import com.iis.projekat.service.VolunteerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,10 +15,18 @@ public class VolunteerController {
     @Autowired
     private VolunteerService volunteerService;
 
+    @Autowired
+    private EmailService emailService;
+
     @PostMapping
     public ResponseEntity<?> createVolunteer(@RequestBody VolunteerUpdateDTO dto) {
         boolean res = volunteerService.saveVolunteer(dto);
         if(res) {
+            emailService.sendVolunteerWelcomeMail(
+                    dto.getEmail(),
+                    dto.getName(),
+                    dto.getSurname()
+            );
             return ResponseEntity.ok("Alls good");
         } else {
             return ResponseEntity.badRequest().build();

@@ -3,10 +3,7 @@ package com.iis.projekat.controller;
 import com.iis.projekat.dto.LoginRequest;
 import com.iis.projekat.dto.RegisterRequest;
 import com.iis.projekat.model.User;
-import com.iis.projekat.repository.DonorRepository;
-import com.iis.projekat.repository.EmployeeRepository;
-import com.iis.projekat.repository.UserRepository;
-import com.iis.projekat.repository.VolunteerRepository;
+import com.iis.projekat.repository.*;
 import com.iis.projekat.security.JwtUtil;
 import com.iis.projekat.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +26,7 @@ public class AuthController {
 
     private final EmployeeRepository employeeRepository;
     private final DonorRepository donorRepository;
+    private final BeneficiaryRepository beneficiaryRepository;
 
     @Autowired
     private VolunteerRepository volunteerRepository;
@@ -38,7 +36,8 @@ public class AuthController {
                           JwtUtil jwtUtil,
                           UserRepository userRepository,
                           EmployeeRepository employeeRepository,
-                          DonorRepository donorRepository) {
+                          DonorRepository donorRepository,
+                          BeneficiaryRepository beneficiaryRepository) {
 
         this.userService = userService;
         this.authenticationManager = authenticationManager;
@@ -46,6 +45,7 @@ public class AuthController {
         this.userRepository = userRepository;
         this.employeeRepository = employeeRepository;
         this.donorRepository = donorRepository;
+        this.beneficiaryRepository = beneficiaryRepository;
     }
 
     @PostMapping("/register")
@@ -85,6 +85,8 @@ public class AuthController {
             response.put("role", "VOLUNTEER");
         } else if (donorRepository.existsByEmail(user.getEmail())) {
             response.put("role", "DONOR");
+        } else if (beneficiaryRepository.existsByEmail(user.getEmail())) {
+            response.put("role", "BENEFICIARY");
         }
 
         return ResponseEntity.ok(response);

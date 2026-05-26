@@ -7,6 +7,7 @@ const donorMenuItems = [
 	{ label: "Home", to: "/donor", end: true },
 	{ label: "Explore campaigns", to: "/donor/campaigns" },
 	{ label: "My profile", to: "/donor/profile" },
+	{ label: "Projects", to: "/donor/projects" },
 ];
 
 const DonorDashboardPage = () => {
