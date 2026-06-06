@@ -37,6 +37,9 @@ public class ProjectResponseDTO {
 
     public String razlog;
 
+    public boolean fazeMoguDaSePreklapaju;
+    public List<ProjectPhaseResponseDTO> faze;
+
     public static ProjectResponseDTO from(Project p) {
         ProjectResponseDTO dto = new ProjectResponseDTO();
         dto.id = p.getId();
@@ -57,6 +60,10 @@ public class ProjectResponseDTO {
         dto.pomocniKoordinatoriIds = p.getPomocniKoordinatori()
                 .stream()
                 .map(e -> e.getId())
+                .collect(Collectors.toList());
+        dto.fazeMoguDaSePreklapaju = p.isFazeMoguDaSePreklapaju();
+        dto.faze = p.getFaze().stream()
+                .map(ProjectPhaseResponseDTO::from)
                 .collect(Collectors.toList());
         return dto;
     }

@@ -61,6 +61,17 @@ public class Project {
     @Column(columnDefinition = "TEXT")
     private String razlog;
 
+    /**
+     * Da li se faze projekta mogu vremenski preklapati.
+     * Ako je false, validacija u servisu odbija unos faza sa preklapajućim rokovima.
+     */
+    @Column(nullable = false)
+    private boolean fazeMoguDaSePreklapaju = false;
+
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("redosled ASC")
+    private List<ProjectPhase> faze = new ArrayList<>();
+
     public String getRazlog() {
         return razlog;
     }
@@ -110,5 +121,25 @@ public class Project {
     public List<Employee> getPomocniKoordinatori() { return pomocniKoordinatori; }
     public void setPomocniKoordinatori(List<Employee> pomocniKoordinatori) {
         this.pomocniKoordinatori = pomocniKoordinatori;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public boolean isFazeMoguDaSePreklapaju() {
+        return fazeMoguDaSePreklapaju;
+    }
+
+    public void setFazeMoguDaSePreklapaju(boolean fazeMoguDaSePreklapaju) {
+        this.fazeMoguDaSePreklapaju = fazeMoguDaSePreklapaju;
+    }
+
+    public List<ProjectPhase> getFaze() {
+        return faze;
+    }
+
+    public void setFaze(List<ProjectPhase> faze) {
+        this.faze = faze;
     }
 }

@@ -1,0 +1,365 @@
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import api from "../api/axios";
+import "./Dashboard.css";
+
+/**
+ * Koristi se i za kreiranje nove faze i za editovanje postojeće.
+ * Ako postoji phaseId u URL-u → edit mod, inače → create mod.
+ */
+const PhaseFormPage = () => {
+    const { id: projectId, phaseId } = useParams();
+    const navigate = useNavigate();
+    const isEdit = Boolean(phaseId);
+
+    const [project, setProject] = useState(null);
+    const [allSkillTypes, setAllSkillTypes] = useState([]);
+    const [allCoordinators, setAllCoordinators] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    // Form state
+    const [naziv, setNaziv] = useState("");
+    const [ciljevi, setCiljevi] = useState("");
+    const [rokPocetak, setRokPocetak] = useState("");
+    const [rokKraj, setRokKraj] = useState("");
+    const [brojVolontera, setBrojVolontera] = useState("");
+    const [selectedSkills, setSelectedSkills] = useState([]);           // List<Long> - ID-evi SkillType
+    const [selectedCoordinators, setSelectedCoordinators] = useState([]); // List<Long> - ID-evi Employee
+    const [redosled, setRedosled] = useState("");
+
+    const [submitting, setSubmitting] = useState(false);
+    const [error, setError] = useState("");
+
+    useEffect(() => {
+        Promise.all([
+            api.get(`/projekti/${projectId}`),
+            api.get(`/skill-types`),
+            api.get(`/projekti/koordinatori`),
+            isEdit ? api.get(`/projekti/${projectId}/faze`) : Promise.resolve({ data: [] }),
+        ]).then(([projRes, skillRes, coordRes, fazeRes]) => {
+            setProject(projRes.data);
+            setAllSkillTypes(skillRes.data || []);
+            setAllCoordinators(coordRes.data || []);
+
+            if (isEdit) {
+                const faza = (fazeRes.data || []).find(f => String(f.id) === String(phaseId));
+                if (faza) {
+                    setNaziv(faza.naziv || "");
+                    setCiljevi(faza.ciljevi || "");
+                    setRokPocetak(faza.rokPocetak || "");
+                    setRokKraj(faza.rokKraj || "");
+                    setBrojVolontera(faza.brojVolontera ?? "");
+                    setRedosled(faza.redosled ?? "");
+                    setSelectedSkills(faza.potrebneVestine?.map(v => v.id) || []);
+                    setSelectedCoordinators(faza.pomocniKoordinatoriIds || []);
+                }
+            }
+        }).catch(() => {})
+          .finally(() => setLoading(false));
+    }, [projectId, phaseId, isEdit]);
+
+    const toggleSkill = (skillId) => {
+        setSelectedSkills(prev =>
+            prev.includes(skillId) ? prev.filter(s => s !== skillId) : [...prev, skillId]
+        );
+    };
+
+    const toggleCoordinator = (coordId) => {
+        setSelectedCoordinators(prev =>
+            prev.includes(coordId) ? prev.filter(c => c !== coordId) : [...prev, coordId]
+        );
+    };
+
+    const handleSave = async () => {
+        setError("");
+        if (!naziv.trim()) { setError("Phase name is required."); return; }
+        if (!rokPocetak) { setError("Start date is required."); return; }
+        if (!rokKraj) { setError("End date is required."); return; }
+        if (!brojVolontera || Number(brojVolontera) < 1) { setError("Number of volunteers must be at least 1."); return; }
+
+        setSubmitting(true);
+        try {
+            if (isEdit) {
+                // Edit: pošalji samo ovu fazu kao listu od jednog elementa (replace semantika)
+                // ili koristimo poseban PUT endpoint ako postoji
+                // Ovde koristimo POST /projekti/{id}/faze — zamjena svih faza novom listom,
+                // ali to bi obrisalo ostale. Umjesto toga, za edit koristimo drugačiji pristup:
+                // Šaljemo sve faze projekta, zamenjujući podatke ove jedne.
+                const sveFazeRes = await api.get(`/projekti/${projectId}/faze`);
+                const sveFaze = sveFazeRes.data || [];
+
+                const azurirana = sveFaze.map(f => {
+                    if (String(f.id) === String(phaseId)) {
+                        return {
+                            naziv,
+                            ciljevi,
+                            rokPocetak,
+                            rokKraj,
+                            brojVolontera: Number(brojVolontera),
+                            potrebneVestineIds: selectedSkills,
+                            redosled: Number(redosled) || f.redosled,
+                        };
+                    }
+                    return {
+                        naziv: f.naziv,
+                        ciljevi: f.ciljevi,
+                        rokPocetak: f.rokPocetak,
+                        rokKraj: f.rokKraj,
+                        brojVolontera: f.brojVolontera,
+                        potrebneVestineIds: f.potrebneVestine?.map(v => v.id) || [],
+                        redosled: f.redosled,
+                    };
+                });
+
+                await api.post(`/projekti/${projectId}/faze`, {
+                    fazeMoguDaSePreklapaju: project.fazeMoguDaSePreklapaju,
+                    faze: azurirana,
+                });
+
+                // Posebno postavi PK na fazu ako su promenjeni
+                // Nađi novi phaseId iz refreshovanih faza
+                const refreshRes = await api.get(`/projekti/${projectId}/faze`);
+                const novaFaza = (refreshRes.data || []).find(f =>
+                    f.naziv === naziv && String(f.redosled) === String(Number(redosled) || redosled)
+                );
+                if (novaFaza) {
+                    await api.put(`/faze/${novaFaza.id}/pomocni-koordinatori`, {
+                        pomocniKoordinatoriIds: selectedCoordinators,
+                    });
+                }
+            } else {
+                // Create: dodaj novu fazu na postojeće
+                const sveFazeRes = await api.get(`/projekti/${projectId}/faze`);
+                const sveFaze = sveFazeRes.data || [];
+                const noviFaze = sveFaze.map(f => ({
+                    naziv: f.naziv,
+                    ciljevi: f.ciljevi,
+                    rokPocetak: f.rokPocetak,
+                    rokKraj: f.rokKraj,
+                    brojVolontera: f.brojVolontera,
+                    potrebneVestineIds: f.potrebneVestine?.map(v => v.id) || [],
+                    redosled: f.redosled,
+                }));
+
+                const novaFaza = {
+                    naziv,
+                    ciljevi,
+                    rokPocetak,
+                    rokKraj,
+                    brojVolontera: Number(brojVolontera),
+                    potrebneVestineIds: selectedSkills,
+                    redosled: noviFaze.length + 1,
+                };
+                noviFaze.push(novaFaza);
+
+                await api.post(`/projekti/${projectId}/faze`, {
+                    fazeMoguDaSePreklapaju: project?.fazeMoguDaSePreklapaju ?? false,
+                    faze: noviFaze,
+                });
+
+                // Postavi PK na novu fazu
+                if (selectedCoordinators.length > 0) {
+                    const refreshRes = await api.get(`/projekti/${projectId}/faze`);
+                    const kreiranaFaza = (refreshRes.data || []).find(f =>
+                        f.naziv === naziv && f.redosled === noviFaze.length
+                    );
+                    if (kreiranaFaza) {
+                        await api.put(`/faze/${kreiranaFaza.id}/pomocni-koordinatori`, {
+                            pomocniKoordinatoriIds: selectedCoordinators,
+                        });
+                    }
+                }
+            }
+
+            navigate(`/projects/${projectId}/info`);
+        } catch (e) {
+            const data = e.response?.data;
+            const msg = typeof data === "string"
+                ? data
+                : data?.message || data?.error || "Error saving phase.";
+            setError(msg);
+        } finally {
+            setSubmitting(false);
+        }
+    };
+
+    if (loading) return <div className="loading-text">Loading...</div>;
+
+    return (
+        <div className="create-page">
+            <button className="create-back-btn" onClick={() => navigate(`/projects/${projectId}/info`)}>
+                ← Back to Project
+            </button>
+
+            <h1 className="create-title">{isEdit ? "Edit phase" : "Create a new phase"}</h1>
+            <p className="create-subtitle">
+                {isEdit
+                    ? "Edit the phase information below."
+                    : "Fill in the required information to create a new phase."}
+            </p>
+
+            <div className="form-section">
+                <h3 style={{ marginBottom: 16 }}>Basic information</h3>
+
+                <div className="form-field" style={{ marginBottom: 14 }}>
+                    <label>Phase name *</label>
+                    <input
+                        type="text"
+                        placeholder="Enter the name of the phase"
+                        value={naziv}
+                        onChange={e => setNaziv(e.target.value)}
+                    />
+                </div>
+
+                <div className="form-field" style={{ marginBottom: 14 }}>
+                    <label>Goals *</label>
+                    <textarea
+                        placeholder="Enter the goals of this phase"
+                        value={ciljevi}
+                        onChange={e => setCiljevi(e.target.value)}
+                        rows={3}
+                    />
+                </div>
+
+                <div className="form-row" style={{ marginBottom: 14 }}>
+                    <div className="form-field">
+                        <label>Deadlines *</label>
+                        <div style={{ display: "flex", gap: 10 }}>
+                            <input
+                                type="date"
+                                placeholder="Start date"
+                                value={rokPocetak}
+                                onChange={e => setRokPocetak(e.target.value)}
+                                style={{ flex: 1 }}
+                            />
+                            <input
+                                type="date"
+                                placeholder="End date"
+                                value={rokKraj}
+                                onChange={e => setRokKraj(e.target.value)}
+                                style={{ flex: 1 }}
+                            />
+                        </div>
+                    </div>
+                    <div className="form-field">
+                        <label>Volunteers needed *</label>
+                        <input
+                            type="number"
+                            min="1"
+                            placeholder="Number of volunteers"
+                            value={brojVolontera}
+                            onChange={e => setBrojVolontera(e.target.value)}
+                        />
+                    </div>
+                </div>
+
+                {/* Skills */}
+                {allSkillTypes.length > 0 && (
+                    <div className="form-field" style={{ marginBottom: 14 }}>
+                        <label>Required skills</label>
+                        <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 4 }}>
+                            {allSkillTypes.map(skill => (
+                                <label
+                                    key={skill.id}
+                                    style={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                        gap: 5,
+                                        padding: "4px 10px",
+                                        borderRadius: 6,
+                                        border: "1px solid #bbb",
+                                        backgroundColor: selectedSkills.includes(skill.id) ? "#369FBC" : "#e0e0e0",
+                                        color: selectedSkills.includes(skill.id) ? "#000" : "#333",
+                                        cursor: "pointer",
+                                        fontSize: "0.85rem",
+                                        fontWeight: selectedSkills.includes(skill.id) ? 600 : 400,
+                                        transition: "background-color 0.15s",
+                                    }}
+                                >
+                                    <input
+                                        type="checkbox"
+                                        style={{ display: "none" }}
+                                        checked={selectedSkills.includes(skill.id)}
+                                        onChange={() => toggleSkill(skill.id)}
+                                    />
+                                    {skill.name}
+                                </label>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
+                {/* Phase coordinator */}
+                <div className="form-field" style={{ marginBottom: 14 }}>
+                    <label>Phase coordinator(s)</label>
+                    {allCoordinators.length === 0 ? (
+                        <p style={{ fontSize: "0.85rem", color: "#777" }}>No coordinators available.</p>
+                    ) : (
+                        <select
+                            value=""
+                            onChange={e => {
+                                const val = Number(e.target.value);
+                                if (val && !selectedCoordinators.includes(val)) {
+                                    setSelectedCoordinators(prev => [...prev, val]);
+                                }
+                            }}
+                            style={{ padding: "8px 12px", backgroundColor: "#e0e0e0", border: "1px solid #bbb", borderRadius: 6, fontSize: "0.88rem" }}
+                        >
+                            <option value="">Select coordinator</option>
+                            {allCoordinators.map(coord => (
+                                <option key={coord.id} value={coord.id}>
+                                    {coord.ime} {coord.prezime}
+                                </option>
+                            ))}
+                        </select>
+                    )}
+
+                    {/* Izabrani koordinatori */}
+                    {selectedCoordinators.length > 0 && (
+                        <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 8 }}>
+                            {selectedCoordinators.map(coordId => {
+                                const coord = allCoordinators.find(c => c.id === coordId);
+                                return coord ? (
+                                    <span
+                                        key={coordId}
+                                        style={{
+                                            display: "inline-flex",
+                                            alignItems: "center",
+                                            gap: 5,
+                                            padding: "3px 10px",
+                                            backgroundColor: "#d4edda",
+                                            border: "1px solid #aaddbb",
+                                            borderRadius: 6,
+                                            fontSize: "0.82rem",
+                                        }}
+                                    >
+                                        {coord.ime} {coord.prezime}
+                                        <button
+                                            onClick={() => setSelectedCoordinators(prev => prev.filter(c => c !== coordId))}
+                                            style={{ background: "none", border: "none", cursor: "pointer", fontWeight: 700, fontSize: "0.85rem", color: "#555", padding: 0, lineHeight: 1 }}
+                                        >
+                                            ×
+                                        </button>
+                                    </span>
+                                ) : null;
+                            })}
+                        </div>
+                    )}
+                </div>
+            </div>
+
+            {error && <p className="error-text" style={{ marginBottom: 8 }}>{error}</p>}
+
+            <div className="form-actions">
+                <button className="btn-cancel" onClick={() => navigate(`/projects/${projectId}/info`)}>
+                    Cancel
+                </button>
+                <button className="btn-save" onClick={handleSave} disabled={submitting}>
+                    {submitting ? "Saving..." : "Save"}
+                </button>
+            </div>
+        </div>
+    );
+};
+
+export default PhaseFormPage;
