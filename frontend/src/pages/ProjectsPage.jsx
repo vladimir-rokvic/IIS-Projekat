@@ -94,7 +94,7 @@ const ProjectsPage = () => {
                                             } else if (project.status === 'ODBIJEN') {
                                                 navigate(`/projects/${project.id}/denied`);
                                             } else if (project.status === 'ODOBREN') {
-                                                navigate(`/projects/${project.id}/accepted`);
+                                                navigate(`/projects/${project.id}/info`);
                                             } else {
                                                 navigate(`/projects/${project.id}`);
                                             }

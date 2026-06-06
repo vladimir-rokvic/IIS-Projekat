@@ -44,6 +44,9 @@ import TaskDetailsEdit from "./pages/TaskDetailsEdit";
 import NewDistributionLocation from "./pages/DistributionLocationPage";
 import CreatePackage from "./pages/CreatePackage";
 
+import ProjectInformationPage from "./pages/ProjectInformationPage";
+import PhaseFormPage from "./pages/PhaseFormPage";
+
 function App() {
 	return (
 		<AuthProvider>
@@ -93,6 +96,10 @@ function App() {
 					<Route path="/tasks" element={<PrivateRoute allowedRoles={["COORDINATOR"]}><TasksPage /></PrivateRoute>}/>
 					<Route path="/coord/tasks/:id" element={<PrivateRoute allowedRoles={["COORDINATOR"]}><TaskDetailsPage /></PrivateRoute>}/>
 					<Route path="/coord/tasksEdit/:id" element={<PrivateRoute allowedRoles={["COORDINATOR"]}><TaskDetailsEdit /></PrivateRoute>}/>
+
+					<Route path="/projects/:id/info" element={<PrivateRoute allowedRoles={["COORDINATOR"]}><ProjectInformationPage /></PrivateRoute>} />
+					<Route path="/projects/:id/phases/new" element={<PrivateRoute allowedRoles={["COORDINATOR"]}><PhaseFormPage /></PrivateRoute>} />
+					<Route path="/projects/:id/phases/:phaseId/edit" element={<PrivateRoute allowedRoles={["COORDINATOR"]}><PhaseFormPage /></PrivateRoute>} />
 
 					<Route path="*" element={<Navigate to="/login" replace />} />
 				</Routes>
