@@ -1,12 +1,11 @@
 package com.iis.projekat.service;
 
-import com.iis.projekat.dto.CreateTaskDTO;
-import com.iis.projekat.dto.SkillDTO;
-import com.iis.projekat.dto.TaskDTO;
-import com.iis.projekat.dto.UpdateTaskDTO;
+import com.iis.projekat.dto.*;
+import com.iis.projekat.model.Performance;
 import com.iis.projekat.model.Skill;
 import com.iis.projekat.model.Task;
 import com.iis.projekat.model.Volunteer;
+import com.iis.projekat.repository.PerformanceRepository;
 import com.iis.projekat.repository.SkillRepository;
 import com.iis.projekat.repository.TaskRepository;
 import com.iis.projekat.repository.VolunteerRepository;
@@ -23,6 +22,8 @@ public class TaskService {
     private VolunteerRepository volunteerRepository;
     @Autowired
     private SkillRepository skillRepository;
+    @Autowired
+    private PerformanceRepository performanceRepository;
 
     public void saveTask(CreateTaskDTO dto) {
         Task task = new Task();
@@ -111,5 +112,23 @@ public class TaskService {
         t.setRequiredSkills(skills);
         taskRepository.save(t);
         return t;
+    }
+
+    public Performance rateTask(PerformanceDTO grade) {
+        Volunteer v = volunteerRepository.findById(grade.getVolunteerId())
+                .orElse(null);
+        if(v == null) return null;
+
+        Task t = taskRepository.findById(grade.getTaskId())
+                .orElse(null);
+        if(t == null) return null;
+
+        Performance p = new Performance(
+                grade.getGrade(),
+                grade.getComment(),
+                v,
+                t
+        );
+        return performanceRepository.save(p);
     }
 }

@@ -3,6 +3,7 @@ package com.iis.projekat.model;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 @Entity
 public class Employee extends User {
@@ -10,6 +11,9 @@ public class Employee extends User {
     @Enumerated(EnumType.STRING)
     private EmployeeType employeeType;
     private LocalDate dateOfEmployment;
+
+    @OneToMany(mappedBy = "coordinator")
+    private Set<Task> tasks;
 
     public Double getSalary() {
         return salary;
@@ -33,5 +37,13 @@ public class Employee extends User {
 
     public void setDateOfEmployment(LocalDate dateOfEmployment) {
         this.dateOfEmployment = dateOfEmployment;
+    }
+
+    public Set<Task> getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(Set<Task> tasks) {
+        this.tasks = tasks;
     }
 }

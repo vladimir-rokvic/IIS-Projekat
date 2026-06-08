@@ -1,9 +1,7 @@
 package com.iis.projekat.controller;
 
-import com.iis.projekat.dto.CreateTaskDTO;
-import com.iis.projekat.dto.TaskDTO;
-import com.iis.projekat.dto.UpdateTaskDTO;
-import com.iis.projekat.dto.VolunteerDTO;
+import com.iis.projekat.dto.*;
+import com.iis.projekat.model.Performance;
 import com.iis.projekat.model.Task;
 import com.iis.projekat.model.Volunteer;
 import com.iis.projekat.service.EmailService;
@@ -81,5 +79,18 @@ public class TaskController {
         }
 
         return ResponseEntity.ok(newTask);
+    }
+
+    //Odavde mi krece sve za performance taskova
+
+    @PostMapping("/rate/{taskId}")
+    public ResponseEntity<?> rateTask(@PathVariable Long taskId,
+                                      @RequestBody PerformanceDTO grade) {
+        Performance ret = taskService.rateTask(grade);
+        if(ret == null) {
+            return ResponseEntity.badRequest().body(grade);
+        }
+
+        return ResponseEntity.ok(grade);
     }
 }
