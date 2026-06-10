@@ -20,6 +20,13 @@ public class Task {
     @JoinColumn(name = "volunteer_id")
     private Volunteer volunteer;
 
+    @ManyToOne
+    @JoinColumn(name = "coordinator_id")
+    private Employee coordinator;
+
+    @OneToOne(mappedBy = "task")
+    private Performance performance;
+
     private LocalDate startDate;
     private LocalDate endDate;
 
@@ -79,5 +86,21 @@ public class Task {
 
     public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
+    }
+
+    public Employee getCoordinator() {
+        return coordinator;
+    }
+
+    public void setCoordinator(Employee coordinator) {
+        this.coordinator = coordinator;
+    }
+
+    public Performance getPerformance() {
+        return performance;
+    }
+
+    public void setPerformance(Performance performance) {
+        this.performance = performance;
     }
 }

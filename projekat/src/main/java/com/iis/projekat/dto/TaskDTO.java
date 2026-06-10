@@ -15,6 +15,8 @@ public class TaskDTO {
     private Set<SkillDTO> requiredSkills;
 
     private VolunteerDTO volunteer;
+    private UserDTO coordinator;
+    private PerformanceDTO performance;
 
     private LocalDate startDate;
     private LocalDate endDate;
@@ -39,6 +41,18 @@ public class TaskDTO {
         }
 
         this.requiredSkills = dtos;
+
+        if(t.getCoordinator() != null) {
+            this.coordinator = new UserDTO(t.getCoordinator());
+        } else {
+            this.coordinator = null;
+        }
+
+        if(t.getPerformance() != null) {
+            this.performance = new PerformanceDTO(t.getPerformance());
+        } else {
+            this.performance = null;
+        }
     }
 
     public Long getId() {
@@ -95,5 +109,21 @@ public class TaskDTO {
 
     public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
+    }
+
+    public UserDTO getCoordinator() {
+        return coordinator;
+    }
+
+    public void setCoordinator(UserDTO coordinator) {
+        this.coordinator = coordinator;
+    }
+
+    public PerformanceDTO getPerformance() {
+        return performance;
+    }
+
+    public void setPerformance(PerformanceDTO performance) {
+        this.performance = performance;
     }
 }

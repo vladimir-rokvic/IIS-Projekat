@@ -2,6 +2,7 @@ import "./RegisterVolunteerPage.css"
 import LabelInput from "../components/LabelInput";
 import { useRef } from "react";
 import api from "../api/axios";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const RegisterVolunteerPage = () => {
 
@@ -15,6 +16,8 @@ const RegisterVolunteerPage = () => {
     const email = useRef();
     const password = useRef();
     const confirmPassword = useRef();
+
+	const navigate = useNavigate();
 
 	const handleRegister = async () => {
         if (password.current.value !== confirmPassword.current.value) {
@@ -36,6 +39,7 @@ const RegisterVolunteerPage = () => {
             };
 			const res = await api.post("/volunteer", body);
             console.log(res.data);
+			navigate(-1);
         } catch (err) {
             console.log(err);
         }
@@ -43,8 +47,20 @@ const RegisterVolunteerPage = () => {
 
     return (
         <div className="registerVolunteer">
-            <h1>Register Volunteer</h1>
+			<div className="headeridk">
+			<div>
+            <h1>Register a volunteer</h1>
+			<label className="labelidk">Register a volunteer to work for our organization</label>
+			</div>
+			<button onClick={() => navigate(-1)} className="btn-primary" style={{
+				margin: '25px',
+			}}>
+				← Back to homepage
+			</button>
+			</div>
             <div className="form">
+				<div className="input-group">
+				<label className="addressLabelInre">Basic information</label>
                 <div className="row">
                     <LabelInput 
 						ref={firstName}
@@ -54,13 +70,14 @@ const RegisterVolunteerPage = () => {
 						ref={lastName}
 						placeholerText="Enter last name" 
 						inputType="text">Last name</LabelInput>
-                </div>
-                <div className="row">
+					<br />
                     <LabelInput 
 						ref={dob}
 						inputType="date"
 					>Date of birth</LabelInput>
                 </div>
+				</div>
+
 				<div className="input-group">
 					<label className="addressLabelInre">Address</label>
                 	<div className="row">
@@ -78,6 +95,9 @@ const RegisterVolunteerPage = () => {
 							inputType="text">Country</LabelInput>
 					</div>
                 </div>
+
+				<div className="input-group">
+				<label className="addressLabelInre">Contact information</label>
                 <div className="row">
                     <LabelInput 
 						ref={phone}
@@ -88,6 +108,10 @@ const RegisterVolunteerPage = () => {
 						placeholerText="Enter email" 
 						inputType="text">Email</LabelInput>
                 </div>
+				</div>
+
+				<div className="input-group">
+				<label className="addressLabelInre">Password</label>
 				<div className="row">
 					<LabelInput
 						ref={password}
@@ -99,11 +123,12 @@ const RegisterVolunteerPage = () => {
 						placeholerText={"Please confirm password"}>
 					Confirm Password</LabelInput>
 				</div>
+				</div>
+            </div>
 				<button 
 					className="submitBtn"
 					onClick={handleRegister}>
 				Submit</button>
-            </div>
         </div>
     );
 }

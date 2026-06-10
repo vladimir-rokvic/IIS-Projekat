@@ -46,23 +46,12 @@
     background-color: #369FBC;
 }
 
-.volunteer-section {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.volunteer-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
 .avatar-small {
-    width: 35px;
-    height: 35px;
+    width: 100px;
+    height: 100px;
     border-radius: 50%;
     background-color: #d9d9d9;
+	flex-shrink: 0;
 }
 
 .volunteer-input {
@@ -83,6 +72,7 @@
     height: 120px;
     resize: none;
     width: 350px;
+	font-size: 1.3rem;
 }
 
 .date-row {
@@ -90,22 +80,24 @@
     gap: 20px;
 }
 
-.field {
+.v-field {
     display: flex;
     flex-direction: column;
     gap: 4px;
 }
 
-.field label {
+.v-field label {
     font-size: 14px;
     font-weight: 500;
 }
 
-.field input {
+.v-field input {
     background-color: #d9d9d9;
     border: none;
     border-radius: 6px;
     padding: 6px 10px;
+	width: 360px;
+	font-size: 1.3rem;
 }
 
 .skills-section {
@@ -136,7 +128,17 @@
 .skills-list {
     display: flex;
     flex-wrap: wrap;
+	border: 1px solid #d9d9d9;
+	border-radius: 10px;
     gap: 8px;
+	flex-wrap: wrap;
+    justify-content: center;
+}
+
+.skills-list p{
+	padding: 10px;
+	text-align: center;
+    font-size: 1.3rem;
 }
 
 .skill-item {
@@ -146,7 +148,13 @@
     background-color: #d9d9d9;
     border-radius: 20px;
     padding: 4px 10px;
-    font-size: 14px;
+    font-size: 1.3rem;
+	margin: 5px;
+}
+
+.skill-item p{
+    font-size: 1.3rem;
+	justify-self: left;
 }
 
 .btn-remove {
@@ -157,12 +165,47 @@
     color: #555;
 }
 
+.contact-info {
+    font-size: 1.3rem;
+	font-weight: 300;
+	margin: 0;
+}
+
+.volunteer-section {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+	border: 1px solid #d9d9d9;
+	border-radius: 10px;
+	padding: 15px;
+}
+
+.volunteer-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.choosen-volunteer {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	gap: 2px;
+}
+
+.choosen-volunteer h3{
+	margin-top: 25px;
+	padding: 0;
+}
+
 .volunteer-placeholder {
-    font-size: 14px;
+    font-size: 1.8rem;
     color: #aaa;
 }
 
 .volunteer-name {
-    font-size: 14px;
+    font-size: 1.8rem;
     font-weight: 500;
+	white-space: nowrap;
+	margin-left: 15px;
 }
