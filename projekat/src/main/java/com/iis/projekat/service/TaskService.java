@@ -1,14 +1,8 @@
 package com.iis.projekat.service;
 
 import com.iis.projekat.dto.*;
-import com.iis.projekat.model.Performance;
-import com.iis.projekat.model.Skill;
-import com.iis.projekat.model.Task;
-import com.iis.projekat.model.Volunteer;
-import com.iis.projekat.repository.PerformanceRepository;
-import com.iis.projekat.repository.SkillRepository;
-import com.iis.projekat.repository.TaskRepository;
-import com.iis.projekat.repository.VolunteerRepository;
+import com.iis.projekat.model.*;
+import com.iis.projekat.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +18,8 @@ public class TaskService {
     private SkillRepository skillRepository;
     @Autowired
     private PerformanceRepository performanceRepository;
+    @Autowired
+    private EmployeeRepository employeeRepository;
 
     public void saveTask(CreateTaskDTO dto) {
         Task task = new Task();
@@ -32,6 +28,10 @@ public class TaskService {
 
         Volunteer v = volunteerRepository.getReferenceById(dto.getVolunteerId());
         task.setVolunteer(v);
+
+        Employee coordiantor = employeeRepository.findById(dto.getCoordinatorId())
+                .orElse(null);
+        task.setCoordinator(coordiantor);
 
         Set<Skill> skills = new HashSet<>();
         for(SkillDTO s: dto.getRequiredSkills()) {
@@ -129,6 +129,7 @@ public class TaskService {
                 v,
                 t
         );
+
         return performanceRepository.save(p);
     }
 }

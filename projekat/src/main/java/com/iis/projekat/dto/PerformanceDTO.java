@@ -13,11 +13,11 @@ public class PerformanceDTO {
     public PerformanceDTO() {}
 
     public PerformanceDTO(Performance performance) {
-        id = performance.getId();
-        grade = performance.getGrade();
-        comment = performance.getComment();
-        volunteerId = performance.getRatedVolunteer().getId();
-        taskId =  performance.getTask().getId();
+        this.id = performance.getId();
+        this.grade = performance.getGrade();
+        this.comment = performance.getComment();
+        this.volunteerId = performance.getRatedVolunteer().getId();
+        this.taskId =  performance.getTask().getId();
     }
 
     public Long getId() {

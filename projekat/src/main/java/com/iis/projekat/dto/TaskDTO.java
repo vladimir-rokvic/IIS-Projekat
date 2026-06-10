@@ -1,6 +1,5 @@
 package com.iis.projekat.dto;
 
-import com.iis.projekat.model.Performance;
 import com.iis.projekat.model.Skill;
 import com.iis.projekat.model.Task;
 
@@ -17,7 +16,7 @@ public class TaskDTO {
 
     private VolunteerDTO volunteer;
     private UserDTO coordinator;
-    private Performance performance;
+    private PerformanceDTO performance;
 
     private LocalDate startDate;
     private LocalDate endDate;
@@ -42,6 +41,18 @@ public class TaskDTO {
         }
 
         this.requiredSkills = dtos;
+
+        if(t.getCoordinator() != null) {
+            this.coordinator = new UserDTO(t.getCoordinator());
+        } else {
+            this.coordinator = null;
+        }
+
+        if(t.getPerformance() != null) {
+            this.performance = new PerformanceDTO(t.getPerformance());
+        } else {
+            this.performance = null;
+        }
     }
 
     public Long getId() {
@@ -108,11 +119,11 @@ public class TaskDTO {
         this.coordinator = coordinator;
     }
 
-    public Performance getPerformance() {
+    public PerformanceDTO getPerformance() {
         return performance;
     }
 
-    public void setPerformance(Performance performance) {
+    public void setPerformance(PerformanceDTO performance) {
         this.performance = performance;
     }
 }

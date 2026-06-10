@@ -32,10 +32,33 @@ const VolunteerDashboard = () => {
 
 			<h1>Organization name</h1>
 			<h2>Organization bio</h2>
+			<div className='v-dashboard'>
 			<div className='volunteer-dash-btns'>
-				<button onClick={seeTasks}>See Tasks</button>
-				<button>See Ratings</button>
-				<button>See Training</button>
+                <div className="dashboard-card" style={{width: '450px'}}>
+                    <h2>Assigned tasks</h2>
+                    <p>See a full list of all tasks that have been assigned to you.</p>
+                    <button className="btn-primary" 
+							onClick={seeTasks}>
+                        See assigned tasks
+                    </button>
+                </div>
+                <div className="dashboard-card" style={{width: '450px'}}>
+                    <h2>Rated tasks</h2>
+                    <p>See a full list of all your tasks that have been rated.</p>
+                    <button className="btn-primary" 
+							onClick={seeTasks}>
+                        See rated tasks
+                    </button>
+                </div>
+                <div className="dashboard-card" style={{width: '450px'}}>
+                    <h2>Training regiment</h2>
+                    <p>See the training regiment that you have been assigned to.</p>
+                    <button className="btn-primary" 
+							onClick={seeTasks}>
+                        See training regiment
+                    </button>
+                </div>
+			</div>
 			</div>
 			<br />
 			{tasks != null && tasks.map((task) => (

@@ -10,6 +10,7 @@ public class CreateTaskDTO {
     private Set<SkillDTO> requiredSkills;
 
     private Long volunteerId;
+    private Long coordinatorId;
 
     private LocalDate startDate;
     private LocalDate endDate;
@@ -62,5 +63,13 @@ public class CreateTaskDTO {
 
     public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
+    }
+
+    public Long getCoordinatorId() {
+        return coordinatorId;
+    }
+
+    public void setCoordinatorId(Long coordinatorId) {
+        this.coordinatorId = coordinatorId;
     }
 }
