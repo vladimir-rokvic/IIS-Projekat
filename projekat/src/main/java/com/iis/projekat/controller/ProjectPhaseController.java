@@ -144,4 +144,10 @@ public class ProjectPhaseController {
         return ResponseEntity.ok(result);
     }
 
+    @GetMapping("/api/faze/{phaseId}/preporuke-volontera")
+    public ResponseEntity<com.iis.projekat.dto.VolonterPreporukaResponseDTO> preporuciVolontere(
+            @PathVariable Long phaseId) {
+        return ResponseEntity.ok(phaseService.preporuciVolontere(phaseId));
+    }
+
 }

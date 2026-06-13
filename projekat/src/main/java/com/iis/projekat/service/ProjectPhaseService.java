@@ -1,21 +1,13 @@
 package com.iis.projekat.service;
 
-import com.iis.projekat.dto.ProjectPhaseCreateDTO;
-import com.iis.projekat.dto.ProjectPhaseResponseDTO;
-import com.iis.projekat.dto.SetFazeRequest;
-import com.iis.projekat.dto.SkillTypeDTO;
+import com.iis.projekat.dto.*;
 import com.iis.projekat.model.*;
-import com.iis.projekat.repository.EmployeeRepository;
-import com.iis.projekat.repository.ProjectPhaseRepository;
-import com.iis.projekat.repository.ProjectRepository;
-import com.iis.projekat.repository.SkillTypeRepository;
+import com.iis.projekat.repository.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,15 +17,21 @@ public class ProjectPhaseService {
     private final ProjectPhaseRepository phaseRepository;
     private final EmployeeRepository employeeRepository;
     private final SkillTypeRepository skillTypeRepository;
+    private final VolunteerRepository volunteerRepository;
+    private final TaskRepository taskRepository;
 
     public ProjectPhaseService(ProjectRepository projectRepository,
                                ProjectPhaseRepository phaseRepository,
                                EmployeeRepository employeeRepository,
-                               SkillTypeRepository skillTypeRepository) {
+                               SkillTypeRepository skillTypeRepository,
+                               VolunteerRepository volunteerRepository,
+                               TaskRepository taskRepository) {
         this.projectRepository = projectRepository;
         this.phaseRepository = phaseRepository;
         this.employeeRepository = employeeRepository;
         this.skillTypeRepository = skillTypeRepository;
+        this.volunteerRepository = volunteerRepository;
+        this.taskRepository = taskRepository;
     }
 
     /**
@@ -355,6 +353,95 @@ public class ProjectPhaseService {
             projectRepository.save(project);
             return null;
         }
+    }
+
+    /**
+     * Preporuka volontera za fazu projekta (FR: Raspoređivanje volontera).
+     *
+     * Za svakog volontera se računa broj poklapanja između njegovih veština
+     * (Volunteer.skills, po nazivu) i veština potrebnih za fazu (potrebneVestine).
+     * Volonter je "dostupan" ako nema task čiji period [startDate, endDate]
+     * preklapa period trajanja faze [rokPocetak, rokKraj].
+     *
+     * Vraćaju se samo volonteri koji poseduju BAREM JEDNU od traženih veština
+     * i koji su dostupni, sortirani po broju poklapajućih veština (opadajuće).
+     * Ako ih je manje od faza.brojVolontera, dodaje se odgovarajuća poruka,
+     * ali se ipak vraća kompletna (kraća) lista.
+     *
+     * GET /api/faze/{phaseId}/preporuke-volontera
+     */
+    @Transactional(readOnly = true)
+    public VolonterPreporukaResponseDTO preporuciVolontere(Long phaseId) {
+        ProjectPhase faza = nadjisFazu(phaseId);
+
+        Set<String> traziveVestine = faza.getPotrebneVestine().stream()
+                .map(sv -> sv.getName().trim().toLowerCase())
+                .collect(Collectors.toSet());
+
+        int trazenBrojVolontera = faza.getBrojVolontera() != null ? faza.getBrojVolontera() : 0;
+
+        List<Volunteer> sviVolonteri = volunteerRepository.findAll();
+
+        List<VolunteerRecommendationDTO> preporuceni = new ArrayList<>();
+
+        for (Volunteer v : sviVolonteri) {
+            List<String> poklapanja = new ArrayList<>();
+            if (v.getSkills() != null) {
+                for (Skill s : v.getSkills()) {
+                    if (s.getName() != null
+                            && traziveVestine.contains(s.getName().trim().toLowerCase())) {
+                        poklapanja.add(s.getName());
+                    }
+                }
+            }
+
+            // Samo volonteri koji poseduju bar jednu od traženih veština
+            if (poklapanja.isEmpty()) {
+                continue;
+            }
+
+            boolean dostupan = jeVolonterDostupan(v.getId(), faza.getRokPocetak(), faza.getRokKraj());
+            if (!dostupan) {
+                continue;
+            }
+
+            preporuceni.add(new VolunteerRecommendationDTO(
+                    v, poklapanja.size(), traziveVestine.size(), poklapanja, true));
+        }
+
+        // Sortiraj po broju poklapajućih veština opadajuće, zatim po prezimenu
+        preporuceni.sort(
+                Comparator.comparingInt(VolunteerRecommendationDTO::getMatchedSkillsCount).reversed()
+                        .thenComparing(VolunteerRecommendationDTO::getSurname)
+        );
+
+        int ukupnoPronadjenih = preporuceni.size();
+
+        String poruka = null;
+        if (ukupnoPronadjenih < trazenBrojVolontera) {
+            poruka = "Pronađeno je samo " + ukupnoPronadjenih + " od potrebnih "
+                    + trazenBrojVolontera + " volontera koji poseduju traženu veštinu i "
+                    + "slobodni su u periodu trajanja faze ("
+                    + faza.getRokPocetak() + " – " + faza.getRokKraj() + ").";
+        }
+
+        // Zadrži samo onoliko najboljih volontera koliko je koordinator zatražio
+        if (trazenBrojVolontera > 0 && preporuceni.size() > trazenBrojVolontera) {
+            preporuceni = preporuceni.subList(0, trazenBrojVolontera);
+        }
+
+        return new VolonterPreporukaResponseDTO(preporuceni, trazenBrojVolontera, poruka);
+    }
+
+    /**
+     * Provjera dostupnosti volontera u periodu [pocetak, kraj]:
+     * volonter je dostupan ako nema task koji se preklapa sa tim periodom.
+     */
+    private boolean jeVolonterDostupan(Long volunteerId, LocalDate pocetak, LocalDate kraj) {
+        List<Task> preklapajuciTaskovi = taskRepository
+                .findAllByVolunteerIdAndStartDateLessThanEqualAndEndDateGreaterThanEqual(
+                        volunteerId, kraj, pocetak);
+        return preklapajuciTaskovi.isEmpty();
     }
 
 
