@@ -33,6 +33,7 @@ const PhaseFormPage = () => {
 
     const [submitting, setSubmitting] = useState(false);
     const [error, setError] = useState("");
+    const [recommendations, setRecommendations] = useState(null); // { preporuceni, trazenBrojVolontera, poruka }
 
     useEffect(() => {
         Promise.all([
@@ -59,6 +60,11 @@ const PhaseFormPage = () => {
                     setTasks(faza.taskovi || []);
                     setZavrsena(faza.zavrsena || false);
                 }
+
+                // Učitaj preporuke volontera za ovu fazu
+                api.get(`/faze/${phaseId}/preporuke-volontera`)
+                    .then(recRes => setRecommendations(recRes.data))
+                    .catch(() => setRecommendations(null));
             }
         }).catch(() => {})
             .finally(() => setLoading(false));
@@ -84,6 +90,7 @@ const PhaseFormPage = () => {
         if (!brojVolontera || Number(brojVolontera) < 1) { setError("Number of volunteers must be at least 1."); return; }
 
         setSubmitting(true);
+        let savedPhaseId = null;
         try {
             if (isEdit) {
                 // Edit: pošalji samo ovu fazu kao listu od jednog elementa (replace semantika)
@@ -93,6 +100,15 @@ const PhaseFormPage = () => {
                 // Šaljemo sve faze projekta, zamenjujući podatke ove jedne.
                 const sveFazeRes = await api.get(`/projekti/${projectId}/faze`);
                 const sveFaze = sveFazeRes.data || [];
+
+                // Sačuvaj pomoćne koordinatore svih faza PRE replace-all operacije,
+                // jer postaviFaze briše i ponovo kreira sve faze (nove ID-eve),
+                // pa se i postojeći pomoćni koordinatori gube ako se ne vrate.
+                const pomocniPoNazivuIRedosledu = sveFaze.map(f => ({
+                    naziv: f.naziv,
+                    redosled: f.redosled,
+                    pomocniKoordinatoriIds: f.pomocniKoordinatoriIds || [],
+                }));
 
                 const azurirana = sveFaze.map(f => {
                     if (String(f.id) === String(phaseId)) {
@@ -122,21 +138,46 @@ const PhaseFormPage = () => {
                     faze: azurirana,
                 });
 
-                // Posebno postavi PK na fazu ako su promenjeni
-                // Nađi novi phaseId iz refreshovanih faza
+                // Ponovo postavi pomoćne koordinatore za SVE faze (replace-all ih je obrisao).
+                // Faza koja se editovala dobija novo izabrane koordinatore (selectedCoordinators),
+                // sve ostale dobijaju svoje stare koordinatore vraćene.
                 const refreshRes = await api.get(`/projekti/${projectId}/faze`);
-                const novaFaza = (refreshRes.data || []).find(f =>
-                    f.naziv === naziv && String(f.redosled) === String(Number(redosled) || redosled)
-                );
-                if (novaFaza) {
-                    await api.put(`/faze/${novaFaza.id}/pomocni-koordinatori`, {
-                        pomocniKoordinatoriIds: selectedCoordinators,
+                const refreshFaze = refreshRes.data || [];
+
+                for (const f of refreshFaze) {
+                    const isEditovanaFaza = f.naziv === naziv
+                        && String(f.redosled) === String(Number(redosled) || redosled);
+
+                    let pkIds;
+                    if (isEditovanaFaza) {
+                        pkIds = selectedCoordinators;
+                    } else {
+                        const stara = pomocniPoNazivuIRedosledu.find(
+                            p => p.naziv === f.naziv && p.redosled === f.redosled
+                        );
+                        pkIds = stara?.pomocniKoordinatoriIds || [];
+                    }
+
+                    await api.put(`/faze/${f.id}/pomocni-koordinatori`, {
+                        pomocniKoordinatoriIds: pkIds,
                     });
+
+                    if (isEditovanaFaza) {
+                        savedPhaseId = f.id;
+                    }
                 }
             } else {
                 // Create: dodaj novu fazu na postojeće
                 const sveFazeRes = await api.get(`/projekti/${projectId}/faze`);
                 const sveFaze = sveFazeRes.data || [];
+
+                // Sačuvaj pomoćne koordinatore postojećih faza PRE replace-all operacije
+                const pomocniPoNazivuIRedosledu = sveFaze.map(f => ({
+                    naziv: f.naziv,
+                    redosled: f.redosled,
+                    pomocniKoordinatoriIds: f.pomocniKoordinatoriIds || [],
+                }));
+
                 const noviFaze = sveFaze.map(f => ({
                     naziv: f.naziv,
                     ciljevi: f.ciljevi,
@@ -163,21 +204,51 @@ const PhaseFormPage = () => {
                     faze: noviFaze,
                 });
 
-                // Postavi PK na novu fazu
-                if (selectedCoordinators.length > 0) {
-                    const refreshRes = await api.get(`/projekti/${projectId}/faze`);
-                    const kreiranaFaza = (refreshRes.data || []).find(f =>
-                        f.naziv === naziv && f.redosled === noviFaze.length
-                    );
-                    if (kreiranaFaza) {
-                        await api.put(`/faze/${kreiranaFaza.id}/pomocni-koordinatori`, {
-                            pomocniKoordinatoriIds: selectedCoordinators,
-                        });
+                // Ponovo postavi pomoćne koordinatore za sve faze (replace-all ih je obrisao)
+                const refreshRes = await api.get(`/projekti/${projectId}/faze`);
+                const refreshFaze = refreshRes.data || [];
+
+                for (const f of refreshFaze) {
+                    const isNovaFaza = f.naziv === naziv && f.redosled === noviFaze.length;
+
+                    let pkIds;
+                    if (isNovaFaza) {
+                        pkIds = selectedCoordinators;
+                    } else {
+                        const stara = pomocniPoNazivuIRedosledu.find(
+                            p => p.naziv === f.naziv && p.redosled === f.redosled
+                        );
+                        pkIds = stara?.pomocniKoordinatoriIds || [];
+                    }
+
+                    await api.put(`/faze/${f.id}/pomocni-koordinatori`, {
+                        pomocniKoordinatoriIds: pkIds,
+                    });
+
+                    if (isNovaFaza) {
+                        savedPhaseId = f.id;
                     }
                 }
             }
 
-            navigate(`/projects/${projectId}/info`);
+            // Učitaj preporuke volontera za sačuvanu fazu na osnovu
+            // potrebnih veština i dostupnosti u periodu trajanja faze
+            if (savedPhaseId) {
+                try {
+                    const recRes = await api.get(`/faze/${savedPhaseId}/preporuke-volontera`);
+                    setRecommendations(recRes.data);
+                } catch {
+                    setRecommendations(null);
+                }
+
+                if (!isEdit) {
+                    // Nakon kreiranja, pređi na edit mod ove faze da se zadrži
+                    // na istoj stranici i prikaže lista preporučenih volontera
+                    navigate(`/projects/${projectId}/phases/${savedPhaseId}/edit`, { replace: true });
+                }
+            } else {
+                navigate(`/projects/${projectId}/info`);
+            }
         } catch (e) {
             const data = e.response?.data;
             const msg = typeof data === "string"
@@ -315,6 +386,37 @@ const PhaseFormPage = () => {
                                 </label>
                             ))}
                         </div>
+                    </div>
+                )}
+
+                {/* Recommended volunteers */}
+                {isEdit && recommendations && (
+                    <div className="form-field" style={{ marginBottom: 14 }}>
+                        <label>Recommended volunteers</label>
+
+                        {recommendations.poruka && (
+                            <p className="error-text" style={{ marginTop: 6, marginBottom: 6 }}>
+                                {recommendations.poruka}
+                            </p>
+                        )}
+
+                        {(!recommendations.preporuceni || recommendations.preporuceni.length === 0) ? (
+                            <p style={{ fontSize: "0.88rem", color: "#777", marginTop: 6 }}>
+                                No available volunteers match the required skills for this phase.
+                            </p>
+                        ) : (
+                            <ol style={{ marginTop: 6, paddingLeft: 22 }}>
+                                {recommendations.preporuceni.map(vol => (
+                                    <li key={vol.id} style={{ marginBottom: 4, fontSize: "0.9rem" }}>
+                                        {vol.name} {vol.surname}
+                                        {" "}
+                                        <span style={{ color: "#777" }}>
+                                            ({vol.matchedSkillNames?.join(", ")} — {vol.matchedSkillsCount}/{vol.totalRequiredSkills})
+                                        </span>
+                                    </li>
+                                ))}
+                            </ol>
+                        )}
                     </div>
                 )}
 
