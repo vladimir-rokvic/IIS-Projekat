@@ -15,6 +15,8 @@ public class CreateTaskDTO {
     private LocalDate startDate;
     private LocalDate endDate;
 
+    private Long phaseId;
+
     public CreateTaskDTO() {}
 
     public String getName() {
@@ -71,5 +73,13 @@ public class CreateTaskDTO {
 
     public void setCoordinatorId(Long coordinatorId) {
         this.coordinatorId = coordinatorId;
+    }
+
+    public Long getPhaseId() {
+        return phaseId;
+    }
+
+    public void setPhaseId(Long phaseId) {
+        this.phaseId = phaseId;
     }
 }

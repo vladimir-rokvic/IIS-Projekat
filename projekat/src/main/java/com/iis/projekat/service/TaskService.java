@@ -20,6 +20,8 @@ public class TaskService {
     private PerformanceRepository performanceRepository;
     @Autowired
     private EmployeeRepository employeeRepository;
+    @Autowired
+    private ProjectPhaseRepository projectPhaseRepository;
 
     public void saveTask(CreateTaskDTO dto) {
         Task task = new Task();
@@ -32,6 +34,12 @@ public class TaskService {
         Employee coordiantor = employeeRepository.findById(dto.getCoordinatorId())
                 .orElse(null);
         task.setCoordinator(coordiantor);
+
+        if (dto.getPhaseId() != null) {
+            ProjectPhase phase = projectPhaseRepository.findById(dto.getPhaseId())
+                    .orElseThrow(() -> new IllegalArgumentException("Faza sa ID=" + dto.getPhaseId() + " ne postoji."));
+            task.setPhase(phase);
+        }
 
         Set<Skill> skills = new HashSet<>();
         for(SkillDTO s: dto.getRequiredSkills()) {
@@ -131,5 +139,14 @@ public class TaskService {
         );
 
         return performanceRepository.save(p);
+    }
+
+    public List<TaskDTO> getTasksForPhase(Long phaseId) {
+        List<Task> tasks = taskRepository.findAllByPhaseId(phaseId);
+        List<TaskDTO> ret = new ArrayList<>();
+        for (Task t : tasks) {
+            ret.add(new TaskDTO(t));
+        }
+        return ret;
     }
 }

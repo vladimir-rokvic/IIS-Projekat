@@ -5,6 +5,7 @@ import com.iis.projekat.model.Performance;
 import com.iis.projekat.model.Task;
 import com.iis.projekat.model.Volunteer;
 import com.iis.projekat.service.EmailService;
+import com.iis.projekat.service.ProjectPhaseService;
 import com.iis.projekat.service.TaskService;
 import com.iis.projekat.service.VolunteerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,9 +24,15 @@ public class TaskController {
     private EmailService emailService;
     @Autowired
     private VolunteerService volunteerService;
+    @Autowired
+    private ProjectPhaseService projectPhaseService;
 
     @PostMapping
     public ResponseEntity<?> saveTask(@RequestBody CreateTaskDTO dto) {
+        if (dto.getPhaseId() != null) {
+            projectPhaseService.provjeriMozeLiSePocetiFaza(dto.getPhaseId());
+        }
+
         if(dto.getVolunteerId() != null) {
             VolunteerDTO v = volunteerService.getVolunteerById(dto.getVolunteerId());
             if(v != null) {
@@ -37,6 +44,11 @@ public class TaskController {
         }
         taskService.saveTask(dto);
         return ResponseEntity.ok("All seems good");
+    }
+
+    @GetMapping("/phase/{phaseId}")
+    public ResponseEntity<List<TaskDTO>> getForPhase(@PathVariable Long phaseId) {
+        return ResponseEntity.ok(taskService.getTasksForPhase(phaseId));
     }
 
     @GetMapping("volunteer/{id}")

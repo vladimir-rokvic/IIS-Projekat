@@ -30,6 +30,10 @@ public class Task {
     private LocalDate startDate;
     private LocalDate endDate;
 
+    @ManyToOne
+    @JoinColumn(name = "phase_id")
+    private ProjectPhase phase;
+
     public Task() {}
 
     public Long getId() {
@@ -103,4 +107,7 @@ public class Task {
     public void setPerformance(Performance performance) {
         this.performance = performance;
     }
+
+    public ProjectPhase getPhase() { return phase; }
+    public void setPhase(ProjectPhase phase) { this.phase = phase; }
 }

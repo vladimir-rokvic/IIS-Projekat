@@ -58,7 +58,11 @@ public class ProjectPhase {
     )
     private List<Employee> pomocniKoordinatori = new ArrayList<>();
 
-    // --- Getteri i setteri ---
+    @OneToMany(mappedBy = "phase", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Task> taskovi = new ArrayList<>();
+
+    @Column(nullable = false)
+    private boolean zavrsena = false;
 
     public Long getId() { return id; }
 
@@ -89,5 +93,25 @@ public class ProjectPhase {
     public List<Employee> getPomocniKoordinatori() { return pomocniKoordinatori; }
     public void setPomocniKoordinatori(List<Employee> pomocniKoordinatori) {
         this.pomocniKoordinatori = pomocniKoordinatori;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public List<Task> getTaskovi() {
+        return taskovi;
+    }
+
+    public void setTaskovi(List<Task> taskovi) {
+        this.taskovi = taskovi;
+    }
+
+    public boolean isZavrsena() {
+        return zavrsena;
+    }
+
+    public void setZavrsena(boolean zavrsena) {
+        this.zavrsena = zavrsena;
     }
 }
