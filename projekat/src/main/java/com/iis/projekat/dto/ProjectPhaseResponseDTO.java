@@ -23,6 +23,10 @@ public class ProjectPhaseResponseDTO {
     public List<Long> pomocniKoordinatoriIds;
     public List<String> pomocniKoordinatoriImena;  // "Ime Prezime" za prikaz
 
+    public boolean zavrsena;
+
+    public List<TaskDTO> taskovi;
+
     public static ProjectPhaseResponseDTO from(ProjectPhase phase) {
         ProjectPhaseResponseDTO dto = new ProjectPhaseResponseDTO();
         dto.id = phase.getId();
@@ -33,6 +37,7 @@ public class ProjectPhaseResponseDTO {
         dto.rokKraj = phase.getRokKraj();
         dto.brojVolontera = phase.getBrojVolontera();
         dto.redosled = phase.getRedosled();
+        dto.zavrsena = phase.isZavrsena();
 
         dto.potrebneVestine = phase.getPotrebneVestine().stream()
                 .map(SkillTypeDTO::from)
@@ -44,6 +49,10 @@ public class ProjectPhaseResponseDTO {
 
         dto.pomocniKoordinatoriImena = phase.getPomocniKoordinatori().stream()
                 .map(e -> e.getName() + " " + e.getSurname())
+                .collect(Collectors.toList());
+
+        dto.taskovi = phase.getTaskovi().stream()
+                .map(TaskDTO::new)
                 .collect(Collectors.toList());
 
         return dto;

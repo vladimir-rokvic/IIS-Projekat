@@ -16,6 +16,10 @@ const PhaseFormPage = () => {
     const [allSkillTypes, setAllSkillTypes] = useState([]);
     const [allCoordinators, setAllCoordinators] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [tasks, setTasks] = useState([]);
+    const [zavrsena, setZavrsena] = useState(false);
+    const [finishing, setFinishing] = useState(false);
+    const [finishError, setFinishError] = useState("");
 
     // Form state
     const [naziv, setNaziv] = useState("");
@@ -52,10 +56,12 @@ const PhaseFormPage = () => {
                     setRedosled(faza.redosled ?? "");
                     setSelectedSkills(faza.potrebneVestine?.map(v => v.id) || []);
                     setSelectedCoordinators(faza.pomocniKoordinatoriIds || []);
+                    setTasks(faza.taskovi || []);
+                    setZavrsena(faza.zavrsena || false);
                 }
             }
         }).catch(() => {})
-          .finally(() => setLoading(false));
+            .finally(() => setLoading(false));
     }, [projectId, phaseId, isEdit]);
 
     const toggleSkill = (skillId) => {
@@ -180,6 +186,23 @@ const PhaseFormPage = () => {
             setError(msg);
         } finally {
             setSubmitting(false);
+        }
+    };
+
+    const handleFinishPhase = async () => {
+        setFinishError("");
+        setFinishing(true);
+        try {
+            await api.put(`/faze/${phaseId}/zavrsi`);
+            setZavrsena(true);
+        } catch (e) {
+            const data = e.response?.data;
+            const msg = typeof data === "string"
+                ? data
+                : data?.message || data?.error || "Error marking phase as finished.";
+            setFinishError(msg);
+        } finally {
+            setFinishing(false);
         }
     };
 
@@ -347,6 +370,70 @@ const PhaseFormPage = () => {
                     )}
                 </div>
             </div>
+
+            {isEdit && (
+                <div className="form-section">
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+                        <h3 style={{ margin: 0 }}>Tasks</h3>
+                        <div style={{ display: "flex", gap: 8 }}>
+                            {zavrsena ? (
+                                <span className="status-badge" style={{ backgroundColor: "#d4edda", color: "#155724" }}>
+                                    Phase finished
+                                </span>
+                            ) : (
+                                <button
+                                    className="btn-primary"
+                                    style={{ marginTop: 0 }}
+                                    onClick={handleFinishPhase}
+                                    disabled={finishing}
+                                >
+                                    {finishing ? "Saving..." : "Mark phase as finished"}
+                                </button>
+                            )}
+                            <button
+                                className="btn-primary"
+                                style={{ marginTop: 0 }}
+                                onClick={() => navigate(`/projects/${projectId}/phases/${phaseId}/tasks/new`)}
+                            >
+                                Add task +
+                            </button>
+                        </div>
+                    </div>
+
+                    {finishError && <p className="error-text" style={{ marginBottom: 8 }}>{finishError}</p>}
+
+                    {tasks.length === 0 ? (
+                        <p style={{ fontSize: "0.88rem", color: "#777" }}>No tasks added yet.</p>
+                    ) : (
+                        tasks.map((task, index) => (
+                            <div key={task.id} className="phase-card">
+                                <div style={{ flex: 1 }}>
+                                    <div className="info-row">
+                                        <span className="info-label" style={{ fontWeight: 700 }}>Task {index + 1}:</span>
+                                        <span>{task.name}</span>
+                                    </div>
+                                    <div className="info-row"><span className="info-label">Description</span><span>{task.description || "—"}</span></div>
+                                    <div className="info-row"><span className="info-label">Start date</span><span>{task.startDate}</span></div>
+                                    <div className="info-row"><span className="info-label">End date</span><span>{task.endDate}</span></div>
+                                    {task.volunteer && (
+                                        <div className="info-row">
+                                            <span className="info-label">Volunteer</span>
+                                            <span>{task.volunteer.name} {task.volunteer.surname}</span>
+                                        </div>
+                                    )}
+                                </div>
+                                <button
+                                    className="btn-primary"
+                                    style={{ marginTop: 0, alignSelf: "flex-start", whiteSpace: "nowrap" }}
+                                    onClick={() => navigate(`/projects/${projectId}/phases/${phaseId}/tasks/${task.id}/edit`)}
+                                >
+                                    Edit
+                                </button>
+                            </div>
+                        ))
+                    )}
+                </div>
+            )}
 
             {error && <p className="error-text" style={{ marginBottom: 8 }}>{error}</p>}
 

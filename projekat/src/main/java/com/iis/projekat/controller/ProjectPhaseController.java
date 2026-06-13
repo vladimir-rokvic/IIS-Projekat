@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import com.iis.projekat.dto.ProjectPhaseCreateDTO;
 
 import java.util.List;
 import java.util.Map;
@@ -81,4 +82,66 @@ public class ProjectPhaseController {
         return employeeRepository.findByEmail(userDetails.getUsername())
                 .orElseThrow(() -> new SecurityException("Korisnik nije zaposleni."));
     }
+
+    @PutMapping("/api/faze/{phaseId}/zavrsi")
+    public ResponseEntity<ProjectPhaseResponseDTO> zavrshiFazu(
+            @PathVariable Long phaseId,
+            @AuthenticationPrincipal UserDetails userDetails) {
+
+        Employee koordinator = getUlogovanog(userDetails);
+        return ResponseEntity.ok(phaseService.zavrsiFazu(phaseId, koordinator.getId()));
+    }
+
+    /**
+     * Koordinator predlaže novu fazu projekta (kada su sve faze završene).
+     * Projekat prelazi u CEKA_ODOBRENJE_NOVE_FAZE.
+     * POST /api/projekti/{id}/nova-faza
+     * Body: { "faza": {...}, "razlog": "..." }
+     */
+    @PostMapping("/api/projekti/{id}/nova-faza")
+    public ResponseEntity<ProjectPhaseResponseDTO> predloziNovuFazu(
+            @PathVariable Long id,
+            @AuthenticationPrincipal UserDetails userDetails,
+            @RequestBody Map<String, Object> body) {
+
+        Employee koordinator = getUlogovanog(userDetails);
+
+        // Deserijalizuj manuelno iz mape
+        @SuppressWarnings("unchecked")
+        Map<String, Object> fazaMap = (Map<String, Object>) body.get("faza");
+        String razlog = (String) body.get("razlog");
+
+        ProjectPhaseCreateDTO dto = new ProjectPhaseCreateDTO();
+        dto.naziv = (String) fazaMap.get("naziv");
+        dto.ciljevi = (String) fazaMap.get("ciljevi");
+        dto.rokPocetak = (String) fazaMap.get("rokPocetak");
+        dto.rokKraj = (String) fazaMap.get("rokKraj");
+        dto.brojVolontera = (Integer) fazaMap.get("brojVolontera");
+        @SuppressWarnings("unchecked")
+        List<Long> vestineIds = (List<Long>) fazaMap.get("potrebneVestineIds");
+        dto.potrebneVestineIds = vestineIds;
+
+        return ResponseEntity.ok(phaseService.predloziNovuFazu(id, koordinator.getId(), dto, razlog));
+    }
+
+    /**
+     * Menadžer odobrava ili odbija predloženu novu fazu.
+     * PUT /api/projekti/{id}/nova-faza/odluka
+     * Body: { "odobri": true, "razlog": "..." }
+     */
+    @PutMapping("/api/projekti/{id}/nova-faza/odluka")
+    public ResponseEntity<?> odluciONovajFazi(
+            @PathVariable Long id,
+            @RequestBody Map<String, Object> body) {
+
+        boolean odobri = (Boolean) body.get("odobri");
+        String razlog = (String) body.getOrDefault("razlog", null);
+
+        ProjectPhaseResponseDTO result = phaseService.odluciONovajFazi(id, odobri, razlog);
+        if (result == null) {
+            return ResponseEntity.ok(Map.of("poruka", "Nova faza je odbijena i obrisana."));
+        }
+        return ResponseEntity.ok(result);
+    }
+
 }

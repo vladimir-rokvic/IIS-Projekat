@@ -292,4 +292,26 @@ public class ProjectService {
                 .collect(Collectors.toList());
     }
 
+    public ProjectResponseDTO zatvoriProjekat(Long projektId, Long koordinatorId) {
+        Project p = nadjiProjekat(projektId);
+        provjeriVlasnistvo(p, koordinatorId);
+
+        if (p.getStatus() != ProjectStatus.ODOBREN) {
+            throw new IllegalStateException(
+                    "Projekat se može zatvoriti samo ako je u statusu ODOBREN.");
+        }
+
+        // Provjeri da je poslednja faza zaista završena
+        boolean sveFazeZavrsene = p.getFaze().isEmpty() ||
+                p.getFaze().stream().allMatch(f -> f.isZavrsena());
+        if (!sveFazeZavrsene) {
+            throw new IllegalStateException(
+                    "Nije moguće zatvoriti projekat — nisu sve faze završene.");
+        }
+
+        p.setStatus(ProjectStatus.ZAVRSEN);
+        return ProjectResponseDTO.from(projectRepository.save(p));
+    }
+
+
 }

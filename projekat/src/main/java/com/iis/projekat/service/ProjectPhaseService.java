@@ -204,4 +204,158 @@ public class ProjectPhaseService {
                     "Faze se mogu postavljati samo za projekte u statusu ODOBREN.");
         }
     }
+
+    /**
+     * Koordinator označava fazu kao završenu.
+     *
+     * Pravilo: ako projekat NEMA dozvoljeno preklapanje faza,
+     * sledeća faza po redosledu ne sme biti "aktivna" (tj. ne može
+     * se krenuti sa njom dok prethodna nije završena).
+     * Ova metoda samo postavlja flag — sistem na frontendu / u servisu
+     * za taskove treba da proveri da li je prethodna faza završena
+     * pre nego što dozvoli akcije na sledećoj fazi.
+     *
+     * PUT /api/faze/{phaseId}/zavrsi
+     */
+    @Transactional
+    public ProjectPhaseResponseDTO zavrsiFazu(Long phaseId, Long koordinatorId) {
+        ProjectPhase faza = nadjisFazu(phaseId);
+        provjeriVlasnistvo(faza.getProject(), koordinatorId);
+
+        if (faza.isZavrsena()) {
+            throw new IllegalStateException("Faza je već označena kao završena.");
+        }
+
+        faza.setZavrsena(true);
+        ProjectPhase sacuvana = phaseRepository.save(faza);
+
+        // Ako je ovo poslednja faza projekta — projekat prelazi u ZAVRSEN automatski
+        // (koordinator ga može i eksplicitno zatvoriti, ali ovo je automatski signal)
+        // Ostavljamo koordinatoru da donese odluku putem
+        // endpoint-a za zatvaranje projekta.
+
+        return ProjectPhaseResponseDTO.from(sacuvana);
+    }
+
+    /**
+     * Provjera da li je prethodna faza završena pre nego što se dozvole
+     * akcije (kreiranje taskova, itd.) na sledećoj fazi.
+     * Baca IllegalStateException ako uslov nije ispunjen.
+     */
+    public void provjeriMozeLiSePocetiFaza(Long phaseId) {
+        ProjectPhase faza = nadjisFazu(phaseId);
+        Project project = faza.getProject();
+
+        // Ako se faze mogu preklapati — nema restrikcija
+        if (project.isFazeMoguDaSePreklapaju()) {
+            return;
+        }
+
+        // Nađi fazu sa manjim redosledom (prethodna faza)
+        List<ProjectPhase> sveFaze = phaseRepository.findByProjectIdOrderByRedosled(project.getId());
+        for (ProjectPhase prethodna : sveFaze) {
+            if (prethodna.getRedosled() < faza.getRedosled() && !prethodna.isZavrsena()) {
+                throw new IllegalStateException(
+                        "Nije moguće raditi na fazi '" + faza.getNaziv()
+                                + "' jer prethodna faza '" + prethodna.getNaziv()
+                                + "' još nije završena.");
+            }
+        }
+    }
+
+    @Transactional
+    public ProjectPhaseResponseDTO predloziNovuFazu(Long projectId,
+                                                    Long koordinatorId,
+                                                    ProjectPhaseCreateDTO dto,
+                                                    String razlog) {
+        Project project = nadjiProjekat(projectId);
+        provjeriVlasnistvo(project, koordinatorId);
+
+        if (project.getStatus() != ProjectStatus.ODOBREN) {
+            throw new IllegalStateException(
+                    "Nova faza se može predložiti samo za projekte u statusu ODOBREN.");
+        }
+
+        if (razlog == null || razlog.isBlank()) {
+            throw new IllegalArgumentException("Razlog za dodavanje nove faze je obavezan.");
+        }
+
+        // Provjera da li su sve postojeće faze završene
+        List<ProjectPhase> sveFaze = phaseRepository.findByProjectIdOrderByRedosled(projectId);
+        boolean sveZavrsene = sveFaze.stream().allMatch(ProjectPhase::isZavrsena);
+        if (!sveZavrsene) {
+            throw new IllegalStateException(
+                    "Nova faza se može dodati tek kada su sve postojeće faze završene.");
+        }
+
+        // Odredi sledeći redosled
+        int sledeciRedosled = sveFaze.stream()
+                .mapToInt(ProjectPhase::getRedosled)
+                .max()
+                .orElse(0) + 1;
+
+        // Kreiraj fazu ali je označi kao "čeka odobrenje" (zavrsena = false, ali status projekta se menja)
+        ProjectPhase novaFaza = new ProjectPhase();
+        novaFaza.setProject(project);
+        novaFaza.setNaziv(dto.naziv);
+        novaFaza.setCiljevi(dto.ciljevi);
+        novaFaza.setRokPocetak(LocalDate.parse(dto.rokPocetak));
+        novaFaza.setRokKraj(LocalDate.parse(dto.rokKraj));
+        novaFaza.setBrojVolontera(dto.brojVolontera);
+        novaFaza.setRedosled(sledeciRedosled);
+
+        if (dto.potrebneVestineIds != null && !dto.potrebneVestineIds.isEmpty()) {
+            novaFaza.setPotrebneVestine(skillTypeRepository.findAllById(dto.potrebneVestineIds));
+        }
+
+        ProjectPhase sacuvanaFaza = phaseRepository.save(novaFaza);
+
+        // Projekat čeka odobrenje nove faze od menadžera
+        project.setRazlog(razlog);
+        project.setStatus(ProjectStatus.CEKA_ODOBRENJE_NOVE_FAZE);
+        projectRepository.save(project);
+
+        return ProjectPhaseResponseDTO.from(sacuvanaFaza);
+    }
+
+    /**
+     * Menadžer odobrava ili odbija novu fazu projekta.
+     * Ako odobri → projekat ostaje/vraća se u ODOBREN.
+     * Ako odbije → projekat se vraća u ODOBREN, nova faza se briše.
+     *
+     * PUT /api/projekti/{id}/nova-faza/odluka
+     * Body: { "odobri": true/false, "razlog": "..." }
+     */
+    @Transactional
+    public ProjectPhaseResponseDTO odluciONovajFazi(Long projectId, boolean odobri, String razlog) {
+        Project project = nadjiProjekat(projectId);
+
+        if (project.getStatus() != ProjectStatus.CEKA_ODOBRENJE_NOVE_FAZE) {
+            throw new IllegalStateException(
+                    "Projekat nije u statusu CEKA_ODOBRENJE_NOVE_FAZE.");
+        }
+
+        // Poslednja dodata faza je ona sa najvećim redosledom
+        List<ProjectPhase> sveFaze = phaseRepository.findByProjectIdOrderByRedosled(projectId);
+        if (sveFaze.isEmpty()) {
+            throw new IllegalStateException("Nema faza na projektu.");
+        }
+        ProjectPhase novaFaza = sveFaze.get(sveFaze.size() - 1);
+
+        if (odobri) {
+            project.setStatus(ProjectStatus.ODOBREN);
+            project.setRazlog(null);
+            projectRepository.save(project);
+            return ProjectPhaseResponseDTO.from(novaFaza);
+        } else {
+            // Obriši novu fazu
+            phaseRepository.delete(novaFaza);
+            project.setStatus(ProjectStatus.ODOBREN);
+            project.setRazlog(razlog);
+            projectRepository.save(project);
+            return null;
+        }
+    }
+
+
 }

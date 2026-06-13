@@ -21,6 +21,9 @@ public class TaskDTO {
     private LocalDate startDate;
     private LocalDate endDate;
 
+    private Long phaseId;
+    private String phaseNaziv;
+
     public TaskDTO() {}
 
     public TaskDTO(Task t) {
@@ -52,6 +55,11 @@ public class TaskDTO {
             this.performance = new PerformanceDTO(t.getPerformance());
         } else {
             this.performance = null;
+        }
+
+        if (t.getPhase() != null) {
+            this.phaseId = t.getPhase().getId();
+            this.phaseNaziv = t.getPhase().getNaziv();
         }
     }
 
@@ -125,5 +133,21 @@ public class TaskDTO {
 
     public void setPerformance(PerformanceDTO performance) {
         this.performance = performance;
+    }
+
+    public Long getPhaseId() {
+        return phaseId;
+    }
+
+    public void setPhaseId(Long phaseId) {
+        this.phaseId = phaseId;
+    }
+
+    public String getPhaseNaziv() {
+        return phaseNaziv;
+    }
+
+    public void setPhaseNaziv(String phaseNaziv) {
+        this.phaseNaziv = phaseNaziv;
     }
 }

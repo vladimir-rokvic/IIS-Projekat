@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface TaskRepository extends JpaRepository<Task, Long> {
     public List<Task> findAllByVolunteerId(Long volunteerId);
+
+    List<Task> findAllByPhaseId(Long phaseId);
 }

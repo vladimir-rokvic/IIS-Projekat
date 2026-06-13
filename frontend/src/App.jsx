@@ -46,6 +46,7 @@ import CreatePackage from "./pages/CreatePackage";
 
 import ProjectInformationPage from "./pages/ProjectInformationPage";
 import PhaseFormPage from "./pages/PhaseFormPage";
+import PhaseTaskFormPage from "./pages/PhaseTaskFormPage";
 
 function App() {
 	return (
@@ -100,7 +101,9 @@ function App() {
 					<Route path="/projects/:id/info" element={<PrivateRoute allowedRoles={["COORDINATOR"]}><ProjectInformationPage /></PrivateRoute>} />
 					<Route path="/projects/:id/phases/new" element={<PrivateRoute allowedRoles={["COORDINATOR"]}><PhaseFormPage /></PrivateRoute>} />
 					<Route path="/projects/:id/phases/:phaseId/edit" element={<PrivateRoute allowedRoles={["COORDINATOR"]}><PhaseFormPage /></PrivateRoute>} />
-
+					<Route path="/projects/:id/phases/:phaseId/tasks/new" element={<PrivateRoute allowedRoles={["COORDINATOR"]}><PhaseTaskFormPage /></PrivateRoute>} />
+					<Route path="/projects/:id/phases/:phaseId/tasks/:taskId/edit" element={<PrivateRoute allowedRoles={["COORDINATOR"]}><PhaseTaskFormPage /></PrivateRoute>} />
+					
 					<Route path="*" element={<Navigate to="/login" replace />} />
 				</Routes>
 			</BrowserRouter>
