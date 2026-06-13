@@ -206,6 +206,12 @@ const PhaseFormPage = () => {
         }
     };
 
+    // Samo pomoćni koordinatori projekta mogu biti dodeljeni kao koordinatori faze
+    const projectAssistantCoordinatorIds = project?.pomocniKoordinatoriIds || [];
+    const availableCoordinators = allCoordinators.filter(c =>
+        projectAssistantCoordinatorIds.includes(c.id)
+    );
+
     if (loading) return <div className="loading-text">Loading...</div>;
 
     return (
@@ -315,8 +321,10 @@ const PhaseFormPage = () => {
                 {/* Phase coordinator */}
                 <div className="form-field" style={{ marginBottom: 14 }}>
                     <label>Phase coordinator(s)</label>
-                    {allCoordinators.length === 0 ? (
-                        <p style={{ fontSize: "0.85rem", color: "#777" }}>No coordinators available.</p>
+                    {availableCoordinators.length === 0 ? (
+                        <p style={{ fontSize: "0.85rem", color: "#777" }}>
+                            No assistant coordinators have been added to this project yet.
+                        </p>
                     ) : (
                         <select
                             value=""
@@ -329,7 +337,7 @@ const PhaseFormPage = () => {
                             style={{ padding: "8px 12px", backgroundColor: "#e0e0e0", border: "1px solid #bbb", borderRadius: 6, fontSize: "0.88rem" }}
                         >
                             <option value="">Select coordinator</option>
-                            {allCoordinators.map(coord => (
+                            {availableCoordinators.map(coord => (
                                 <option key={coord.id} value={coord.id}>
                                     {coord.ime} {coord.prezime}
                                 </option>
