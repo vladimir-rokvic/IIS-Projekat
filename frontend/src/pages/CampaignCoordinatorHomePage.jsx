@@ -16,15 +16,13 @@ const CampaignCoordinatorHomePage = () => {
 
 	return (
 		<div className="campaign-content">
-			<div className="campaign-page-header">
-				<h1 className="campaign-page-title">Dashboard overview</h1>
-				<button
-					className="campaign-action-btn"
-					type="button"
-					onClick={() => navigate("/campaign-coordinator/create-campaign")}
-				>
-					+ Create campaign
-				</button>
+			<div className="campaign-header" style={{ marginTop: 20 }}>
+				<div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+					<h1 className="campaign-page-title" style={{ marginBottom: 34 }}>Dashboard overview</h1>
+					<button className="btn-primary" onClick={() => navigate('/campaign-coordinator')}>
+						Back to dashboard
+					</button>
+				</div>
 			</div>
 
 			<section className="campaign-stats-grid">
