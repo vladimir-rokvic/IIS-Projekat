@@ -29,10 +29,14 @@ const PhaseTaskFormPage = () => {
 
     useEffect(() => {
         Promise.all([
-            api.get(`/volunteer`),
+            api.get(`/faze/${phaseId}/preporuke-volontera`),
             isEdit ? api.get(`/tasks/${taskId}`) : Promise.resolve({ data: null }),
-        ]).then(([volRes, taskRes]) => {
-            setAllVolunteers(volRes.data || []);
+        ]).then(([recRes, taskRes]) => {
+            let volunteers = (recRes.data?.preporuceni || []).map(v => ({
+                id: v.id,
+                name: v.name,
+                surname: v.surname,
+            }));
 
             if (isEdit && taskRes.data) {
                 const t = taskRes.data;
@@ -41,10 +45,21 @@ const PhaseTaskFormPage = () => {
                 setStartDate(t.startDate || "");
                 setEndDate(t.endDate || "");
                 setSelectedVolunteers(t.volunteer ? [t.volunteer.id] : []);
+
+                // Ako trenutno dodeljeni volonter nije u listi preporučenih
+                // (npr. zbog promene skillova), ipak ga prikaži kao opciju
+                if (t.volunteer && !volunteers.some(v => v.id === t.volunteer.id)) {
+                    volunteers = [
+                        { id: t.volunteer.id, name: t.volunteer.name, surname: t.volunteer.surname },
+                        ...volunteers,
+                    ];
+                }
             }
+
+            setAllVolunteers(volunteers);
         }).catch(() => {})
-          .finally(() => setLoading(false));
-    }, [taskId, isEdit]);
+            .finally(() => setLoading(false));
+    }, [taskId, isEdit, phaseId]);
 
     const toggleVolunteer = (volunteerId) => {
         // Backend trenutno podržava samo jednog volontera po tasku
@@ -161,7 +176,9 @@ const PhaseTaskFormPage = () => {
                 <div className="form-field" style={{ marginBottom: 14 }}>
                     <label>Volunteers *</label>
                     {allVolunteers.length === 0 ? (
-                        <p style={{ fontSize: "0.85rem", color: "#777" }}>No volunteers available.</p>
+                        <p style={{ fontSize: "0.85rem", color: "#777" }}>
+                            No recommended volunteers available for this phase. Try adjusting the required skills or number of volunteers needed.
+                        </p>
                     ) : (
                         <select
                             value=""
