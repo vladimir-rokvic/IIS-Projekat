@@ -49,4 +49,11 @@ public class ReturnDocumentController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("/{id}/send")
+    public ResponseEntity<?> send(@PathVariable Long id) {
+        boolean ok = returnDocumentService.sendReturnDocument(id);
+        if(!ok) return ResponseEntity.badRequest().build();
+        return ResponseEntity.ok().build();
+    }
+
 }

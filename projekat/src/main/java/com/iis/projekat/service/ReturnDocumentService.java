@@ -4,10 +4,7 @@ import com.iis.projekat.dto.DonationCreateDTO;
 import com.iis.projekat.dto.DonationDTO;
 import com.iis.projekat.dto.ReturnDocumentCreateDTO;
 import com.iis.projekat.dto.ReturnDocumentDTO;
-import com.iis.projekat.model.Donation;
-import com.iis.projekat.model.Donor;
-import com.iis.projekat.model.Project;
-import com.iis.projekat.model.ReturnDocument;
+import com.iis.projekat.model.*;
 import com.iis.projekat.repository.DonationRepository;
 import com.iis.projekat.repository.DonorRepository;
 import com.iis.projekat.repository.ProjectRepository;
@@ -49,6 +46,18 @@ public class ReturnDocumentService {
         return mapper.toReturnDocumentDto(rd);
     }
 
+    public ReturnDocumentDTO createReturnDocument(Donation donation) {
+        ReturnDocument rd = new ReturnDocument();
+        rd.setIssuedDate(java.time.LocalDate.now());
+        rd.setContent("Return document for donation with ID: " + donation.getId());
+        rd.setDocumentType(DocumentType.RECEIPT);
+        rd.setDocumentStatus(DocumentStatus.DRAFT);
+        rd.setDonation(donation);
+
+        returnDocumentRepository.save(rd);
+        return mapper.toReturnDocumentDto(rd);
+    }
+
     public boolean updateReturnDocument(Long id, ReturnDocumentCreateDTO dto) {
         ReturnDocument rd = returnDocumentRepository.findById(id).orElse(null);
         if(rd == null) return false;
@@ -81,5 +90,14 @@ public class ReturnDocumentService {
     public java.util.Optional<ReturnDocumentDTO> findByDonation(Long donationId) {
         return returnDocumentRepository.findByDonation_Id(donationId)
                 .map(mapper::toReturnDocumentDto);
+    }
+
+    public boolean sendReturnDocument(Long id) {
+        ReturnDocument rd = returnDocumentRepository.findById(id).orElse(null);
+        if(rd == null) return false;
+
+        rd.setDocumentStatus(DocumentStatus.SENT);
+        returnDocumentRepository.save(rd);
+        return true;
     }
 }

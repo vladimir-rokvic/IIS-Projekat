@@ -22,6 +22,7 @@ import CampaignCoordinatorHomePage from "./pages/CampaignCoordinatorHomePage";
 import CampaignCoordinatorAllCampaignsPage from "./pages/CampaignCoordinatorAllCampaignsPage";
 import CampaignCoordinatorCreateCampaignPage from "./pages/CampaignCoordinatorCreateCampaignPage";
 import CampaignCoordinatorStatisticsPage from "./pages/CampaignCoordinatorStatisticsPage";
+import ReturnDocumentsPage from "./pages/CampaignCoordinatorDocuments";
 import VolunteerDashboard from "./pages/VolunteerDashboard";
 import ProjectDeniedPage from "./pages/ProjectDeniedPage";
 import ProjectAcceptedPage from "./pages/ProjectAcceptedPage";
@@ -69,6 +70,7 @@ function App() {
 					<Route path="/campaign-coordinator/campaigns" element={<PrivateRoute allowedRoles={["CAMPAIGN_COORDINATOR"]}><CampaignCoordinatorAllCampaignsPage /></PrivateRoute>} />
 					<Route path="/campaign-coordinator/create-campaign" element={<PrivateRoute allowedRoles={["CAMPAIGN_COORDINATOR"]}><CampaignCoordinatorCreateCampaignPage /></PrivateRoute>} />
 					<Route path="/campaign-coordinator/statistics" element={<PrivateRoute allowedRoles={["CAMPAIGN_COORDINATOR"]}><CampaignCoordinatorStatisticsPage /></PrivateRoute>} />
+					<Route path="/campaign-coordinator/return-documents" element={<PrivateRoute allowedRoles={["CAMPAIGN_COORDINATOR"]}><ReturnDocumentsPage /></PrivateRoute>} />
 
 					<Route path="/profile" element={<PrivateRoute><UserProfilePage /></PrivateRoute>}/>
 					<Route path="/volunteer/update" element={<PrivateRoute><VolunteerUpdatePage /></PrivateRoute>}/>

@@ -42,14 +42,22 @@ const CampaignCoordinatorDashboard = () => {
 					</button>
 				</div>
 			</div>
-				<br />
-				<div className="dashboard-card">
-					<h2>Statistics</h2>
-					<p>View analytics and reports for your campaigns.</p>
-					<button className="btn-primary" onClick={() => navigate('/campaign-coordinator/statistics')}>
-						See statistics
-					</button>
-				</div>
+			<br />
+			<div className="dashboard-card">
+				<h2>Statistics</h2>
+				<p>View analytics and reports for your campaigns.</p>
+				<button className="btn-primary" onClick={() => navigate('/campaign-coordinator/statistics')}>
+					See statistics
+				</button>
+			</div>
+			<br />
+			<div className="dashboard-card">
+				<h2>Documents</h2>
+				<p>View and manage return documents for your campaigns.</p>
+				<button className="btn-primary" onClick={() => navigate('/campaign-coordinator/return-documents')}>
+					See documents
+				</button>
+			</div>
 			</div>
 		</div>
     );
