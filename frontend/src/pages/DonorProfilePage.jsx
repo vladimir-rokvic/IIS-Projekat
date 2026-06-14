@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import api from "../api/axios";
 import "./DonorDashboard.css";
+import { useNavigate } from "react-router-dom";
 
 const DonorProfilePage = () => {
 	const [donor, setDonor] = useState(null);
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		const fetchDonor = async () => {
@@ -32,7 +34,14 @@ const DonorProfilePage = () => {
 
 	return (
 		<div className="donor-content">
-			<h1 className="donor-page-title">My profile</h1>
+			<div className="donor-header" style={{marginTop: 20}}>
+			<div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+				<h1 className="donor-page-title">My profile</h1>
+				<button className="btn-primary" onClick={() => navigate('/donor')}>
+					Back to dashboard
+				</button>
+			</div>
+			</div>
 
 			<section className="donor-panel donor-profile-card">
 				<div className="donor-profile-top">

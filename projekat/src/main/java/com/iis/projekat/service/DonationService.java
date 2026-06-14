@@ -29,6 +29,9 @@ public class DonationService {
     @Autowired
     private DtoMapperService mapper;
 
+    @Autowired
+    private ReturnDocumentService returnDocumentService;
+
     public DonationDTO createDonation(DonationCreateDTO dto) {
         Donation d = new Donation();
         d.setAmount(dto.getAmount());
@@ -50,6 +53,9 @@ public class DonationService {
         }
 
         donationRepository.save(d);
+
+        returnDocumentService.createReturnDocument(d);
+
         return mapper.toDonationDto(d);
     }
 

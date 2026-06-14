@@ -1,9 +1,18 @@
 import "./CampaignCoordinatorDashboard.css";
+import { useNavigate } from "react-router-dom";
 
 const CampaignCoordinatorStatisticsPage = () => {
+	const navigate = useNavigate();
 	return (
 		<div className="campaign-content">
-			<h1 className="campaign-page-title" style={{ marginBottom: 30 }}>Campaign statistics</h1>
+			<div className="campaign-header" style={{ marginTop: 20 }}>
+				<div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+			<h1 className="campaign-page-title" style={{ marginBottom: 34 }}>Campaign statistics</h1>
+					<button className="btn-primary" onClick={() => navigate('/campaign-coordinator')}>
+						Back to dashboard
+					</button>
+				</div>
+			</div>
 			<section className="campaign-stats-layout">
 				<div className="campaign-chart-card">
 					<div className="campaign-chart-title">Donation trends</div>
