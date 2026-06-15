@@ -1,6 +1,7 @@
 package com.iis.projekat.dto;
 
 import com.iis.projekat.model.Skill;
+import com.iis.projekat.model.SkillType;
 
 //da li mi je ovo uopste i potrebno ili samo da sve radim preko skill klase
 public class SkillDTO {
@@ -12,6 +13,10 @@ public class SkillDTO {
     }
 
     public SkillDTO() {}
+
+    public SkillDTO(SkillType st) {
+        this.name = st.getName();
+    }
 
     public String getName() {
         return name;

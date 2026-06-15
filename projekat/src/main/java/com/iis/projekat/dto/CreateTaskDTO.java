@@ -8,6 +8,7 @@ public class CreateTaskDTO {
     private String description;
 
     private Set<SkillDTO> requiredSkills;
+    private Set<SkillTypeDTO> requiredSkillTypes;
 
     private Long volunteerId;
     private Long coordinatorId;
@@ -81,5 +82,13 @@ public class CreateTaskDTO {
 
     public void setPhaseId(Long phaseId) {
         this.phaseId = phaseId;
+    }
+
+    public Set<SkillTypeDTO> getRequiredSkillTypes() {
+        return requiredSkillTypes;
+    }
+
+    public void setRequiredSkillTypes(Set<SkillTypeDTO> requiredSkillTypes) {
+        this.requiredSkillTypes = requiredSkillTypes;
     }
 }

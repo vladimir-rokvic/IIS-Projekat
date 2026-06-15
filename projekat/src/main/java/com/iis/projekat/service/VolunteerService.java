@@ -1,15 +1,15 @@
 package com.iis.projekat.service;
 
-import com.iis.projekat.dto.VolunteerDTO;
-import com.iis.projekat.dto.VolunteerUpdateDTO;
-import com.iis.projekat.model.Address;
-import com.iis.projekat.model.Skill;
-import com.iis.projekat.model.Volunteer;
+import com.iis.projekat.dto.*;
+import com.iis.projekat.model.*;
 import com.iis.projekat.repository.AddressRepository;
+import com.iis.projekat.repository.PerformanceRepository;
+import com.iis.projekat.repository.TaskRepository;
 import com.iis.projekat.repository.VolunteerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,10 +25,18 @@ public class VolunteerService {
     @Autowired
     private AddressRepository addressRepository;
 
+    @Autowired
+    private TaskRepository taskRepository;
+
+    @Autowired
+    private PerformanceRepository performanceRepository;
+
     private final PasswordEncoder passwordEncoder;
+    private final RestTemplate restTemplate;
 
     public VolunteerService(PasswordEncoder passwordEncoder) {
         this.passwordEncoder = passwordEncoder;
+        this.restTemplate = new RestTemplate();
     }
 
     public boolean saveVolunteer(VolunteerUpdateDTO dto) {
@@ -133,6 +141,72 @@ public class VolunteerService {
     public VolunteerDTO getVolunteerById(Long id) {
         Volunteer v = volunteerRepository.findById(id).orElseThrow();
         return new VolunteerDTO(v);
+    }
+
+    public List<VolunteerDTO> rank(Long taskId) {
+        Task task = taskRepository.findById(taskId).orElse(null);
+        if(task == null) return null;
+
+        List<Volunteer> volunteers = volunteerRepository.findAll();
+
+        List<String> taskSkillTypes = new ArrayList<>();
+        for(SkillType st: task.getRequiredSkillTypes()){
+            taskSkillTypes.add(st.getName());
+        }
+
+        List<VolunteerPredictDTO> volunteerPredictDTOS = new ArrayList<>();
+        for(Volunteer v: volunteers) {
+            VolunteerPredictDTO dto = new VolunteerPredictDTO();
+
+            dto.setVolunteerId(v.getId());
+            Double avgGrade =
+                    performanceRepository.findAverageGradeByVolunteerId(v.getId());
+            if(avgGrade == null)
+                dto.setAvgGrade(3.0);
+            else
+                dto.setAvgGrade(avgGrade);
+
+            List<String> skills = new ArrayList<>();
+            for(Skill s: v.getSkills()){
+                skills.add(s.getName());
+            }
+            dto.setVolunteerSkills(skills);
+
+            List<String> skillTypes = new ArrayList<>();
+            for(SkillType st: v.getVolunteerSkillTypes()) {
+                skillTypes.add(st.getName());
+            }
+            dto.setVolunteerSkillTypes(skillTypes);
+
+            volunteerPredictDTOS.add(dto);
+        }
+
+        PredictRequestDTO req = new PredictRequestDTO();
+        req.setTaskSkillTypes(taskSkillTypes);
+        req.setVolunteers(volunteerPredictDTOS);
+
+        PredictionResponseDTO response = restTemplate.postForObject(
+                "http://localhost:8000/model/predict",
+                req,
+                PredictionResponseDTO.class
+        );
+
+        List<VolunteerDTO> ret = new ArrayList<>();
+
+        for(Volunteer v: volunteers) {
+            VolunteerDTO vdto = new VolunteerDTO(v);
+
+            for(PredictionDTO p: response.getPredictions()) {
+                if (p.getVolunteerId().equals(v.getId())) {
+                    vdto.setPredictedGrade(p.getPredictedRating());
+                    break;
+                }
+            }
+
+            ret.add(vdto);
+        }
+
+        return ret;
     }
 
     public void deleteVolunteer(Long id) {

@@ -18,6 +18,8 @@ public class Performance {
     @JoinColumn(name = "task_id")
     private Task task;
 
+    public Performance() {}
+
     public Performance(Double grade, String comment, Volunteer v, Task t) {
         this.grade = grade;
         this.comment = comment;
