@@ -58,7 +58,7 @@ const TaskDetailsPage = () => {
 
             <div className="coordinator-section">
                 <div className="coordinator-row">
-				    {volunteer ? (
+				    {task.coordinator && (
 						<div className="choosen-volunteer">
 							<div style={{display: 'flex'}}>
                     		<div className="avatar-small" />
@@ -73,11 +73,6 @@ const TaskDetailsPage = () => {
 							<h3>Address</h3>
 							<p className="contact-info">{volunteer.address.street}  {volunteer.address.city} {volunteer.address.country}</p>
 						</div>
-				    ) : (
-					<>
-                    	<div className="avatar-small" />
-				        <span className="volunteer-placeholder">No volunteer selected</span>
-					</>
 				    )}
                 </div>
             </div>
@@ -114,15 +109,24 @@ fontSize: '1.3rem'}}>Volunteer doesn't have any skills yet</p> :
                 </div>
             </div>
 
+			<label className="addressLabelInre">Basic information</label>
+			<div className="basicinfo-section">
+				<p className="volunteer-name" style={{fontWeight:'bold'}}>{task.name}</p>
+				<p className="contact-info" style={{marginTop: '5px'}}>Description:</p>
+				<p className="task-description">{task.description}</p>
+				<p className="contact-info">Time: {task.startDate} - {task.endDate}</p>
+			</div>
+
 
             <div className="skills-section">
                 <label className="addressLabelInre">Skills required</label>
                 <div className="skills-list">
-                    {task.requiredSkills.length == 0 ? 
+                    {task.requiredSkillTypes.length == 0 ? 
 						(<p style={{color: '#555'}}>No skills set yet</p>) :
-						task.requiredSkills.map((s, index) => (
+						task.requiredSkillTypes.map((s, index) => (
                         <div key={index} className="skill-item">
                             <p>{s.name}</p>
+							<p>{s.desc}</p>
                         </div>
                     ))}
                 </div>
@@ -161,6 +165,18 @@ fontSize: '1.3rem'}}>Volunteer doesn't have any skills yet</p> :
             			/>
 					</div>
 
+				</div>
+			</>
+		)}
+		
+		{task.performance != null && (
+			<>
+            	<label className="addressLabelInre">Performance rating</label>
+				<div className="performance-class">
+					<p>Performance grade: {task.performance.grade}</p>
+					<p style={{marginBottom: '0px'}}>Comment:</p>
+					<p className="task-description"
+						style={{marginTop: '0px', fontWeight: 'unset'}}>{task.performance.comment}</p>
 				</div>
 			</>
 		)}

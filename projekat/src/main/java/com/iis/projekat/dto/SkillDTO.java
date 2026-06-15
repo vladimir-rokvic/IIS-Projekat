@@ -16,6 +16,7 @@ public class SkillDTO {
 
     public SkillDTO(SkillType st) {
         this.name = st.getName();
+        this.desc = st.getDescription();
     }
 
     public String getName() {

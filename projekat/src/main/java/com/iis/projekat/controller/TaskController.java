@@ -105,4 +105,15 @@ public class TaskController {
 
         return ResponseEntity.ok(grade);
     }
+
+    @PutMapping("/rate/{taskId}")
+    public ResponseEntity<?> rateTaskUpdate(@PathVariable Long taskId,
+                                      @RequestBody PerformanceDTO grade) {
+        Performance ret = taskService.rateTaskUpdate(grade);
+        if(ret == null) {
+            return ResponseEntity.badRequest().body(grade);
+        }
+
+        return ResponseEntity.ok(grade);
+    }
 }

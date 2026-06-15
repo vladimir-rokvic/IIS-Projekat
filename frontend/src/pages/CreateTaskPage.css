@@ -73,6 +73,7 @@
     resize: none;
     width: 350px;
 	font-size: 1.3rem;
+	overflow-wrap: break-word;
 }
 
 .date-row {

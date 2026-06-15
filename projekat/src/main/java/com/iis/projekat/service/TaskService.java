@@ -99,20 +99,13 @@ public class TaskService {
             t.setVolunteer(null);
         }
 
-        Set<Skill> skills = new HashSet<>();
-        for(SkillDTO skillDTO: dto.getRequiredSkills()){
-            Skill s = skillRepository.findByName(skillDTO.getName()).orElse(null);
-            if(s == null){
-                Skill nSkill = new Skill();
-                nSkill.setName(skillDTO.getName());
-                nSkill.setDescription(skillDTO.getDesc());
-                skills.add(skillRepository.save(nSkill));
-            } else {
-                skills.add(s);
-            }
+        List<SkillType> skills = new ArrayList<>();
+        for(SkillTypeDTO s: dto.getRequiredSkills()) {
+            SkillType sk = skillTypeRepository.findById(s.id).orElse(null);
+            skills.add(sk);
         }
 
-        t.setRequiredSkills(skills);
+        t.setRequiredSkillTypes(skills);
         taskRepository.save(t);
         return t;
     }
@@ -143,5 +136,15 @@ public class TaskService {
             ret.add(new TaskDTO(t));
         }
         return ret;
+    }
+
+    public Performance rateTaskUpdate(PerformanceDTO grade) {
+        Performance p = performanceRepository.findById(grade.getId()).orElse(null);
+        if(p == null) return null;
+
+        p.setComment(grade.getComment());
+        p.setGrade(grade.getGrade());
+
+        return performanceRepository.save(p);
     }
 }
