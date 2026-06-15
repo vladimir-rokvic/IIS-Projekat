@@ -27,10 +27,17 @@ public class VolunteerRecommendationDTO {
     /** Da li je volonter slobodan (nema preklapajući task) u periodu trajanja faze. */
     private boolean available;
 
+    /**
+     * Da li je volonter "zakucan" na ovoj fazi — tj. već je dodeljen
+     * na bar jedan task unutar ove faze. Zakucani volonteri se uvek
+     * prikazuju u preporuci, bez obzira na trenutne skillove/dostupnost.
+     */
+    private boolean pinned;
+
     public VolunteerRecommendationDTO() {}
 
     public VolunteerRecommendationDTO(Volunteer v, int matchedSkillsCount, int totalRequiredSkills,
-                                       List<String> matchedSkillNames, boolean available) {
+                                       List<String> matchedSkillNames, boolean available, boolean pinned) {
         this.id = v.getId();
         this.name = v.getName();
         this.surname = v.getSurname();
@@ -39,6 +46,7 @@ public class VolunteerRecommendationDTO {
         this.totalRequiredSkills = totalRequiredSkills;
         this.matchedSkillNames = matchedSkillNames;
         this.available = available;
+        this.pinned = pinned;
     }
 
     public Long getId() { return id; }
@@ -64,4 +72,12 @@ public class VolunteerRecommendationDTO {
 
     public boolean isAvailable() { return available; }
     public void setAvailable(boolean available) { this.available = available; }
+
+    public boolean isPinned() {
+        return pinned;
+    }
+
+    public void setPinned(boolean pinned) {
+        this.pinned = pinned;
+    }
 }

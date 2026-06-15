@@ -380,8 +380,16 @@ public class ProjectPhaseService {
 
         int trazenBrojVolontera = faza.getBrojVolontera() != null ? faza.getBrojVolontera() : 0;
 
+        // Volonteri koji su već dodeljeni na neki task unutar ove faze - "zakucani"
+        Set<Long> zakucaniVolonterIds = taskRepository.findAllByPhaseId(phaseId).stream()
+                .map(Task::getVolunteer)
+                .filter(v -> v != null)
+                .map(Volunteer::getId)
+                .collect(Collectors.toSet());
+
         List<Volunteer> sviVolonteri = volunteerRepository.findAll();
 
+        List<VolunteerRecommendationDTO> zakucani = new ArrayList<>();
         List<VolunteerRecommendationDTO> preporuceni = new ArrayList<>();
 
         for (Volunteer v : sviVolonteri) {
@@ -395,6 +403,15 @@ public class ProjectPhaseService {
                 }
             }
 
+            boolean jeZakucan = zakucaniVolonterIds.contains(v.getId());
+
+            if (jeZakucan) {
+                // Zakucani volonteri se uvek prikazuju, bez obzira na poklapanja/dostupnost
+                zakucani.add(new VolunteerRecommendationDTO(
+                        v, poklapanja.size(), traziveVestine.size(), poklapanja, true, true));
+                continue;
+            }
+
             // Samo volonteri koji poseduju bar jednu od traženih veština
             if (poklapanja.isEmpty()) {
                 continue;
@@ -406,10 +423,11 @@ public class ProjectPhaseService {
             }
 
             preporuceni.add(new VolunteerRecommendationDTO(
-                    v, poklapanja.size(), traziveVestine.size(), poklapanja, true));
+                    v, poklapanja.size(), traziveVestine.size(), poklapanja, true, false));
         }
 
-        // Sortiraj po broju poklapajućih veština opadajuće, zatim po prezimenu
+        // Sortiraj zakucane po prezimenu, preporučene po broju poklapajućih veština opadajuće
+        zakucani.sort(Comparator.comparing(VolunteerRecommendationDTO::getSurname));
         preporuceni.sort(
                 Comparator.comparingInt(VolunteerRecommendationDTO::getMatchedSkillsCount).reversed()
                         .thenComparing(VolunteerRecommendationDTO::getSurname)
@@ -425,13 +443,24 @@ public class ProjectPhaseService {
                     + faza.getRokPocetak() + " – " + faza.getRokKraj() + ").";
         }
 
-        // Zadrži samo onoliko najboljih volontera koliko je koordinator zatražio
-        if (trazenBrojVolontera > 0 && preporuceni.size() > trazenBrojVolontera) {
-            preporuceni = preporuceni.subList(0, trazenBrojVolontera);
+        // Zakucani ulaze u ukupan broj potrebnih volontera
+        int slobodnihMesta = trazenBrojVolontera - zakucani.size();
+
+        if (slobodnihMesta < 0) {
+            slobodnihMesta = 0;
         }
 
-        return new VolonterPreporukaResponseDTO(preporuceni, trazenBrojVolontera, poruka);
+        if (preporuceni.size() > slobodnihMesta) {
+            preporuceni = preporuceni.subList(0, slobodnihMesta);
+        }
+
+        // Zakucani volonteri se prikazuju na vrhu, pa preporučeni
+        List<VolunteerRecommendationDTO> rezultat = new ArrayList<>(zakucani);
+        rezultat.addAll(preporuceni);
+
+        return new VolonterPreporukaResponseDTO(rezultat, trazenBrojVolontera, poruka);
     }
+
 
     /**
      * Provjera dostupnosti volontera u periodu [pocetak, kraj]:

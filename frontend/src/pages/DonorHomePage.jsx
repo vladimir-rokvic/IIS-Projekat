@@ -20,10 +20,14 @@ const DonorHomePage = () => {
 	const navigate = useNavigate();
 	return (
 		<div className="donor-content">
-			<div style={{display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 28}}>
-				<h1 className="donor-page-title" style={{marginBottom: 0}}>Welcome back!</h1>
+			<div className="donor-header" style={{marginTop: 20}}>
+				<div style={{display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20}}>
+					<h1 className="donor-page-title" style={{marginBottom: 0}}>Welcome back!</h1>
+					<button className="btn-primary" onClick={() => navigate('/donor')}>
+						Back to dashboard
+					</button>
+				</div>
 			</div>
-
 			<section className="donor-stats-grid" aria-label="Donor summary stats">
 				{stats.map((stat) => (
 					<div key={stat.label} className="donor-stat-card">

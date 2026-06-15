@@ -241,9 +241,11 @@ const PhaseFormPage = () => {
                     setRecommendations(null);
                 }
 
-                if (!isEdit) {
-                    // Nakon kreiranja, pređi na edit mod ove faze da se zadrži
-                    // na istoj stranici i prikaže lista preporučenih volontera
+                // Replace-all operacija (postaviFaze) briše i ponovo kreira SVE faze,
+                // pa čak i kod editovanja postojeće faze, njen ID se menja.
+                // Ažuriraj URL na novi phaseId da naredne akcije (npr. "Add task +")
+                // ne koriste zastareli (obrisani) ID.
+                if (String(savedPhaseId) !== String(phaseId)) {
                     navigate(`/projects/${projectId}/phases/${savedPhaseId}/edit`, { replace: true });
                 }
             } else {
@@ -407,12 +409,34 @@ const PhaseFormPage = () => {
                         ) : (
                             <ol style={{ marginTop: 6, paddingLeft: 22 }}>
                                 {recommendations.preporuceni.map(vol => (
-                                    <li key={vol.id} style={{ marginBottom: 4, fontSize: "0.9rem" }}>
+                                    <li
+                                        key={vol.id}
+                                        style={{
+                                            marginBottom: 4,
+                                            fontSize: "0.9rem",
+                                            ...(vol.pinned ? {
+                                                backgroundColor: "#d4edda",
+                                                borderRadius: 4,
+                                                padding: "2px 6px",
+                                                listStylePosition: "inside",
+                                            } : {}),
+                                        }}
+                                    >
                                         {vol.name} {vol.surname}
                                         {" "}
                                         <span style={{ color: "#777" }}>
-                                            ({vol.matchedSkillNames?.join(", ")} — {vol.matchedSkillsCount}/{vol.totalRequiredSkills})
+                                            ({vol.matchedSkillNames?.join(", ") || "no skill match"} — {vol.matchedSkillsCount}/{vol.totalRequiredSkills})
                                         </span>
+                                        {vol.pinned && (
+                                            <span style={{
+                                                marginLeft: 8,
+                                                fontSize: "0.78rem",
+                                                fontWeight: 600,
+                                                color: "#155724",
+                                            }}>
+                                                Assigned to a task in this phase
+                                            </span>
+                                        )}
                                     </li>
                                 ))}
                             </ol>

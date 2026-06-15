@@ -18,13 +18,18 @@ const DonorProjectsPage = () => {
 
     return (
         <div className="donor-content">
+            <div className="donor-header" style={{marginTop: 20}}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 28 }}>
                 <div>
                     <h1 className="donor-page-title" style={{ marginBottom: 4 }}>Projects</h1>
                     <p style={{ fontSize: "0.95rem", color: "#4b5563" }}>Browse all active and upcoming projects</p>
                 </div>
-            </div>
+                <button className="btn-primary" onClick={() => navigate('/donor')}>
+                    Back to dashboard
+                </button>
 
+            </div>
+        </div>
             {loading && <p style={{ color: "#555" }}>Loading...</p>}
             {error && <p style={{ color: "#cc0000" }}>{error}</p>}
             {!loading && !error && projects.length === 0 && (

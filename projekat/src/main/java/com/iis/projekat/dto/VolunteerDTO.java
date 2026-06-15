@@ -28,10 +28,8 @@ public class VolunteerDTO {
         this.email = v.getEmail();
         this.phone = v.getPhone();
         this.dateOfBirth = v.getDateOfBirth();
-        if(v.getAddress() != null) {
+        if (v.getAddress() != null) {
             this.address = new AddressDTO(v.getAddress());
-        } else {
-            this.address = null;
         }
         this.bio = v.getBio();
         this.skills = new ArrayList<>();

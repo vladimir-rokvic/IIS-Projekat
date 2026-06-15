@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import api from "../api/axios";
 import CampaignEditModal from "../components/CampaignEditModal";
 import "./CampaignCoordinatorDashboard.css";
+import { useNavigate } from "react-router-dom";
 
 const formatDate = (dateValue) => {
 	if (!dateValue) return "-";
@@ -13,6 +14,7 @@ const CampaignCoordinatorAllCampaignsPage = () => {
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState("");
 	const [selectedCampaign, setSelectedCampaign] = useState(null);
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		const fetchCampaigns = async () => {
@@ -66,7 +68,14 @@ const CampaignCoordinatorAllCampaignsPage = () => {
 
 	return (
 		<div className="campaign-content">
+			<div className="campaign-header" style={{ marginTop: 20 }}>
+				<div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
 			<h1 className="campaign-page-title" style={{ marginBottom: 34 }}>All campaigns</h1>
+					<button className="btn-primary" onClick={() => navigate('/campaign-coordinator')}>
+						Back to dashboard
+					</button>
+				</div>
+			</div>
 			{selectedCampaign && (
 				<CampaignEditModal
 					campaign={selectedCampaign}
