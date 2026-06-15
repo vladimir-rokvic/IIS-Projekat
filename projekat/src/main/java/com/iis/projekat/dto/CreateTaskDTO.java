@@ -8,11 +8,15 @@ public class CreateTaskDTO {
     private String description;
 
     private Set<SkillDTO> requiredSkills;
+    private Set<SkillTypeDTO> requiredSkillTypes;
 
     private Long volunteerId;
+    private Long coordinatorId;
 
     private LocalDate startDate;
     private LocalDate endDate;
+
+    private Long phaseId;
 
     public CreateTaskDTO() {}
 
@@ -62,5 +66,29 @@ public class CreateTaskDTO {
 
     public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
+    }
+
+    public Long getCoordinatorId() {
+        return coordinatorId;
+    }
+
+    public void setCoordinatorId(Long coordinatorId) {
+        this.coordinatorId = coordinatorId;
+    }
+
+    public Long getPhaseId() {
+        return phaseId;
+    }
+
+    public void setPhaseId(Long phaseId) {
+        this.phaseId = phaseId;
+    }
+
+    public Set<SkillTypeDTO> getRequiredSkillTypes() {
+        return requiredSkillTypes;
+    }
+
+    public void setRequiredSkillTypes(Set<SkillTypeDTO> requiredSkillTypes) {
+        this.requiredSkillTypes = requiredSkillTypes;
     }
 }

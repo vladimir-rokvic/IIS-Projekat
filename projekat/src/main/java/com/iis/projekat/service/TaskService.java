@@ -1,15 +1,8 @@
 package com.iis.projekat.service;
 
-import com.iis.projekat.dto.CreateTaskDTO;
-import com.iis.projekat.dto.SkillDTO;
-import com.iis.projekat.dto.TaskDTO;
-import com.iis.projekat.dto.UpdateTaskDTO;
-import com.iis.projekat.model.Skill;
-import com.iis.projekat.model.Task;
-import com.iis.projekat.model.Volunteer;
-import com.iis.projekat.repository.SkillRepository;
-import com.iis.projekat.repository.TaskRepository;
-import com.iis.projekat.repository.VolunteerRepository;
+import com.iis.projekat.dto.*;
+import com.iis.projekat.model.*;
+import com.iis.projekat.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +16,14 @@ public class TaskService {
     private VolunteerRepository volunteerRepository;
     @Autowired
     private SkillRepository skillRepository;
+    @Autowired
+    private PerformanceRepository performanceRepository;
+    @Autowired
+    private EmployeeRepository employeeRepository;
+    @Autowired
+    private ProjectPhaseRepository projectPhaseRepository;
+    @Autowired
+    private SkillTypeRepository skillTypeRepository;
 
     public void saveTask(CreateTaskDTO dto) {
         Task task = new Task();
@@ -32,23 +33,26 @@ public class TaskService {
         Volunteer v = volunteerRepository.getReferenceById(dto.getVolunteerId());
         task.setVolunteer(v);
 
-        Set<Skill> skills = new HashSet<>();
-        for(SkillDTO s: dto.getRequiredSkills()) {
-            Skill sk = skillRepository.findByName(s.getName()).orElseGet(
-                    () -> {
-                        Skill n = new Skill();
-                        n.setName(s.getName());
-                        return skillRepository.save(n);
-                    }
-            );
+        Employee coordiantor = employeeRepository.findById(dto.getCoordinatorId())
+                .orElse(null);
+        task.setCoordinator(coordiantor);
 
+        if (dto.getPhaseId() != null) {
+            ProjectPhase phase = projectPhaseRepository.findById(dto.getPhaseId())
+                    .orElseThrow(() -> new IllegalArgumentException("Faza sa ID=" + dto.getPhaseId() + " ne postoji."));
+            task.setPhase(phase);
+        }
+
+        List<SkillType> skills = new ArrayList<>();
+        for(SkillTypeDTO s: dto.getRequiredSkillTypes()) {
+            SkillType sk = skillTypeRepository.findById(s.id).orElse(null);
             skills.add(sk);
         }
 
         task.setStartDate(dto.getStartDate());
         task.setEndDate(dto.getEndDate());
 
-        task.setRequiredSkills(skills);
+        task.setRequiredSkillTypes(skills);
         taskRepository.save(task);
     }
 
@@ -95,21 +99,52 @@ public class TaskService {
             t.setVolunteer(null);
         }
 
-        Set<Skill> skills = new HashSet<>();
-        for(SkillDTO skillDTO: dto.getRequiredSkills()){
-            Skill s = skillRepository.findByName(skillDTO.getName()).orElse(null);
-            if(s == null){
-                Skill nSkill = new Skill();
-                nSkill.setName(skillDTO.getName());
-                nSkill.setDescription(skillDTO.getDesc());
-                skills.add(skillRepository.save(nSkill));
-            } else {
-                skills.add(s);
-            }
+        List<SkillType> skills = new ArrayList<>();
+        for(SkillTypeDTO s: dto.getRequiredSkills()) {
+            SkillType sk = skillTypeRepository.findById(s.id).orElse(null);
+            skills.add(sk);
         }
 
-        t.setRequiredSkills(skills);
+        t.setRequiredSkillTypes(skills);
         taskRepository.save(t);
         return t;
+    }
+
+    public Performance rateTask(PerformanceDTO grade) {
+        Volunteer v = volunteerRepository.findById(grade.getVolunteerId())
+                .orElse(null);
+        if(v == null) return null;
+
+        Task t = taskRepository.findById(grade.getTaskId())
+                .orElse(null);
+        if(t == null) return null;
+
+        Performance p = new Performance(
+                grade.getGrade(),
+                grade.getComment(),
+                v,
+                t
+        );
+
+        return performanceRepository.save(p);
+    }
+
+    public List<TaskDTO> getTasksForPhase(Long phaseId) {
+        List<Task> tasks = taskRepository.findAllByPhaseId(phaseId);
+        List<TaskDTO> ret = new ArrayList<>();
+        for (Task t : tasks) {
+            ret.add(new TaskDTO(t));
+        }
+        return ret;
+    }
+
+    public Performance rateTaskUpdate(PerformanceDTO grade) {
+        Performance p = performanceRepository.findById(grade.getId()).orElse(null);
+        if(p == null) return null;
+
+        p.setComment(grade.getComment());
+        p.setGrade(grade.getGrade());
+
+        return performanceRepository.save(p);
     }
 }

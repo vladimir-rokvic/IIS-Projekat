@@ -91,6 +91,29 @@ body {
     cursor: not-allowed;
 }
 
+.btn-secondary {
+    margin-top: 4px;
+    align-self: flex-start;
+    padding: 8px 18px;
+    background-color: #ffffff;
+    color: #000000;
+    font-size: 0.9rem;
+    font-weight: 500;
+    border: 1px solid #555555;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-secondary:hover {
+    background-color: #f0f0f0;
+}
+
+.btn-secondary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
 /* ── Projects page ──────────────────────────────────────────── */
 .projects-page {
     padding: 20px 40px;
@@ -448,4 +471,32 @@ body {
 .readonly-field:focus {
     border-color: #bbb !important;
     outline: none !important;
+}
+
+.info-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 6px;
+    font-size: 0.88rem;
+    align-items: baseline;
+}
+
+.info-label {
+    font-weight: 600;
+    min-width: 120px;
+    flex-shrink: 0;
+    color: #222;
+}
+
+/* Kartica jedne faze na ProjectInformationPage */
+.phase-card {
+    background-color: #e8e8e8;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
 }

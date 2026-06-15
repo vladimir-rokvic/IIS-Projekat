@@ -1,6 +1,7 @@
 package com.iis.projekat.dto;
 
 import com.iis.projekat.model.Skill;
+import com.iis.projekat.model.SkillType;
 import com.iis.projekat.model.Task;
 
 import java.time.LocalDate;
@@ -13,11 +14,17 @@ public class TaskDTO {
     private String description;
 
     private Set<SkillDTO> requiredSkills;
+    private Set<SkillDTO> requiredSkillTypes;
 
     private VolunteerDTO volunteer;
+    private UserDTO coordinator;
+    private PerformanceDTO performance;
 
     private LocalDate startDate;
     private LocalDate endDate;
+
+    private Long phaseId;
+    private String phaseNaziv;
 
     public TaskDTO() {}
 
@@ -38,7 +45,30 @@ public class TaskDTO {
             dtos.add(new SkillDTO(s));
         }
 
+        Set<SkillDTO> dtos1 = new HashSet<>();
+        for(SkillType s: t.getRequiredSkillTypes()){
+            dtos1.add(new SkillDTO(s));
+        }
+
         this.requiredSkills = dtos;
+        this.requiredSkillTypes = dtos1;
+
+        if(t.getCoordinator() != null) {
+            this.coordinator = new UserDTO(t.getCoordinator());
+        } else {
+            this.coordinator = null;
+        }
+
+        if(t.getPerformance() != null) {
+            this.performance = new PerformanceDTO(t.getPerformance());
+        } else {
+            this.performance = null;
+        }
+
+        if (t.getPhase() != null) {
+            this.phaseId = t.getPhase().getId();
+            this.phaseNaziv = t.getPhase().getNaziv();
+        }
     }
 
     public Long getId() {
@@ -95,5 +125,45 @@ public class TaskDTO {
 
     public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
+    }
+
+    public UserDTO getCoordinator() {
+        return coordinator;
+    }
+
+    public void setCoordinator(UserDTO coordinator) {
+        this.coordinator = coordinator;
+    }
+
+    public PerformanceDTO getPerformance() {
+        return performance;
+    }
+
+    public void setPerformance(PerformanceDTO performance) {
+        this.performance = performance;
+    }
+
+    public Long getPhaseId() {
+        return phaseId;
+    }
+
+    public void setPhaseId(Long phaseId) {
+        this.phaseId = phaseId;
+    }
+
+    public String getPhaseNaziv() {
+        return phaseNaziv;
+    }
+
+    public void setPhaseNaziv(String phaseNaziv) {
+        this.phaseNaziv = phaseNaziv;
+    }
+
+    public Set<SkillDTO> getRequiredSkillTypes() {
+        return requiredSkillTypes;
+    }
+
+    public void setRequiredSkillTypes(Set<SkillDTO> requiredSkillTypes) {
+        this.requiredSkillTypes = requiredSkillTypes;
     }
 }

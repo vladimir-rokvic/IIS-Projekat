@@ -222,4 +222,17 @@ public class ProjectController {
         return ResponseEntity.ok(projectService.odobreniProjekti());
     }
 
+    /**
+     * Koordinator zatvara projekat nakon završetka poslednje faze.
+     * PUT /api/projekti/{id}/zatvori
+     */
+    @PutMapping("/{id}/zatvori")
+    public ResponseEntity<ProjectResponseDTO> zatvoriProjekat(
+            @PathVariable Long id,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        Employee koordinator = getUlogovanogZaposlenog(userDetails);
+        return ResponseEntity.ok(projectService.zatvoriProjekat(id, koordinator.getId()));
+    }
+
+
 }

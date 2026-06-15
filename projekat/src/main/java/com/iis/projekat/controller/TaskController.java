@@ -1,12 +1,11 @@
 package com.iis.projekat.controller;
 
-import com.iis.projekat.dto.CreateTaskDTO;
-import com.iis.projekat.dto.TaskDTO;
-import com.iis.projekat.dto.UpdateTaskDTO;
-import com.iis.projekat.dto.VolunteerDTO;
+import com.iis.projekat.dto.*;
+import com.iis.projekat.model.Performance;
 import com.iis.projekat.model.Task;
 import com.iis.projekat.model.Volunteer;
 import com.iis.projekat.service.EmailService;
+import com.iis.projekat.service.ProjectPhaseService;
 import com.iis.projekat.service.TaskService;
 import com.iis.projekat.service.VolunteerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +24,15 @@ public class TaskController {
     private EmailService emailService;
     @Autowired
     private VolunteerService volunteerService;
+    @Autowired
+    private ProjectPhaseService projectPhaseService;
 
     @PostMapping
     public ResponseEntity<?> saveTask(@RequestBody CreateTaskDTO dto) {
+        if (dto.getPhaseId() != null) {
+            projectPhaseService.provjeriMozeLiSePocetiFaza(dto.getPhaseId());
+        }
+
         if(dto.getVolunteerId() != null) {
             VolunteerDTO v = volunteerService.getVolunteerById(dto.getVolunteerId());
             if(v != null) {
@@ -39,6 +44,11 @@ public class TaskController {
         }
         taskService.saveTask(dto);
         return ResponseEntity.ok("All seems good");
+    }
+
+    @GetMapping("/phase/{phaseId}")
+    public ResponseEntity<List<TaskDTO>> getForPhase(@PathVariable Long phaseId) {
+        return ResponseEntity.ok(taskService.getTasksForPhase(phaseId));
     }
 
     @GetMapping("volunteer/{id}")
@@ -81,5 +91,29 @@ public class TaskController {
         }
 
         return ResponseEntity.ok(newTask);
+    }
+
+    //Odavde mi krece sve za performance taskova
+
+    @PostMapping("/rate/{taskId}")
+    public ResponseEntity<?> rateTask(@PathVariable Long taskId,
+                                      @RequestBody PerformanceDTO grade) {
+        Performance ret = taskService.rateTask(grade);
+        if(ret == null) {
+            return ResponseEntity.badRequest().body(grade);
+        }
+
+        return ResponseEntity.ok(grade);
+    }
+
+    @PutMapping("/rate/{taskId}")
+    public ResponseEntity<?> rateTaskUpdate(@PathVariable Long taskId,
+                                      @RequestBody PerformanceDTO grade) {
+        Performance ret = taskService.rateTaskUpdate(grade);
+        if(ret == null) {
+            return ResponseEntity.badRequest().body(grade);
+        }
+
+        return ResponseEntity.ok(grade);
     }
 }

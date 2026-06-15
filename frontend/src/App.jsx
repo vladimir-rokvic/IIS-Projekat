@@ -22,6 +22,7 @@ import CampaignCoordinatorHomePage from "./pages/CampaignCoordinatorHomePage";
 import CampaignCoordinatorAllCampaignsPage from "./pages/CampaignCoordinatorAllCampaignsPage";
 import CampaignCoordinatorCreateCampaignPage from "./pages/CampaignCoordinatorCreateCampaignPage";
 import CampaignCoordinatorStatisticsPage from "./pages/CampaignCoordinatorStatisticsPage";
+import ReturnDocumentsPage from "./pages/CampaignCoordinatorDocuments";
 import VolunteerDashboard from "./pages/VolunteerDashboard";
 import ProjectDeniedPage from "./pages/ProjectDeniedPage";
 import ProjectAcceptedPage from "./pages/ProjectAcceptedPage";
@@ -44,6 +45,10 @@ import TaskDetailsEdit from "./pages/TaskDetailsEdit";
 import NewDistributionLocation from "./pages/DistributionLocationPage";
 import CreatePackage from "./pages/CreatePackage";
 
+import ProjectInformationPage from "./pages/ProjectInformationPage";
+import PhaseFormPage from "./pages/PhaseFormPage";
+import PhaseTaskFormPage from "./pages/PhaseTaskFormPage";
+
 function App() {
 	return (
 		<AuthProvider>
@@ -58,24 +63,25 @@ function App() {
 					<Route path="/projects/:id/denied" element={<PrivateRoute allowedRoles={["COORDINATOR"]}><ProjectDeniedPage /></PrivateRoute>} />
 					<Route path="/projects/:id/accepted" element={<PrivateRoute allowedRoles={["COORDINATOR"]}><ProjectAcceptedPage /></PrivateRoute>} />
 					<Route path="/manager" element={<PrivateRoute allowedRoles={["MANAGER"]}><ManagerDashboard /></PrivateRoute>} />
+					
 					<Route path="/manager/registerVolunteer" element={<PrivateRoute allowedRoles={["MANAGER"]}><RegisterVolunteerPage /></PrivateRoute>} />
-					<Route path="/campaign-coordinator" element={<PrivateRoute allowedRoles={["CAMPAIGN_COORDINATOR"]}><CampaignCoordinatorDashboard /></PrivateRoute>}>
-						<Route index element={<CampaignCoordinatorHomePage />} />
-						<Route path="all-campaigns" element={<CampaignCoordinatorAllCampaignsPage />} />
-						<Route path="create-campaign" element={<CampaignCoordinatorCreateCampaignPage />} />
-						<Route path="statistics" element={<CampaignCoordinatorStatisticsPage />} />
-					</Route>
+					<Route path="/campaign-coordinator" element={<PrivateRoute allowedRoles={["CAMPAIGN_COORDINATOR"]}><CampaignCoordinatorDashboard /></PrivateRoute>} />
+					<Route path="/campaign-coordinator/home" element={<PrivateRoute allowedRoles={["CAMPAIGN_COORDINATOR"]}><CampaignCoordinatorHomePage /></PrivateRoute>} />
+					<Route path="/campaign-coordinator/campaigns" element={<PrivateRoute allowedRoles={["CAMPAIGN_COORDINATOR"]}><CampaignCoordinatorAllCampaignsPage /></PrivateRoute>} />
+					<Route path="/campaign-coordinator/create-campaign" element={<PrivateRoute allowedRoles={["CAMPAIGN_COORDINATOR"]}><CampaignCoordinatorCreateCampaignPage /></PrivateRoute>} />
+					<Route path="/campaign-coordinator/statistics" element={<PrivateRoute allowedRoles={["CAMPAIGN_COORDINATOR"]}><CampaignCoordinatorStatisticsPage /></PrivateRoute>} />
+					<Route path="/campaign-coordinator/return-documents" element={<PrivateRoute allowedRoles={["CAMPAIGN_COORDINATOR"]}><ReturnDocumentsPage /></PrivateRoute>} />
+
 					<Route path="/profile" element={<PrivateRoute><UserProfilePage /></PrivateRoute>}/>
 					<Route path="/volunteer/update" element={<PrivateRoute><VolunteerUpdatePage /></PrivateRoute>}/>
 
-					<Route path="/donor" element={<PrivateRoute allowedRoles={["DONOR"]}><DonorDashboardPage /></PrivateRoute>}>
-						<Route index element={<DonorHomePage />} />
-						<Route path="campaigns" element={<DonorCampaignsPage />} />
-						<Route path="profile" element={<DonorProfilePage />} />
-						<Route path="projects" element={<DonorProjectsPage />} />
-						<Route path="projects/:id" element={<DonorProjectDetailPage />} />
-						<Route path="projects/:id/details" element={<DonorProjectFullDetailPage />} />
-					</Route>
+					<Route path="/donor" element={<PrivateRoute allowedRoles={["DONOR"]}><DonorDashboardPage /></PrivateRoute>} />
+					<Route path="/donor/home" element={<PrivateRoute allowedRoles={["DONOR"]}><DonorHomePage /></PrivateRoute>} />
+					<Route path="/donor/campaigns" element={<PrivateRoute allowedRoles={["DONOR"]}><DonorCampaignsPage /></PrivateRoute>} />
+					<Route path="/donor/profile" element={<PrivateRoute allowedRoles={["DONOR"]}><DonorProfilePage /></PrivateRoute>} />
+					<Route path="/donor/projects" element={<PrivateRoute allowedRoles={["DONOR"]}><DonorProjectsPage /></PrivateRoute>} />
+					<Route path="/donor/projects/:id" element={<PrivateRoute allowedRoles={["DONOR"]}><DonorProjectDetailPage /></PrivateRoute>} />
+					<Route path="/donor/projects/:id/details" element={<PrivateRoute allowedRoles={["DONOR"]}><DonorProjectFullDetailPage /></PrivateRoute>} />
 
 					<Route path="/beneficiary" element={<PrivateRoute allowedRoles={["BENEFICIARY"]}><BeneficiaryHomePage /></PrivateRoute>} />
 					<Route path="/beneficiary/profile" element={<PrivateRoute allowedRoles={["BENEFICIARY"]}><BeneficiaryMyAccountPage /></PrivateRoute>} />
@@ -93,6 +99,12 @@ function App() {
 					<Route path="/tasks" element={<PrivateRoute allowedRoles={["COORDINATOR"]}><TasksPage /></PrivateRoute>}/>
 					<Route path="/coord/tasks/:id" element={<PrivateRoute allowedRoles={["COORDINATOR"]}><TaskDetailsPage /></PrivateRoute>}/>
 					<Route path="/coord/tasksEdit/:id" element={<PrivateRoute allowedRoles={["COORDINATOR"]}><TaskDetailsEdit /></PrivateRoute>}/>
+
+					<Route path="/projects/:id/info" element={<PrivateRoute allowedRoles={["COORDINATOR"]}><ProjectInformationPage /></PrivateRoute>} />
+					<Route path="/projects/:id/phases/new" element={<PrivateRoute allowedRoles={["COORDINATOR"]}><PhaseFormPage /></PrivateRoute>} />
+					<Route path="/projects/:id/phases/:phaseId/edit" element={<PrivateRoute allowedRoles={["COORDINATOR"]}><PhaseFormPage /></PrivateRoute>} />
+					<Route path="/projects/:id/phases/:phaseId/tasks/new" element={<PrivateRoute allowedRoles={["COORDINATOR"]}><PhaseTaskFormPage /></PrivateRoute>} />
+					<Route path="/projects/:id/phases/:phaseId/tasks/:taskId/edit" element={<PrivateRoute allowedRoles={["COORDINATOR"]}><PhaseTaskFormPage /></PrivateRoute>} />
 
 					<Route path="*" element={<Navigate to="/login" replace />} />
 				</Routes>

@@ -1,4 +1,5 @@
 import "./DonorDashboard.css";
+import { useNavigate } from "react-router-dom";
 
 const campaigns = [
 	{
@@ -52,9 +53,17 @@ const campaigns = [
 ];
 
 const DonorCampaignsPage = () => {
+	const navigate = useNavigate();
 	return (
 		<div className="donor-content">
-			<h1 className="donor-page-title">Explore campaigns</h1>
+			<div className="donor-header" style={{marginTop: 20}}>
+				<div style={{display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20}}>
+					<h1 className="donor-page-title" style={{marginBottom: 0}}>Explore campaigns</h1>
+					<button className="btn-primary" onClick={() => navigate('/donor')}>
+						Back to dashboard
+					</button>
+				</div>
+			</div>
 			<section className="donor-campaign-grid">
 				{campaigns.map((campaign) => (
 					<article key={campaign.title + campaign.progress} className="donor-campaign-card donor-panel">

@@ -1,6 +1,5 @@
 .task-details-page {
     padding: 30px;
-    font-family: sans-serif;
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -10,25 +9,67 @@
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
+	padding: 10px;
 }
 
-.header-left h2 {
-    font-size: 24px;
+.header-left h1{
     font-weight: bold;
-    margin: 0 0 4px 0;
-}
-
-.header-left span {
-    font-size: 13px;
-    color: #555;
 }
 
 .header-buttons {
     display: flex;
     gap: 8px;
+	padding: 10px;
 }
 
-.btn-edit, .btn-details {
+.coordinator-name {
+    font-size: 1.8rem;
+    font-weight: 500;
+	white-space: nowrap;
+	margin-left: 15px;
+}
+
+.coordinator-row {
+	display: flex;
+	align-items: center;
+}
+
+.coordinator-section {
+	display: flex;
+	border: 1px solid #d9d9d9;
+	padding: 10px;
+	border-radius: 10px;
+}
+
+.btn-edit {
+	width: 100px;
+	height: 30px;
+}
+
+.basicinfo-section {
+	display: flex;
+	flex-direction: column;
+	border: 1px solid #d9d9d9;
+	border-radius: 10px;
+	padding: 10px;
+}
+
+.basicinfo-section p {
+	margin-left: 15px;
+}
+
+.task-description {
+	width: 350px;
+	height: 120px;
+	padding: 12px;
+	margin: 10px;
+	border-radius: 10px;
+	border: 1px solid #d9d9d9;
+	font-size: 1.3rem;
+	overflow-wrap: break-word;
+}
+
+.btn-details {
     padding: 6px 16px;
     border: none;
     border-radius: 6px;
@@ -36,13 +77,6 @@
     color: black;
     background-color: #369FBC;
 	margin-left: auto;
-}
-
-.volunteer-row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-	width: fit-content;
 }
 
 .avatar-small {
@@ -105,4 +139,26 @@
     width: 150px;
     min-height: 80px;
     font-size: 14px;
+}
+
+.performance-class {
+	border: 1px solid #d9d9d9;
+	border-radius: 10px;
+	display: flex;
+	flex-direction: column;
+	padding: 10px;
+	gap: 20px;
+
+}
+
+.performance-class p{
+	margin-top: 7px;
+	font-size: 1.3rem;
+	font-weight: bold;
+}
+
+.performance-class select {
+	font-size: 1.3rem;
+	margin-left: 15px;
+	padding: 5px;
 }

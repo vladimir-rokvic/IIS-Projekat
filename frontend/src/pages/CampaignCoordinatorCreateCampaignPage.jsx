@@ -32,7 +32,7 @@ const CampaignCoordinatorCreateCampaignPage = () => {
 				status: "PLANNED",
 				projectId: null,
 			});
-			navigate("/campaign-coordinator/all-campaigns");
+			navigate("/campaign-coordinator/campaigns");
 		} catch (err) {
 			console.log(err);
 			setError("Failed to create campaign.");
@@ -43,7 +43,14 @@ const CampaignCoordinatorCreateCampaignPage = () => {
 
 	return (
 		<div className="campaign-content">
-			<h1 className="campaign-page-title" style={{ marginBottom: 22 }}>Create a new campaign</h1>
+			<div className="campaign-header" style={{ marginTop: 20 }}>
+				<div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+					<h1 className="campaign-page-title" style={{ marginBottom: 34 }}>Create a new campaign</h1>
+					<button className="btn-primary" onClick={() => navigate('/campaign-coordinator')}>
+						Back to dashboard
+					</button>
+				</div>
+			</div>
 			<section className="campaign-form-card">
 				<div className="campaign-form-header">
 					<button className="campaign-recommend-btn" type="button">Recommend</button>
@@ -76,7 +83,7 @@ const CampaignCoordinatorCreateCampaignPage = () => {
 					<button className="campaign-form-primary" type="button" onClick={handleCreate} disabled={saving}>
 						{saving ? "Creating..." : "Create campaign"}
 					</button>
-					<button className="campaign-form-secondary" type="button" onClick={() => navigate("/campaign-coordinator/all-campaigns")}>
+					<button className="campaign-form-secondary" type="button" onClick={() => navigate("/campaign-coordinator")}>
 						Cancel
 					</button>
 				</div>

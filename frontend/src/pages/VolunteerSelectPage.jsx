@@ -5,6 +5,7 @@ import "./VolunteerSelectPage.css";
 
 const VolunteerSelectPage = () => {
     const [volunteers, setVolunteers] = useState([]);
+	const [ratedVolunteers, setRatedVolunteers] = useState([]);
     const navigate = useNavigate();
 
 	const location = useLocation();
@@ -18,7 +19,22 @@ const VolunteerSelectPage = () => {
                 console.log(err);
             }
         };
+
+		const recommendVolunteers = async () => {
+			if(location.state?.from !== "edit") return;
+			try {
+				const taskId = location.state?.taskId;
+				if(!taskId) return;
+				const res = await api.get(`/volunteer/rank/${taskId}`);
+				console.log(res.data);
+				setRatedVolunteers(res.data);
+			} catch (err) {
+				console.log(err);
+			}
+		};
+
         fetchVolunteers();
+		recommendVolunteers();
     }, []);
 
 	const handleDetails = (id) => {
@@ -36,18 +52,26 @@ const VolunteerSelectPage = () => {
     return (
         <div className="volunteer-select-page">
             <div className="header">
-                <h2>Volunteers</h2>
+				<label className="addressLabelInre">Volunteers</label>
             </div>
             <div className="volunteer-list">
                 {volunteers.map((v) => (
-                    <div key={v.id} className="volunteer-row">
-                        <div className="avatar-small" />
-                        <span className="volunteer-name">{v.name} {v.surname}</span>
-                        <span className="volunteer-email">{v.email} </span>
+					<div key={v.id} className="onajnajveci" style={{display: 'flex'}}>
+                    <div className="volunteer-row-1">
+						<div style={{display: 'flex', marginBottom: '5px'}}>
+                        	<div className="avatar-small" />
+                        	<span className="volunteer-name">{v.name} {v.surname}</span>
+						</div>
+
+						<div style={{display: 'flex', marginBottom: '5px', gap: '10px'}}>
+                        	<span className="volunteer-email">{v.email} </span>
+                        	<span className="volunteer-phone">{v.phone || "No phone"}</span>
+						</div>
                         <span className="volunteer-address">
                             {v.address ? `${v.address.city}, ${v.address.country}` : "No address"}
                         </span>
-                        <span className="volunteer-phone">{v.phone || "No phone"}</span>
+                    </div>
+					<div style={{gap: '20px', margin: '10px'}}>
                         <button
                             className="btn-details"
                             onClick={() => handleSelect(v.id)}
@@ -55,10 +79,51 @@ const VolunteerSelectPage = () => {
                         <button
                             className="btn-details"
                             onClick={() => handleDetails(v.id)}
+							style={{marginLeft: '20px'}}
                         >Details</button>
-                    </div>
+					</div>
+					</div>
                 ))}
             </div>
+
+		{(location.state?.from === "edit" && ratedVolunteers.length != 0) && 
+		<>
+			<label className="addressLabelInre">Volunteer recommendation</label>
+            <div className="volunteer-list">
+                {ratedVolunteers.map((v) => (
+					<div key={v.id} className="onajnajveci" style={{display: 'flex'}}>
+                    <div className="volunteer-row-1">
+						<div style={{display: 'flex', marginBottom: '5px', justifyContent: 'space-between'}}>
+							<div style={{display: 'flex'}}>
+                        	<div className="avatar-small" />
+                        	<p className="volunteer-name">{v.name} {v.surname}</p>
+							</div>
+							<p style={{fontWeight: 'bold', marginLeft: '120px'}}>Predicted performance: {Math.round(v.predictedGrade * 100)/100}</p>
+						</div>
+
+						<div style={{display: 'flex', marginBottom: '5px', gap: '10px'}}>
+                        	<span className="volunteer-email">{v.email} </span>
+                        	<span className="volunteer-phone">{v.phone || "No phone"}</span>
+						</div>
+                        <span className="volunteer-address">
+                            {v.address ? `${v.address.city}, ${v.address.country}` : "No address"}
+                        </span>
+                    </div>
+					<div style={{gap: '20px', margin: '10px'}}>
+                        <button
+                            className="btn-details"
+                            onClick={() => handleSelect(v.id)}
+                        >Select</button>
+                        <button
+                            className="btn-details"
+                            onClick={() => handleDetails(v.id)}
+							style={{marginLeft: '20px'}}
+                        >Details</button>
+					</div>
+					</div>
+                ))}
+            </div>
+		</>}
         </div>
     );
 };
