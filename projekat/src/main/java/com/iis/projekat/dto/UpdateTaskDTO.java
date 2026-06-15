@@ -6,7 +6,7 @@ public class UpdateTaskDTO {
     private String name;
     private String description;
     private Long volunteerId;
-    private List<SkillDTO> requiredSkills;
+    private List<SkillTypeDTO> requiredSkills;
 
     public UpdateTaskDTO() {}
 
@@ -34,11 +34,11 @@ public class UpdateTaskDTO {
         this.volunteerId = volunteerId;
     }
 
-    public List<SkillDTO> getRequiredSkills() {
+    public List<SkillTypeDTO> getRequiredSkills() {
         return requiredSkills;
     }
 
-    public void setRequiredSkills(List<SkillDTO> requiredSkills) {
+    public void setRequiredSkills(List<SkillTypeDTO> requiredSkills) {
         this.requiredSkills = requiredSkills;
     }
 }

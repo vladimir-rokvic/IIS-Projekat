@@ -38,12 +38,22 @@
     gap: 8px;
 }
 
-.btn-save, .btn-details, .btn-change {
+.btn-save, .btn-details {
     padding: 6px 16px;
     border: none;
     border-radius: 6px;
     cursor: pointer;
     color: black;
+    background-color: #369FBC;
+}
+
+.btn-change {
+    padding: 6px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    color: black;
+	width: 150px;
     background-color: #369FBC;
 }
 

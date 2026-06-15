@@ -121,7 +121,7 @@ fontSize: '1.3rem'}}>Volunteer doesn't have any skills yet</p> :
                 </div>
             </div>
 
-			<label className="addressLabelInre">Meta information</label>
+			<label className="addressLabelInre">Basic information</label>
 				<div className="volunteer-section">
 				<div className="v-field">
 					<input type="text" placeholder="Enter task name here"

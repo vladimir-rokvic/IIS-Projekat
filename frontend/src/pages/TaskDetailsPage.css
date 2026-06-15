@@ -45,6 +45,30 @@
 	width: 100px;
 	height: 30px;
 }
+
+.basicinfo-section {
+	display: flex;
+	flex-direction: column;
+	border: 1px solid #d9d9d9;
+	border-radius: 10px;
+	padding: 10px;
+}
+
+.basicinfo-section p {
+	margin-left: 15px;
+}
+
+.task-description {
+	width: 350px;
+	height: 120px;
+	padding: 12px;
+	margin: 10px;
+	border-radius: 10px;
+	border: 1px solid #d9d9d9;
+	font-size: 1.3rem;
+	overflow-wrap: break-word;
+}
+
 .btn-details {
     padding: 6px 16px;
     border: none;
