@@ -64,4 +64,12 @@ public class VolunteerController {
        volunteerService.deleteVolunteer(id);
        return ResponseEntity.ok("Volunteer successfully deleted");
     }
+
+    @GetMapping("/rank/{taskId}")
+    public ResponseEntity<List<VolunteerDTO>> rankVolunteers(
+            @PathVariable Long taskId) {
+        List<VolunteerDTO> ret = volunteerService.rank(taskId);
+        if(ret == null) return ResponseEntity.badRequest().body(null);
+        return ResponseEntity.ok(ret);
+    }
 }

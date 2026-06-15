@@ -1,6 +1,7 @@
 package com.iis.projekat.dto;
 
 import com.iis.projekat.model.Skill;
+import com.iis.projekat.model.SkillType;
 import com.iis.projekat.model.Task;
 
 import java.time.LocalDate;
@@ -13,6 +14,7 @@ public class TaskDTO {
     private String description;
 
     private Set<SkillDTO> requiredSkills;
+    private Set<SkillDTO> requiredSkillTypes;
 
     private VolunteerDTO volunteer;
     private UserDTO coordinator;
@@ -43,7 +45,13 @@ public class TaskDTO {
             dtos.add(new SkillDTO(s));
         }
 
+        Set<SkillDTO> dtos1 = new HashSet<>();
+        for(SkillType s: t.getRequiredSkillTypes()){
+            dtos1.add(new SkillDTO(s));
+        }
+
         this.requiredSkills = dtos;
+        this.requiredSkillTypes = dtos1;
 
         if(t.getCoordinator() != null) {
             this.coordinator = new UserDTO(t.getCoordinator());
@@ -149,5 +157,13 @@ public class TaskDTO {
 
     public void setPhaseNaziv(String phaseNaziv) {
         this.phaseNaziv = phaseNaziv;
+    }
+
+    public Set<SkillDTO> getRequiredSkillTypes() {
+        return requiredSkillTypes;
+    }
+
+    public void setRequiredSkillTypes(Set<SkillDTO> requiredSkillTypes) {
+        this.requiredSkillTypes = requiredSkillTypes;
     }
 }

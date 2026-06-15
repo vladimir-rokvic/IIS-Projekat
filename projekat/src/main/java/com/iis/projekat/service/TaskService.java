@@ -22,6 +22,8 @@ public class TaskService {
     private EmployeeRepository employeeRepository;
     @Autowired
     private ProjectPhaseRepository projectPhaseRepository;
+    @Autowired
+    private SkillTypeRepository skillTypeRepository;
 
     public void saveTask(CreateTaskDTO dto) {
         Task task = new Task();
@@ -41,23 +43,16 @@ public class TaskService {
             task.setPhase(phase);
         }
 
-        Set<Skill> skills = new HashSet<>();
-        for(SkillDTO s: dto.getRequiredSkills()) {
-            Skill sk = skillRepository.findByName(s.getName()).orElseGet(
-                    () -> {
-                        Skill n = new Skill();
-                        n.setName(s.getName());
-                        return skillRepository.save(n);
-                    }
-            );
-
+        List<SkillType> skills = new ArrayList<>();
+        for(SkillTypeDTO s: dto.getRequiredSkillTypes()) {
+            SkillType sk = skillTypeRepository.findById(s.id).orElse(null);
             skills.add(sk);
         }
 
         task.setStartDate(dto.getStartDate());
         task.setEndDate(dto.getEndDate());
 
-        task.setRequiredSkills(skills);
+        task.setRequiredSkillTypes(skills);
         taskRepository.save(task);
     }
 

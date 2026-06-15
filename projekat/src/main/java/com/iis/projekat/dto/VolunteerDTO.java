@@ -2,6 +2,7 @@ package com.iis.projekat.dto;
 
 import com.iis.projekat.model.Address;
 import com.iis.projekat.model.Skill;
+import com.iis.projekat.model.SkillType;
 import com.iis.projekat.model.Volunteer;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -17,6 +18,8 @@ public class VolunteerDTO {
     private LocalDate dateOfBirth;
     private AddressDTO address;
     private List<SkillDTO> skills;
+    private List<SkillDTO> skillTypes;
+    private Double predictedGrade;
 
     public VolunteerDTO(Volunteer v) {
         this.id = v.getId();
@@ -25,12 +28,21 @@ public class VolunteerDTO {
         this.email = v.getEmail();
         this.phone = v.getPhone();
         this.dateOfBirth = v.getDateOfBirth();
-        this.address = new AddressDTO(v.getAddress());
+        if(v.getAddress() != null) {
+            this.address = new AddressDTO(v.getAddress());
+        } else {
+            this.address = null;
+        }
         this.bio = v.getBio();
         this.skills = new ArrayList<>();
+        this.skillTypes = new ArrayList<>();
 
         for(Skill s: v.getSkills()){
             this.skills.add(new SkillDTO(s));
+        }
+
+        for(SkillType st: v.getVolunteerSkillTypes()) {
+            this.skillTypes.add(new SkillDTO(st));
         }
     }
 
@@ -69,5 +81,21 @@ public class VolunteerDTO {
 
     public void setSkills(List<SkillDTO> skills) {
         this.skills = skills;
+    }
+
+    public Double getPredictedGrade() {
+        return predictedGrade;
+    }
+
+    public void setPredictedGrade(Double predictedGrade) {
+        this.predictedGrade = predictedGrade;
+    }
+
+    public List<SkillDTO> getSkillTypes() {
+        return skillTypes;
+    }
+
+    public void setSkillTypes(List<SkillDTO> skillTypes) {
+        this.skillTypes = skillTypes;
     }
 }

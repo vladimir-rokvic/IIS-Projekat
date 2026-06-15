@@ -3,6 +3,8 @@ package com.iis.projekat.model;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -33,6 +35,14 @@ public class Task {
     @ManyToOne
     @JoinColumn(name = "phase_id")
     private ProjectPhase phase;
+
+    @ManyToMany
+    @JoinTable(
+            name = "task_skill_types",
+            joinColumns = @JoinColumn(name = "task_id"),
+            inverseJoinColumns = @JoinColumn(name = "skill_type_id")
+    )
+    private List<SkillType> requiredSkillTypes = new ArrayList<>();
 
     public Task() {}
 
@@ -110,4 +120,12 @@ public class Task {
 
     public ProjectPhase getPhase() { return phase; }
     public void setPhase(ProjectPhase phase) { this.phase = phase; }
+
+    public List<SkillType> getRequiredSkillTypes() {
+        return requiredSkillTypes;
+    }
+
+    public void setRequiredSkillTypes(List<SkillType> requiredSkillTypes) {
+        this.requiredSkillTypes = requiredSkillTypes;
+    }
 }
