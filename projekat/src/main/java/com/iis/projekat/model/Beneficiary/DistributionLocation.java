@@ -1,5 +1,6 @@
-package com.iis.projekat.model;
+package com.iis.projekat.model.Beneficiary;
 
+import com.iis.projekat.model.Address;
 import jakarta.persistence.*;
 
 import java.time.LocalTime;

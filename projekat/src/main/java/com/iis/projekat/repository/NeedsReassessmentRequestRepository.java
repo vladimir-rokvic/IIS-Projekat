@@ -1,6 +1,6 @@
 package com.iis.projekat.repository;
 
-import com.iis.projekat.model.NeedsReassessmentRequest;
+import com.iis.projekat.model.Beneficiary.NeedsReassessmentRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

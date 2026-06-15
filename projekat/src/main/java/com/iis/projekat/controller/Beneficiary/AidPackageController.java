@@ -1,7 +1,7 @@
-package com.iis.projekat.controller;
+package com.iis.projekat.controller.Beneficiary;
 
-import com.iis.projekat.dto.AidPackageDTO;
-import com.iis.projekat.model.AidPackage;
+import com.iis.projekat.dto.Beneficiary.AidPackageDTO;
+import com.iis.projekat.model.Beneficiary.AidPackage;
 import com.iis.projekat.service.AidPackageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

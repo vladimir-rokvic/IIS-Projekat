@@ -1,9 +1,8 @@
-package com.iis.projekat.controller;
+package com.iis.projekat.controller.Beneficiary;
 
-import com.iis.projekat.dto.BeneficiaryDTO;
+import com.iis.projekat.dto.Beneficiary.BeneficiaryDTO;
 import com.iis.projekat.dto.NeedsReassessmentRequestDTO;
-import com.iis.projekat.model.Beneficiary;
-import com.iis.projekat.model.NeedsReassessmentRequest;
+import com.iis.projekat.model.Beneficiary.Beneficiary;
 import com.iis.projekat.service.BeneficiaryService;
 
 import com.iis.projekat.service.NeedsReassessmentRequestService;

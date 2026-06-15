@@ -1,4 +1,4 @@
-package com.iis.projekat.model;
+package com.iis.projekat.model.Beneficiary;
 
 import jakarta.persistence.*;
 
