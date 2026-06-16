@@ -1,10 +1,10 @@
 package com.iis.projekat.service;
 
-import com.iis.projekat.dto.AidPackageDTO;
-import com.iis.projekat.dto.PackageItemDTO;
-import com.iis.projekat.model.AidPackage;
-import com.iis.projekat.model.Beneficiary;
-import com.iis.projekat.model.PackageItem;
+import com.iis.projekat.dto.Beneficiary.AidPackageDTO;
+import com.iis.projekat.dto.Beneficiary.PackageItemDTO;
+import com.iis.projekat.model.Beneficiary.AidPackage;
+import com.iis.projekat.model.Beneficiary.Beneficiary;
+import com.iis.projekat.model.Beneficiary.PackageItem;
 import com.iis.projekat.repository.AidPackageRepository;
 import com.iis.projekat.repository.BeneficiaryRepository;
 import org.springframework.beans.factory.annotation.Autowired;

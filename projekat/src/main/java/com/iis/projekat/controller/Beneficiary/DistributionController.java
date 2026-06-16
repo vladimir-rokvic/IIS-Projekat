@@ -1,7 +1,7 @@
-package com.iis.projekat.controller;
+package com.iis.projekat.controller.Beneficiary;
 
-import com.iis.projekat.dto.DistributionLocationDTO;
-import com.iis.projekat.model.DistributionLocation;
+import com.iis.projekat.dto.Beneficiary.DistributionLocationDTO;
+import com.iis.projekat.model.Beneficiary.DistributionLocation;
 import com.iis.projekat.service.DistributionLocationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

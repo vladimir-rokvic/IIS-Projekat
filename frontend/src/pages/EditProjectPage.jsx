@@ -29,10 +29,6 @@ const EditProjectPage = () => {
     const [sviKoordinatori, setSviKoordinatori] = useState([]);
     const [odabraniPomocni, setOdabraniPomocni] = useState([]);
 
-    const fileRef = useRef();
-    const [trenutniDokument, setTrenutniDokument] = useState('');
-    const [fileName, setFileName] = useState('');
-
     const [loading, setLoading] = useState(true);
     const [submitting, setSubmitting] = useState(false);
     const [error, setError] = useState('');
@@ -54,7 +50,6 @@ const EditProjectPage = () => {
             setCiljnaGrupa(p.ciljnaGrupa || '');
             setGeografskaLokacija(p.geografskaLokacija || '');
             setIzvoriFinansiranja(p.izvoriFinansiranja || '');
-            setTrenutniDokument(p.dokumentIme || '');
             setOdabraniPomocni(p.pomocniKoordinatoriIds || []);
             setSviKoordinatori(koordinatoriRes.data);
         }).catch(() => setError('Failed to load project.'))
@@ -83,17 +78,6 @@ const EditProjectPage = () => {
 
             if (status === 'SPREMAN_ZA_ODOBRENJE') {
                 await api.put(`/projekti/${id}/spreman`);
-            }
-
-            if (fileRef.current?.files[0]) {
-                const formData = new FormData();
-                formData.append('dokument', fileRef.current.files[0]);
-                await api.put(`/projekti/${id}/dokument`, formData, {
-                    headers: { 'Content-Type': 'multipart/form-data' },
-                });
-                setTrenutniDokument(fileRef.current.files[0].name);
-                setFileName('');
-                fileRef.current.value = '';
             }
 
             setSuccess('Project saved successfully.');
@@ -215,21 +199,6 @@ const EditProjectPage = () => {
                 <div className="form-field" style={{ marginBottom: 14 }}>
                     <label>Funding sources (optional)</label>
                     <input type="text" value={izvoriFinansiranja} onChange={e => setIzvoriFinansiranja(e.target.value)} />
-                </div>
-                <div className="form-field">
-                    <label>Project document</label>
-                    {trenutniDokument && (
-                        <p style={{ fontSize: '0.82rem', color: '#555', marginBottom: 6 }}>
-                            Current: <strong>{trenutniDokument}</strong>
-                        </p>
-                    )}
-                    <div className="file-upload-row">
-                        <label className="upload-btn">
-                            {trenutniDokument ? 'Replace' : 'Upload'}
-                            <input type="file" ref={fileRef} style={{ display: 'none' }} onChange={e => setFileName(e.target.files[0]?.name || '')} accept=".pdf,.doc,.docx,.ppt,.pptx" />
-                        </label>
-                        <span className="file-name">{fileName || 'No new file selected'}</span>
-                    </div>
                 </div>
             </div>
 

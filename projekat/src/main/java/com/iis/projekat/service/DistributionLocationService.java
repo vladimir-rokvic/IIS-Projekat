@@ -1,8 +1,8 @@
 package com.iis.projekat.service;
 
-import com.iis.projekat.dto.DistributionLocationDTO;
+import com.iis.projekat.dto.Beneficiary.DistributionLocationDTO;
 import com.iis.projekat.model.Address;
-import com.iis.projekat.model.DistributionLocation;
+import com.iis.projekat.model.Beneficiary.DistributionLocation;
 import com.iis.projekat.repository.AddressRepository;
 import com.iis.projekat.repository.DistributionLocationRepository;
 import org.springframework.beans.factory.annotation.Autowired;

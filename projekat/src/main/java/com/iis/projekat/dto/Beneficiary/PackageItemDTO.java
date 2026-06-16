@@ -1,4 +1,4 @@
-package com.iis.projekat.dto;
+package com.iis.projekat.dto.Beneficiary;
 
 public class PackageItemDTO {
 

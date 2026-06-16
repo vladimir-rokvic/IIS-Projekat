@@ -1,10 +1,9 @@
-package com.iis.projekat.controller;
+package com.iis.projekat.controller.Beneficiary;
 
-import com.iis.projekat.dto.BeneficiaryDTO;
+import com.iis.projekat.dto.Beneficiary.BeneficiaryDTO;
 import com.iis.projekat.dto.NeedsReassessmentRequestDTO;
-import com.iis.projekat.model.Beneficiary;
-import com.iis.projekat.model.NeedsReassessmentRequest;
-import com.iis.projekat.service.BeneficiaryService;
+import com.iis.projekat.model.Beneficiary.Beneficiary;
+import com.iis.projekat.service.Beneficiary.BeneficiaryService;
 
 import com.iis.projekat.service.NeedsReassessmentRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +47,33 @@ public class BeneficiaryController {
             @RequestBody BeneficiaryDTO dto
     ) {
         return beneficiaryService.updateBeneficiary(id, dto);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<BeneficiaryDTO> get(@PathVariable Long id){
+
+        Beneficiary b = beneficiaryService.getById(id);
+
+        if(b == null){
+            return ResponseEntity.notFound().build();
+        }
+
+        BeneficiaryDTO dto = new BeneficiaryDTO();
+
+        dto.setEmail(b.getEmail());
+        dto.setName(b.getName());
+        dto.setSurname(b.getSurname());
+        dto.setDateOfBirth(b.getDateOfBirth());
+        dto.setPhone(b.getPhone());
+
+        dto.setCity(b.getAddress().getCity());
+        dto.setStreet(b.getAddress().getStreet());
+        dto.setCountry(b.getAddress().getCountry());
+
+        dto.setEligible(b.isEligible());
+        dto.setType(b.getType());
+
+        return ResponseEntity.ok(dto);
     }
 
 

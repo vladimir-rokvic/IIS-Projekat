@@ -44,7 +44,7 @@ public class ProjectController {
     }
 
 
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping
     public ResponseEntity<ProjectResponseDTO> kreirajProjekat(
             @AuthenticationPrincipal UserDetails userDetails,
             @RequestParam String naziv,
@@ -54,8 +54,7 @@ public class ProjectController {
             @RequestParam String rokKraj,
             @RequestParam(required = false) String ciljnaGrupa,
             @RequestParam(required = false) String geografskaLokacija,
-            @RequestParam(required = false) String izvoriFinansiranja,
-            @RequestPart("dokument") MultipartFile dokument) throws IOException {
+            @RequestParam(required = false) String izvoriFinansiranja) throws IOException {
 
         Employee koordinator = getUlogovanogZaposlenog(userDetails);
 
@@ -68,8 +67,7 @@ public class ProjectController {
                 LocalDate.parse(rokKraj),
                 ciljnaGrupa,
                 geografskaLokacija,
-                izvoriFinansiranja,
-                dokument
+                izvoriFinansiranja
         );
 
         return ResponseEntity.ok(dto);
@@ -118,18 +116,6 @@ public class ProjectController {
     }
 
 
-    /** Zamjena dokumenta (zasebni endpoint jer je multipart). */
-    @PutMapping(value = "/{id}/dokument", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ProjectResponseDTO> zamijeniDokument(
-            @PathVariable Long id,
-            @AuthenticationPrincipal UserDetails userDetails,
-            @RequestPart("dokument") MultipartFile dokument) throws IOException {
-
-        Employee koordinator = getUlogovanogZaposlenog(userDetails);
-        return ResponseEntity.ok(projectService.zamijeniDokument(id, koordinator.getId(), dokument));
-    }
-
-
     @PutMapping("/{id}/pomocni-koordinatori")
     public ResponseEntity<ProjectResponseDTO> postaviPomocne(
             @PathVariable Long id,
@@ -151,19 +137,6 @@ public class ProjectController {
 
         Employee koordinator = getUlogovanogZaposlenog(userDetails);
         return ResponseEntity.ok(projectService.posaljiNaOdobrenje(id, koordinator.getId()));
-    }
-
-
-    /** Preuzimanje dokumenta kao fajl (download). */
-    @GetMapping("/{id}/dokument")
-    public ResponseEntity<byte[]> preuzmiDokument(@PathVariable Long id) {
-        Project p = projectService.getProjekatEntitet(id);
-
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION,
-                        "attachment; filename=\"" + p.getDokumentIme() + "\"")
-                .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                .body(p.getDokumentSadrzaj());
     }
 
 
