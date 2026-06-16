@@ -1,8 +1,8 @@
-package com.iis.projekat.service;
+package com.iis.projekat.service.Beneficiary;
 
-import com.iis.projekat.dto.BeneficiaryDTO;
+import com.iis.projekat.dto.Beneficiary.BeneficiaryDTO;
 import com.iis.projekat.model.Address;
-import com.iis.projekat.model.Beneficiary;
+import com.iis.projekat.model.Beneficiary.Beneficiary;
 import com.iis.projekat.repository.AddressRepository;
 import com.iis.projekat.repository.BeneficiaryRepository;
 
@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import java.util.Optional;
 
 @Service
@@ -31,6 +32,11 @@ public class BeneficiaryService {
         return value == null || value.trim().isEmpty();
     }
 
+    public Beneficiary getById(Long id){
+        Optional<Beneficiary> b = beneficiaryRepository.findById(id);
+        return b.orElse(null);
+    }
+
     public Beneficiary saveBeneficiary(BeneficiaryDTO dto) {
 
         if (dto == null) {
@@ -46,7 +52,8 @@ public class BeneficiaryService {
                 isBlank(dto.getCity()) ||
                 isBlank(dto.getStreet()) ||
                 isBlank(dto.getCountry()) ||
-                isBlank(dto.getPassword())) {
+                isBlank(dto.getPassword()) ||
+                dto.getType()== null) {
             throw new IllegalArgumentException();
         }
 
@@ -87,6 +94,7 @@ public class BeneficiaryService {
         b.setEligible(dto.isEligible());
 
         b.setPassword(passwordEncoder.encode(dto.getPassword()));
+        b.setType(dto.getType());
 
         beneficiaryRepository.save(b);
         return beneficiaryRepository.save(b);
@@ -121,6 +129,7 @@ public class BeneficiaryService {
         if (dto.getDateOfBirth() != null)     b.setDateOfBirth(dto.getDateOfBirth());
         if (dto.getPassword() != null && !dto.getPassword().isEmpty())
             b.setPassword(passwordEncoder.encode(dto.getPassword()));
+        if (dto.getType() != null) b.setType(dto.getType());
 
         beneficiaryRepository.save(b);
         return true;

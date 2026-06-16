@@ -1,6 +1,6 @@
 package com.iis.projekat.repository;
 
-import com.iis.projekat.model.Beneficiary;
+import com.iis.projekat.model.Beneficiary.Beneficiary;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import java.util.Optional;

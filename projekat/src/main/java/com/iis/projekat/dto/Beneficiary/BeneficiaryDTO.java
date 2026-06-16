@@ -1,4 +1,6 @@
-package com.iis.projekat.dto;
+package com.iis.projekat.dto.Beneficiary;
+
+import com.iis.projekat.model.Beneficiary.AidType;
 
 import java.time.LocalDate;
 
@@ -19,6 +21,16 @@ public class BeneficiaryDTO {
     private String country;
 
     private boolean eligible = false;
+
+    private AidType type;
+
+    public AidType getType() {
+        return type;
+    }
+
+    public void setType(AidType type) {
+        this.type = type;
+    }
 
     public String getCity() {
         return city;
