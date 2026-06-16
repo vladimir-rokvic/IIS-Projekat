@@ -2,7 +2,9 @@ package com.iis.projekat.controller;
 
 import com.iis.projekat.dto.CampaignDTO;
 import com.iis.projekat.dto.CampaignCreateDTO;
+import com.iis.projekat.dto.CoordinatorDashboardDTO;
 import com.iis.projekat.service.CampaignService;
+import com.iis.projekat.service.CampaignStatisticsService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,9 +14,11 @@ import java.util.List;
 @RequestMapping("/api/campaigns")
 public class CampaignController {
 	private final CampaignService campaignService;
+	private final CampaignStatisticsService campaignStatisticsService;
 
-	public CampaignController(CampaignService campaignService) {
+	public CampaignController(CampaignService campaignService, CampaignStatisticsService campaignStatisticsService) {
 		this.campaignService = campaignService;
+		this.campaignStatisticsService = campaignStatisticsService;
 	}
 
 	@PostMapping
@@ -41,5 +45,10 @@ public class CampaignController {
 	public ResponseEntity<?> deleteCampaign(@PathVariable Long id) {
 		campaignService.deleteCampaign(id);
 		return ResponseEntity.ok().build();
+	}
+
+	@GetMapping("/coordinator-dashboard")
+	public ResponseEntity<CoordinatorDashboardDTO> getCoordinatorDashboard() {
+		return ResponseEntity.ok(campaignStatisticsService.getCoordinatorDashboard());
 	}
 }

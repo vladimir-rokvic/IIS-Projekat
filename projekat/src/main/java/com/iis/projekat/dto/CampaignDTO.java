@@ -33,6 +33,19 @@ public class CampaignDTO {
 		this.projectId = campaign.getProject() != null ? campaign.getProject().getId() : null;
 	}
 
+	public CampaignDTO(Campaign campaign, double raised) {
+		this.id = campaign.getId();
+		this.name = campaign.getName();
+		this.goal = campaign.getGoal();
+		this.raised = raised;
+		this.startDate = campaign.getStartDate();
+		this.endDate = campaign.getEndDate();
+		this.description = campaign.getDescription();
+		this.status = campaign.getStatus();
+		this.category = campaign.getCategory();
+		this.projectId = campaign.getProject() != null ? campaign.getProject().getId() : null;
+	}
+
 	public Long getId() {
 		return id;
 	}
