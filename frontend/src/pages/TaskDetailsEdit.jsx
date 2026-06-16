@@ -3,7 +3,7 @@ import api from "../api/axios";
 import { useNavigate, useParams } from "react-router-dom";
 import "./TaskDetailsEdit.css";
 
-const TaskDetailsPage = () => {
+const TaskDetailsEdit = () => {
 	const {id} = useParams();
 	const [task, setTask] = useState(null);
 	const [volunteer, setVolunteer] = useState(null);
@@ -257,4 +257,4 @@ fontSize: '1.3rem'}}>Volunteer doesn't have any skills yet</p> :
     );
 };
 
-export default TaskDetailsPage;
+export default TaskDetailsEdit;
