@@ -4,13 +4,13 @@ import api from "../api/axios";
 import "./beneficiary.css";
 
 const LOCATION_TYPES = [
-  { value: "WAREHOUSE",        label: "Warehouse" },
-  { value: "BUILDING",         label: "Building" },
-  { value: "VEHICLE",          label: "Vehicle" },
-  { value: "TENT",             label: "Tent" },
+  { value: "WAREHOUSE", label: "Warehouse" },
+  { value: "BUILDING", label: "Building" },
+  { value: "VEHICLE", label: "Vehicle" },
+  { value: "TENT", label: "Tent" },
   { value: "COMMUNITY_CENTER", label: "Community Center" },
-  { value: "SCHOOL",           label: "School" },
-  { value: "STORAGE_UNIT",     label: "Storage Unit" },
+  { value: "SCHOOL", label: "School" },
+  { value: "STORAGE_UNIT", label: "Storage Unit" },
 ];
 
 const pad = (v) => String(v).padStart(2, "0");
@@ -49,8 +49,8 @@ export default function NewDistributionLocation() {
     setError("");
 
     if (!form.name || !form.capacity || !form.type || !form.contactName ||
-        !form.contactNumber || !form.city || !form.street || !form.country ||
-        !form.beginH || !form.beginM || !form.endH || !form.endM) {
+      !form.contactNumber || !form.city || !form.street || !form.country ||
+      !form.beginH || !form.beginM || !form.endH || !form.endM) {
       setError("Please fill in all fields.");
       return;
     }
@@ -65,7 +65,7 @@ export default function NewDistributionLocation() {
       street: form.street,
       country: form.country,
       workHoursBegin: `${pad(form.beginH)}:${pad(form.beginM)}:00`,
-      workHoursEnd:   `${pad(form.endH)}:${pad(form.endM)}:00`,
+      workHoursEnd: `${pad(form.endH)}:${pad(form.endM)}:00`,
     };
 
     try {
@@ -77,105 +77,192 @@ export default function NewDistributionLocation() {
   };
 
   return (
-    <div className="ben-page">
-      <nav className="ben-topbar">
-        
-        <span className="ben-topbar-title">New Distribution Location</span>
-        
-      </nav>
+    <div className="create-page">
+      <header >
+        <div className="projects-top-left">
+          <h1>New Distribution Location</h1>
+        </div>
+      </header>
+      <br />
+      <div className="form-section">
+        <div className="form-section-header">
+          <h3>Create Distribution Location</h3>
+        </div>
 
-      <hr className="ben-divider" />
-      
-
-      <div className="ben-card dl-card">
-        
-
-        <h2 className="dl-title">New Distribution location</h2>
-
-        <div className="dl-form">
+        <div className="form-row">
           {/* Name */}
-          <div className="field-row">
-            <label className="field-label">Name</label>
-            <input className="field-input dl-input" name="name"
-              value={form.name ?? ""} onChange={handleChange} placeholder="Name" />
+          <div className="form-field">
+            <label>Name</label>
+            <input
+              name="name"
+              value={form.name ?? ""}
+              onChange={handleChange}
+              placeholder="Name"
+            />
           </div>
 
           {/* Capacity */}
-          <div className="field-row">
-            <label className="field-label">Capacity</label>
-            <input className="field-input dl-input" name="capacity" type="number" min="1"
-              value={form.capacity ?? ""} onChange={handleChange} placeholder="Capacity" />
+          <div className="form-field">
+            <label>Capacity</label>
+            <input
+              name="capacity"
+              type="number"
+              min="1"
+              value={form.capacity ?? ""}
+              onChange={handleChange}
+              placeholder="Capacity"
+            />
           </div>
+        </div>
 
+        <div className="form-row">
           {/* Type */}
-          <div className="field-row">
-            <label className="field-label">Type</label>
-            <select className="field-input dl-input dl-select" name="type"
-              value={form.type ?? ""} onChange={handleChange}>
-              <option value="" disabled>Type</option>
+          <div className="form-field">
+            <label>Type</label>
+            <select
+              name="type"
+              value={form.type ?? ""}
+              onChange={handleChange}
+            >
+              <option value="" disabled>
+                Type
+              </option>
+
               {LOCATION_TYPES.map((t) => (
-                <option key={t.value} value={t.value}>{t.label}</option>
+                <option key={t.value} value={t.value}>
+                  {t.label}
+                </option>
               ))}
             </select>
           </div>
 
           {/* Contact Name */}
-          <div className="field-row">
-            <label className="field-label">Contact Name</label>
-            <input className="field-input dl-input" name="contactName"
-              value={form.contactName ?? ""} onChange={handleChange} placeholder="Contact Name" />
+          <div className="form-field">
+            <label>Contact Name</label>
+            <input
+              name="contactName"
+              value={form.contactName ?? ""}
+              onChange={handleChange}
+              placeholder="Contact Name"
+            />
           </div>
+        </div>
 
+        <div className="form-row">
           {/* Contact Number */}
-          <div className="field-row">
-            <label className="field-label">Contact Number</label>
-            <input className="field-input dl-input" name="contactNumber"
-              value={form.contactNumber ?? ""} onChange={handleChange} placeholder="Contact Number" />
+          <div className="form-field">
+            <label>Contact Number</label>
+            <input
+              name="contactNumber"
+              value={form.contactNumber ?? ""}
+              onChange={handleChange}
+              placeholder="Contact Number"
+            />
           </div>
 
           {/* City */}
-          <div className="field-row">
-            <label className="field-label">City</label>
-            <input className="field-input dl-input" name="city"
-              value={form.city ?? ""} onChange={handleChange} placeholder="City" />
+          <div className="form-field">
+            <label>City</label>
+            <input
+              name="city"
+              value={form.city ?? ""}
+              onChange={handleChange}
+              placeholder="City"
+            />
           </div>
+        </div>
 
+        <div className="form-row">
           {/* Street */}
-          <div className="field-row">
-            <label className="field-label">Street</label>
-            <input className="field-input dl-input" name="street"
-              value={form.street ?? ""} onChange={handleChange} placeholder="Street" />
+          <div className="form-field">
+            <label>Street</label>
+            <input
+              name="street"
+              value={form.street ?? ""}
+              onChange={handleChange}
+              placeholder="Street"
+            />
           </div>
 
           {/* Country */}
-          <div className="field-row">
-            <label className="field-label">Country</label>
-            <input className="field-input dl-input" name="country"
-              value={form.country ?? ""} onChange={handleChange} placeholder="Country" />
+          <div className="form-field">
+            <label>Country</label>
+            <input
+              name="country"
+              value={form.country ?? ""}
+              onChange={handleChange}
+              placeholder="Country"
+            />
           </div>
+        </div>
 
-          {/* Working Hours */}
-          <div className="field-row">
-            <label className="field-label">Working Hours</label>
-            <div className="dl-time-row">
-              <input className="dl-time-box" name="beginH" placeholder="HH"
-                value={form.beginH ?? ""} onChange={(e) => handleTimeChange(e, 23)} />
-              <span className="dl-time-sep">:</span>
-              <input className="dl-time-box" name="beginM" placeholder="MM"
-                value={form.beginM ?? ""} onChange={(e) => handleTimeChange(e, 59)} />
-              <span className="dl-time-dash">–</span>
-              <input className="dl-time-box" name="endH" placeholder="HH"
-                value={form.endH ?? ""} onChange={(e) => handleTimeChange(e, 23)} />
-              <span className="dl-time-sep">:</span>
-              <input className="dl-time-box" name="endM" placeholder="MM"
-                value={form.endM ?? ""} onChange={(e) => handleTimeChange(e, 59)} />
+        {/* Working Hours */}
+        <div className="form-row">
+          <div className="form-field">
+            <label>Working Hours</label>
+
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+              }}
+            >
+              <input
+                style={{ maxWidth: "70px" }}
+                name="beginH"
+                placeholder="HH"
+                value={form.beginH ?? ""}
+                onChange={(e) => handleTimeChange(e, 23)}
+              />
+
+              <span>:</span>
+
+              <input
+                style={{ maxWidth: "70px" }}
+                name="beginM"
+                placeholder="MM"
+                value={form.beginM ?? ""}
+                onChange={(e) => handleTimeChange(e, 59)}
+              />
+
+              <span>–</span>
+
+              <input
+                style={{ maxWidth: "70px" }}
+                name="endH"
+                placeholder="HH"
+                value={form.endH ?? ""}
+                onChange={(e) => handleTimeChange(e, 23)}
+              />
+
+              <span>:</span>
+
+              <input
+                style={{ maxWidth: "70px" }}
+                name="endM"
+                placeholder="MM"
+                value={form.endM ?? ""}
+                onChange={(e) => handleTimeChange(e, 59)}
+              />
             </div>
           </div>
+        </div>
 
-          {error && <p className="dl-error">{error}</p>}
+        {error && <p className="error-text">{error}</p>}
 
-          {/* Save */}
-          <button className="btn-update dl-save" onClick={handleSave}>
+        <div className="form-actions">
+          <button
+            className="btn-cancel"
+            onClick={() => navigate(-1)}
+          >
+            Cancel
+          </button>
+
+          <button
+            className="btn-save"
+            onClick={handleSave}
+          >
             Save
           </button>
         </div>

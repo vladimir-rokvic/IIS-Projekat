@@ -55,13 +55,6 @@ const ManagerDashboard = () => {
                         Create distribution location
                     </button>
                 </div>
-                <div className="dashboard-card" style={{ marginTop: 16 }}>
-                    <h2>Create a new package</h2>
-                    <p>Create a new package to be distributed to the beneficiaries</p>
-                    <button className="btn-primary" onClick={() => navigate('/manager/createpackage')}>
-                        Create a package
-                    </button>
-                </div>
 
                 <div className="dashboard-card" style={{ marginTop: 16 }}>
                     <h2>Register a volunteer</h2>

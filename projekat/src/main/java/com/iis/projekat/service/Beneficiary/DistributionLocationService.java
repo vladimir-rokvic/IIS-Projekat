@@ -1,12 +1,16 @@
-package com.iis.projekat.service;
+package com.iis.projekat.service.Beneficiary;
 
 import com.iis.projekat.dto.Beneficiary.DistributionLocationDTO;
+import com.iis.projekat.dto.Beneficiary.DistributionLocationResponse;
 import com.iis.projekat.model.Address;
 import com.iis.projekat.model.Beneficiary.DistributionLocation;
 import com.iis.projekat.repository.AddressRepository;
-import com.iis.projekat.repository.DistributionLocationRepository;
+import com.iis.projekat.repository.Beneficiary.DistributionLocationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class DistributionLocationService {
@@ -19,6 +23,18 @@ public class DistributionLocationService {
 
     private boolean isBlank(String value) {
         return value == null || value.trim().isEmpty();
+    }
+
+    public List<DistributionLocationResponse> getAll(){
+
+        List<DistributionLocation> distrbutionLocations = distributionLocationRepository.findAll();
+        List<DistributionLocationResponse> responses = new ArrayList<>();
+
+        for(DistributionLocation dl : distrbutionLocations){
+            responses.add(toLocationResponse(dl));
+        }
+
+        return responses;
     }
 
     public DistributionLocation create(DistributionLocationDTO dto) {
@@ -78,5 +94,18 @@ public class DistributionLocationService {
         location.setAddress(address);
 
         return distributionLocationRepository.save(location);
+    }
+
+    private DistributionLocationResponse toLocationResponse(DistributionLocation l) {
+        return DistributionLocationResponse.builder()
+                .id(l.getId())
+                .name(l.getName())
+                .capacity(l.getCapacity())
+                .type(l.getType())
+                .contactName(l.getContactName())
+                .contactNumber(l.getContactNumber())
+                .workHoursBegin(l.getWorkHoursBegin())
+                .workHoursEnd(l.getWorkHoursEnd())
+                .build();
     }
 }

@@ -4,13 +4,12 @@ import com.iis.projekat.dto.Beneficiary.BeneficiaryDTO;
 import com.iis.projekat.model.Address;
 import com.iis.projekat.model.Beneficiary.Beneficiary;
 import com.iis.projekat.repository.AddressRepository;
-import com.iis.projekat.repository.BeneficiaryRepository;
+import com.iis.projekat.repository.Beneficiary.BeneficiaryRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
 import java.util.Optional;
 
 @Service
