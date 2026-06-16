@@ -1,6 +1,7 @@
 package com.iis.projekat.controller;
 
 import com.iis.projekat.dto.RegimentDTO;
+import com.iis.projekat.model.Certificate;
 import com.iis.projekat.model.Regiment;
 import com.iis.projekat.service.RegimentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,5 +29,18 @@ public class RegimentController {
         }
 
         return  ResponseEntity.ok("Regiment saved successfully");
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<RegimentDTO> getRegimentById(@PathVariable Long id) {
+        RegimentDTO ret = regimentService.findById(id);
+        if(ret == null) return ResponseEntity.notFound().build();
+
+        return ResponseEntity.ok(ret);
+    }
+
+    @GetMapping("/allCertificates")
+    public ResponseEntity<List<Certificate>> getAllCertificates() {
+        return ResponseEntity.ok(regimentService.getAllCertificates());
     }
 }

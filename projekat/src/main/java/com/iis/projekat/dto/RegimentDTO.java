@@ -6,13 +6,10 @@ import com.iis.projekat.model.Volunteer;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class RegimentDTO {
     private Long id;
-    private String name;
     private String description;
     private LocalDate startDate;
     private LocalDate endDate;
@@ -26,7 +23,6 @@ public class RegimentDTO {
 
     public RegimentDTO(Regiment r) {
         id = r.getId();
-        name = r.getName();
         description = r.getDescription();
         startDate = r.getStartDate();
         endDate = r.getEndDate();
@@ -49,14 +45,6 @@ public class RegimentDTO {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getDescription() {

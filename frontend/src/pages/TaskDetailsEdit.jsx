@@ -19,6 +19,9 @@ const TaskDetailsEdit = () => {
 	const comment = useRef('');
 	const grade = useRef(3);
 
+	const weekDays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+	const [startDay, setStartDay] = useState(0);
+	const [endDay, setEndDay] = useState(0);
 	useEffect(() => {
 		const fetchTask = async () => {
 			try {
@@ -27,6 +30,8 @@ const TaskDetailsEdit = () => {
 				console.log(res.data);
 				setVolunteer(res.data.volunteer);
 				setSkills(res.data.requiredSkillTypes);
+				setStartDay(new Date(res.data.startDate).getDay());
+				setEndDay(new Date(res.data.endDate).getDay());
 			} catch (err){
 				console.log(err);
 			}
@@ -165,7 +170,7 @@ fontSize: '1.3rem'}}>Volunteer doesn't have any skills yet</p> :
 				<div className="volunteer-section">
 				<div className="v-field">
 					<input type="text" placeholder={task.name}
-					ref={taskName}/>
+					ref={taskName} style={{marginLeft: '10px'}}/>
 				</div>
             	<textarea
             	    ref={description}
@@ -174,7 +179,11 @@ fontSize: '1.3rem'}}>Volunteer doesn't have any skills yet</p> :
             	    placeholder={task.description}
             	/>
 
-				<p className="contact-info">Time: {task.startDate} - {task.endDate}</p>
+				<div className="time-details">
+				<p style={{marginBottom: '10px', fontWeight: 'bold'}} className="contact-info">Time period of the task</p>
+				<p style={{marginBottom: '10px'}} className="contact-info">Start date: {weekDays[startDay]} {(task.startDate)}</p>
+				<p className="contact-info">End date: {weekDays[endDay]} {(task.endDate)}</p>
+				</div>
 			</div>
 
 

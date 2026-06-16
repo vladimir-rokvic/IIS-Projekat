@@ -1,8 +1,10 @@
 package com.iis.projekat.service;
 
 import com.iis.projekat.dto.RegimentDTO;
+import com.iis.projekat.model.Certificate;
 import com.iis.projekat.model.Regiment;
 import com.iis.projekat.model.Volunteer;
+import com.iis.projekat.repository.CertificateRepository;
 import com.iis.projekat.repository.RegimentRepository;
 import com.iis.projekat.repository.VolunteerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,8 @@ public class RegimentService {
     private RegimentRepository regimentRepository;
     @Autowired
     private VolunteerRepository volunteerRepository;
+    @Autowired
+    private CertificateRepository certificateRepository;
 
     //U specifikaciji sam napisao da trebju da se random generisu grupe za volontere
     private List<Volunteer> createTraineeGroup(List<Volunteer> volunteers, int numberToGroup) {
@@ -36,10 +40,8 @@ public class RegimentService {
     public Regiment save(RegimentDTO regiment) {
         Regiment r = new Regiment();
 
-        if(regiment.getDescription() == null
-        || regiment.getName() == null) return null;
+        if(regiment.getDescription() == null) return null;
 
-        r.setName(regiment.getName());
         r.setDescription(regiment.getDescription());
         r.setStartDate(regiment.getStartDate());
         r.setEndDate(regiment.getEndDate());
@@ -68,5 +70,15 @@ public class RegimentService {
         }
 
         return ret;
+    }
+
+    public RegimentDTO findById(Long id) {
+        Regiment r = regimentRepository.findById(id).orElse(null);
+        if(r == null) return null;
+        else return new RegimentDTO(r);
+    }
+
+    public List<Certificate> getAllCertificates() {
+        return certificateRepository.findAll();
     }
 }
