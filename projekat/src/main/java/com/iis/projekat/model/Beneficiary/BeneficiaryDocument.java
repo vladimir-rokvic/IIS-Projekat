@@ -33,7 +33,7 @@ public class BeneficiaryDocument {
     @Column(name = "aktivan", nullable = false)
     private boolean aktivan = true;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "korisnik_id", nullable = false)
     private Beneficiary korisnik;
 

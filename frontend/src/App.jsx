@@ -28,6 +28,7 @@ import ProjectDeniedPage from "./pages/ProjectDeniedPage";
 import ProjectAcceptedPage from "./pages/ProjectAcceptedPage";
 import BeneficiaryHomePage from "./pages/BeneficiaryHomePage";
 import BeneficiaryMyAccountPage from "./pages/BeneficiaryMyAccountPage";
+import BeneficiaryDocumentsPage from "./pages/BeneficiaryDocumentsPage";
 
 import CreateTaskPage from "./pages/CreateTaskPage";
 import VolunteerSelectPage from "./pages/VolunteerSelectPage";
@@ -86,6 +87,8 @@ function App() {
 					<Route path="/beneficiary" element={<PrivateRoute allowedRoles={["BENEFICIARY"]}><BeneficiaryHomePage /></PrivateRoute>} />
 					<Route path="/beneficiary/profile" element={<PrivateRoute allowedRoles={["BENEFICIARY"]}><BeneficiaryMyAccountPage /></PrivateRoute>} />
 					<Route path="/beneficiary/register" element={<BeneficiaryRegisterPage />}/>
+					<Route path="/beneficiary/documents" element={<PrivateRoute allowedRoles={["BENEFICIARY"]}><BeneficiaryDocumentsPage /></PrivateRoute>} />
+
 					<Route path="/manager/distributionlocation" element={<PrivateRoute allowedRoles={["MANAGER"]}><NewDistributionLocation /></PrivateRoute>}/>
 					<Route path="/manager/createpackage" element={<PrivateRoute allowedRoles={["MANAGER"]}><CreatePackage /></PrivateRoute>}/>
 

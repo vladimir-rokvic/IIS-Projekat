@@ -1,4 +1,4 @@
-package com.iis.projekat.service;
+package com.iis.projekat.service.Beneficiary;
 
 import com.iis.projekat.dto.Beneficiary.BeneficiaryDTO;
 import com.iis.projekat.model.Address;
@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import java.util.Optional;
 
 @Service
@@ -29,6 +30,11 @@ public class BeneficiaryService {
 
     private boolean isBlank(String value) {
         return value == null || value.trim().isEmpty();
+    }
+
+    public Beneficiary getById(Long id){
+        Optional<Beneficiary> b = beneficiaryRepository.findById(id);
+        return b.orElse(null);
     }
 
     public Beneficiary saveBeneficiary(BeneficiaryDTO dto) {

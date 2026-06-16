@@ -14,6 +14,11 @@ import com.iis.projekat.repository.BeneficiaryRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -57,37 +62,65 @@ public class BeneficiaryDocumentService {
                 .korisnik(korisnik)
                 .build();
 
+        beneficiaryRepository.save(korisnik);
         validateUploaded(korisnik);
         dokumentRepository.save(dokument);
         return toResponse(dokument);
     }
 
+    public ResponseEntity<Resource> getFile(Long id) {
+        BeneficiaryDocument dokument = dokumentRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Dokument nije pronađen"));
+
+        Path putanja = Paths.get(dokument.getPutanjaFajla());
+        Resource resource = new FileSystemResource(putanja);
+
+        if (!resource.exists()) {
+            throw new EntityNotFoundException("Fajl nije pronađen na disku");
+        }
+
+        String contentType;
+        try {
+            contentType = Files.probeContentType(putanja);
+        } catch (IOException e) {
+            contentType = MediaType.APPLICATION_OCTET_STREAM_VALUE;
+        }
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(contentType))
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                        "inline; filename=\"" + dokument.getNazivFajla() + "\"")
+                .body(resource);
+    }
+
     private void validateUploaded(Beneficiary korisnik) {
+
         List<DocumentResponse> docs = getAktivniDokumenti(korisnik.getId());
-        boolean licna= false;
+
+        boolean licna = false;
         boolean nezaposlenost = false;
         boolean prihodi = false;
         boolean medicine = false;
-        for(DocumentResponse doc : docs){
-            if(doc.getTip()==DocumentTypeBeneficiary.LICNA_KARTA) licna = true;
-            if(doc.getTip()==DocumentTypeBeneficiary.POTVRDA_O_NEZAPOSLENOSTI) nezaposlenost = true;
-            if(doc.getTip()==DocumentTypeBeneficiary.POTVRDA_O_PRIHODIMA) prihodi = true;
-            if(doc.getTip()==DocumentTypeBeneficiary.MEDICINSKA_DOKUMENTACIJA) medicine = true;
-        }
-        if( licna || nezaposlenost || prihodi){
-            if(korisnik.getType()==AidType.MEDICINE) {
-                if (medicine) {
-                    korisnik.setEligible(true);
-                    return;
-                }else{
-                    korisnik.setEligible(false);
-                    return;
-                }
-            }
-            korisnik.setEligible(true);
-        }
-        korisnik.setEligible(false);
 
+        for (DocumentResponse doc : docs) {
+            if (doc.getTip() == DocumentTypeBeneficiary.LICNA_KARTA) licna = true;
+            if (doc.getTip() == DocumentTypeBeneficiary.POTVRDA_O_NEZAPOSLENOSTI) nezaposlenost = true;
+            if (doc.getTip() == DocumentTypeBeneficiary.POTVRDA_O_PRIHODIMA) prihodi = true;
+            if (doc.getTip() == DocumentTypeBeneficiary.MEDICINSKA_DOKUMENTACIJA) medicine = true;
+        }
+
+        boolean baseValid = licna && nezaposlenost && prihodi;
+
+        boolean eligible;
+
+        if (korisnik.getType() == AidType.MEDICINE) {
+            eligible = baseValid && medicine;
+        } else {
+            eligible = baseValid;
+        }
+
+        korisnik.setEligible(eligible);
+        beneficiaryRepository.save(korisnik);
     }
 
     public List<DocumentResponse> getAktivniDokumenti(Long korisnikId) {
@@ -103,6 +136,7 @@ public class BeneficiaryDocumentService {
         dokument.setAktivan(false);
         Beneficiary korisnik = dokument.getKorisnik();
         korisnik.setEligible(false);
+        validateUploaded(korisnik);
         beneficiaryRepository.save(korisnik);
         dokumentRepository.save(dokument);
     }

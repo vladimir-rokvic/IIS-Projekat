@@ -6,6 +6,7 @@ import com.iis.projekat.model.Beneficiary.DocumentTypeBeneficiary;
 import com.iis.projekat.service.Beneficiary.BeneficiaryDocumentService;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +30,11 @@ public class BeneficiaryDocumentController {
             @RequestParam MultipartFile fajl) throws IOException {
 
         return ResponseEntity.ok(dokumentService.upload(korisnikId, tip, fajl));
+    }
+
+    @GetMapping("/{id}/fajl")
+    public ResponseEntity<Resource> getFile(@PathVariable Long id) {
+        return dokumentService.getFile(id);
     }
 
     @GetMapping("/korisnik/{korisnikId}")
