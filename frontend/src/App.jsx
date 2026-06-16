@@ -50,6 +50,9 @@ import ProjectInformationPage from "./pages/ProjectInformationPage";
 import PhaseFormPage from "./pages/PhaseFormPage";
 import PhaseTaskFormPage from "./pages/PhaseTaskFormPage";
 
+import CreateRegiment from "./pages/CreateRegiment";
+import SelectCertificatePage from "./pages/SelectCertificatePage";
+
 function App() {
 	return (
 		<AuthProvider>
@@ -97,9 +100,11 @@ function App() {
 					<Route path="/manager/projects/:id" element={<PrivateRoute allowedRoles={["MANAGER"]}><ManagerProjectDetailPage /></PrivateRoute>} />
 
 					<Route path="/coord/createTask" element={<PrivateRoute allowedRoles={["COORDINATOR"]}><CreateTaskPage /></PrivateRoute>}/>
-					<Route path="/coord/createTask/addVolunteer" element={<PrivateRoute allowedRoles={["COORDINATOR"]}><VolunteerSelectPage /></PrivateRoute>}/>
+					<Route path="/manager/createRegiment" element={<PrivateRoute allowedRoles={["MANAGER"]}><CreateRegiment /></PrivateRoute>}/>
+					<Route path="/coord/createTask/addVolunteer" element={<PrivateRoute allowedRoles={["COORDINATOR", "MANAGER"]}><VolunteerSelectPage /></PrivateRoute>}/>
 					<Route path="/volunteer/details/:id" element={<PrivateRoute allowedRoles={["COORDINATOR"]}><VolunteerDetailsPage /></PrivateRoute>}/>
 					<Route path="/tasks" element={<PrivateRoute allowedRoles={["COORDINATOR"]}><TasksPage /></PrivateRoute>}/>
+					<Route path="/selectCertificate" element={<PrivateRoute allowedRoles={["MANAGER"]}><SelectCertificatePage /></PrivateRoute>}/>
 					<Route path="/coord/tasks/:id" element={<PrivateRoute allowedRoles={["COORDINATOR"]}><TaskDetailsPage /></PrivateRoute>}/>
 					<Route path="/coord/tasksEdit/:id" element={<PrivateRoute allowedRoles={["COORDINATOR"]}><TaskDetailsEdit /></PrivateRoute>}/>
 

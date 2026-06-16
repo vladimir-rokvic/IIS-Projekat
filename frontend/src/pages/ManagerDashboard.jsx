@@ -71,6 +71,14 @@ const ManagerDashboard = () => {
                     </button>
                 </div>
 
+                <div className="dashboard-card" style={{ marginTop: 16 }}>
+                    <h2>Create a training regiment</h2>
+                    <p>Create a new training regiment for the organization</p>
+                    <button className="btn-primary" onClick={() =>  navigate('/manager/createRegiment')}>
+						Create regiment
+                    </button>
+                </div>
+
             </main>
         </div>
     );

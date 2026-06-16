@@ -41,11 +41,13 @@ const VolunteerSelectPage = () => {
 		navigate(`/volunteer/details/${id}`)
 	}
 
-	const handleSelect = (id) => {
+	const handleSelect = (v) => {
 		if(location.state?.from === "edit") {
-			navigate(`/coord/tasksEdit/${location.state?.taskId}`, { state: {v_id: id} });
-		} else {
-			navigate('/coord/createTask', { state: {v_id: id} });
+			navigate(`/coord/tasksEdit/${location.state?.taskId}`, { state: {v_id: v.id} });
+		} else if(location.state?.from === "create") {
+			navigate('/coord/createTask', { state: {v_id: v.id} });
+		} else if(location.state?.from === "training-create") {
+			navigate('/manager/createRegiment', {state: {trainer: v}});
 		}
 	}
 
@@ -74,7 +76,7 @@ const VolunteerSelectPage = () => {
 					<div style={{gap: '20px', margin: '10px'}}>
                         <button
                             className="btn-details"
-                            onClick={() => handleSelect(v.id)}
+                            onClick={() => handleSelect(v)}
                         >Select</button>
                         <button
                             className="btn-details"
