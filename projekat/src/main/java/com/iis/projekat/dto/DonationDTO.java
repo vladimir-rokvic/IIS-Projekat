@@ -20,6 +20,7 @@ public class DonationDTO {
     private Long donorId;
 
     private Long projectId;
+    private Long campaignId;
 
 
     public DonationDTO() {}
@@ -35,6 +36,7 @@ public class DonationDTO {
         this.notificationChannel = d.getNotificationChannel();
         if(d.getDonor() != null) this.donorId = d.getDonor().getId();
         if (d.getProject() != null) this.projectId = d.getProject().getId();
+        if (d.getCampaign() != null) this.campaignId = d.getCampaign().getId();
     }
 
     public Long getId() { return id; }
@@ -70,5 +72,13 @@ public class DonationDTO {
 
     public void setProjectId(Long projectId) {
         this.projectId = projectId;
+    }
+
+    public Long getCampaignId() {
+        return campaignId;
+    }
+
+    public void setCampaignId(Long campaignId) {
+        this.campaignId = campaignId;
     }
 }

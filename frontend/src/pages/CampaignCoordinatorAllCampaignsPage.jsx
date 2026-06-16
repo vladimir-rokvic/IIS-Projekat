@@ -100,7 +100,7 @@ const CampaignCoordinatorAllCampaignsPage = () => {
 							{formatDate(campaign.startDate)} - {formatDate(campaign.endDate)}
 						</div>
 						<div className="campaign-card-text">Goal: ${campaign.goal ?? 0}</div>
-						<div className="campaign-card-text">Project ID: {campaign.projectId ?? "-"}</div>
+						<div className="campaign-card-text">Category: {campaign.category ?? "-"}</div>
 						<div className="campaign-card-footer">
 							<span>Raised: -</span>
 							<span>{campaign.status}</span>

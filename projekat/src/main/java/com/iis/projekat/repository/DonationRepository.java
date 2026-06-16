@@ -9,4 +9,5 @@ import java.util.Optional;
 public interface DonationRepository extends JpaRepository<Donation, Long> {
 	List<Donation> findByDonor_IdOrderByPaymentDateDesc(Long donorId);
 	Optional<Donation> findByDonor_IdAndProject_Id(Long donorId, Long projectId);
+	List<Donation> findAllByCampaign_Id(Long campaignId);
 }

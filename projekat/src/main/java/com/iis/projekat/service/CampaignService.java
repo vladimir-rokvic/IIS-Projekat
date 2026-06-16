@@ -15,10 +15,12 @@ import java.util.stream.Collectors;
 public class CampaignService {
 	private final CampaignRepository campaignRepository;
 	private final ProjectRepository projectRepository;
+	private final DonationService donationService;
 
-	public CampaignService(CampaignRepository campaignRepository, ProjectRepository projectRepository) {
+	public CampaignService(CampaignRepository campaignRepository, ProjectRepository projectRepository, DonationService donationService) {
 		this.campaignRepository = campaignRepository;
 		this.projectRepository = projectRepository;
+		this.donationService = donationService;
 	}
 
 	public CampaignDTO createCampaign(CampaignCreateDTO dto) {
@@ -38,9 +40,16 @@ public class CampaignService {
 	}
 
 	public List<CampaignDTO> listCampaigns() {
-		return campaignRepository.findAll().stream()
+		List<CampaignDTO> campaigns = campaignRepository.findAll().stream()
 				.map(CampaignDTO::new)
 				.collect(Collectors.toList());
+		for (CampaignDTO campaign : campaigns) {
+			double raised = donationService.findByCampaignId(campaign.getId()).stream()
+					.mapToDouble(donation -> donation.getAmount())
+					.sum();
+			campaign.setRaised(raised);
+		}
+		return campaigns;
 	}
 
 	public void deleteCampaign(Long id) {

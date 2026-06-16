@@ -1,6 +1,7 @@
 package com.iis.projekat.dto;
 
 import com.iis.projekat.model.Campaign;
+import com.iis.projekat.model.CampaignCategory;
 import com.iis.projekat.model.CampaignStatus;
 
 import java.time.LocalDate;
@@ -8,11 +9,13 @@ import java.time.LocalDate;
 public class CampaignDTO {
 	private Long id;
 	private String name;
+	private double raised;
 	private Double goal;
 	private LocalDate startDate;
 	private LocalDate endDate;
 	private String description;
 	private CampaignStatus status;
+	private CampaignCategory category;
 	private Long projectId;
 
 	public CampaignDTO() {
@@ -26,6 +29,7 @@ public class CampaignDTO {
 		this.endDate = campaign.getEndDate();
 		this.description = campaign.getDescription();
 		this.status = campaign.getStatus();
+		this.category = campaign.getCategory();
 		this.projectId = campaign.getProject() != null ? campaign.getProject().getId() : null;
 	}
 
@@ -51,6 +55,14 @@ public class CampaignDTO {
 
 	public void setGoal(Double goal) {
 		this.goal = goal;
+	}
+
+	public double getRaised() {
+		return raised;
+	}
+
+	public void setRaised(double raised) {
+		this.raised = raised;
 	}
 
 	public LocalDate getStartDate() {
@@ -91,5 +103,13 @@ public class CampaignDTO {
 
 	public void setProjectId(Long projectId) {
 		this.projectId = projectId;
+	}
+
+	public CampaignCategory getCategory() {
+		return category;
+	}
+
+	public void setCategory(CampaignCategory category) {
+		this.category = category;
 	}
 }

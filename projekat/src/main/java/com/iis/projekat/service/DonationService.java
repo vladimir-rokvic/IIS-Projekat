@@ -2,9 +2,11 @@ package com.iis.projekat.service;
 
 import com.iis.projekat.dto.DonationCreateDTO;
 import com.iis.projekat.dto.DonationDTO;
+import com.iis.projekat.model.Campaign;
 import com.iis.projekat.model.Donation;
 import com.iis.projekat.model.Donor;
 import com.iis.projekat.model.Project;
+import com.iis.projekat.repository.CampaignRepository;
 import com.iis.projekat.repository.DonationRepository;
 import com.iis.projekat.repository.DonorRepository;
 import com.iis.projekat.repository.ProjectRepository;
@@ -25,6 +27,9 @@ public class DonationService {
 
     @Autowired
     private ProjectRepository projectRepository;
+
+    @Autowired
+    private CampaignRepository campaignRepository;
 
     @Autowired
     private DtoMapperService mapper;
@@ -50,6 +55,11 @@ public class DonationService {
         if (dto.getProjectId() != null) {
             Project project = projectRepository.findById(dto.getProjectId()).orElse(null);
             d.setProject(project);
+        }
+
+        if (dto.getCampaignId() != null) {
+            Campaign campaign = campaignRepository.findById(dto.getCampaignId()).orElse(null);
+            d.setCampaign(campaign);
         }
 
         donationRepository.save(d);
@@ -94,5 +104,11 @@ public class DonationService {
     public java.util.Optional<DonationDTO> findByDonorAndProject(Long donorId, Long projectId) {
         return donationRepository.findByDonor_IdAndProject_Id(donorId, projectId)
                 .map(mapper::toDonationDto);
+    }
+
+    public List<DonationDTO> findByCampaignId(Long campaignId) {
+        return donationRepository.findAllByCampaign_Id(campaignId).stream()
+                .map(mapper::toDonationDto)
+                .collect(Collectors.toList());
     }
 }

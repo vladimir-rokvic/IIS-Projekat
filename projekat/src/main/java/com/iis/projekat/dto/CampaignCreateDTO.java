@@ -1,5 +1,6 @@
 package com.iis.projekat.dto;
 
+import com.iis.projekat.model.CampaignCategory;
 import com.iis.projekat.model.CampaignStatus;
 
 import java.time.LocalDate;
@@ -11,6 +12,7 @@ public class CampaignCreateDTO {
 	private LocalDate endDate;
 	private String description;
 	private CampaignStatus status;
+	private CampaignCategory category;
 	private Long projectId;
 
 	public CampaignCreateDTO() {
@@ -62,6 +64,14 @@ public class CampaignCreateDTO {
 
 	public void setStatus(CampaignStatus status) {
 		this.status = status;
+	}
+
+	public CampaignCategory getCategory() {
+		return category;
+	}
+
+	public void setCategory(CampaignCategory category) {
+		this.category = category;
 	}
 
 	public Long getProjectId() {
