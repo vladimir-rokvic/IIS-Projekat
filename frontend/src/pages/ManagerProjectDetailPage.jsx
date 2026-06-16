@@ -208,21 +208,6 @@ const ManagerProjectDetailPage = () => {
                         <input type="text" value={project.geografskaLokacija || ''} readOnly className="readonly-field" placeholder="Not specified" />
                     </div>
                 </div>
-                <div className="form-field" style={{ marginTop: 14 }}>
-                    <label>Project document upload</label>
-                    {project.dokumentIme ? (
-                        <a
-                            href={`http://localhost:8080/api/projekti/${id}/dokument`}
-                            target="_blank"
-                            rel="noreferrer"
-                            style={{ fontSize: '0.88rem', color: '#1a7a9a' }}
-                        >
-                            {project.dokumentIme}
-                        </a>
-                    ) : (
-                        <span style={{ fontSize: '0.88rem', color: '#888' }}>No document</span>
-                    )}
-                </div>
             </div>
 
             {/* Actions */}

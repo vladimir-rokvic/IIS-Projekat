@@ -39,14 +39,9 @@ public class ProjectService {
             LocalDate rokKraj,
             String ciljnaGrupa,
             String geoLokacija,
-            String finansiranje,
-            MultipartFile dokument) throws IOException {
+            String finansiranje) throws IOException {
 
         Employee koordinator = nadjiKoordinatora(koordinatorId);
-
-        if (dokument == null || dokument.isEmpty()) {
-            throw new IllegalArgumentException("Dokument sa planom projekta je obavezan.");
-        }
 
         Project p = new Project();
         p.setNaziv(naziv);
@@ -58,8 +53,6 @@ public class ProjectService {
         p.setCiljnaGrupa(ciljnaGrupa);
         p.setGeografskaLokacija(geoLokacija);
         p.setIzvoriFinansiranja(finansiranje);
-        p.setDokumentIme(dokument.getOriginalFilename());
-        p.setDokumentSadrzaj(dokument.getBytes());
         p.setStatus(ProjectStatus.U_PRIPREMI);
 
         return ProjectResponseDTO.from(projectRepository.save(p));
@@ -130,27 +123,6 @@ public class ProjectService {
         }
     }
 
-    /**
-     * Zamjena dokumenta dok je projekat u statusu U_PRIPREMI.
-     */
-    public ProjectResponseDTO zamijeniDokument(
-            Long projektId,
-            Long koordinatorId,
-            MultipartFile dokument) throws IOException {
-
-        Project p = nadjiProjekat(projektId);
-        provjeriVlasnistvo(p, koordinatorId);
-        provjeriEditabilnost(p);
-
-        if (dokument == null || dokument.isEmpty()) {
-            throw new IllegalArgumentException("Novi dokument ne može biti prazan.");
-        }
-
-        p.setDokumentIme(dokument.getOriginalFilename());
-        p.setDokumentSadrzaj(dokument.getBytes());
-        return ProjectResponseDTO.from(projectRepository.save(p));
-    }
-
 
     /**
      * Koordinator šalje projekat na odobrenje.
@@ -215,10 +187,6 @@ public class ProjectService {
         return ProjectResponseDTO.from(nadjiProjekat(projektId));
     }
 
-    /** Preuzimanje dokumenta (vraća bytes za download). */
-    public Project getProjekatEntitet(Long projektId) {
-        return nadjiProjekat(projektId);
-    }
 
     /** Svi koordinatori u sistemu (za odabir pomoćnih) */
     public List<Employee> sviKoordinatori() {

@@ -29,8 +29,6 @@ public class ProjectResponseDTO {
     public String geografskaLokacija;
     public String izvoriFinansiranja;
 
-    // Dokument — samo ime, sadržaj se preuzima posebno
-    public String dokumentIme;
 
     // Pomoćni koordinatori — lista ID-eva
     public List<Long> pomocniKoordinatoriIds;
@@ -55,7 +53,6 @@ public class ProjectResponseDTO {
         dto.ciljnaGrupa = p.getCiljnaGrupa();
         dto.geografskaLokacija = p.getGeografskaLokacija();
         dto.izvoriFinansiranja = p.getIzvoriFinansiranja();
-        dto.dokumentIme = p.getDokumentIme();
         dto.razlog = p.getRazlog();
         dto.pomocniKoordinatoriIds = p.getPomocniKoordinatori()
                 .stream()
