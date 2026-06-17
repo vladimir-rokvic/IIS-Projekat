@@ -6,6 +6,5 @@ public enum ProjectStatus {
     ODOBREN,
     NEOPHODNA_IZMENA,
     ODBIJEN,
-    ZAVRSEN,
-    CEKA_ODOBRENJE_NOVE_FAZE
+    ZAVRSEN
 }

@@ -58,9 +58,22 @@ const ProjectsPage = () => {
                         <h1>Projects</h1>
                         <p>Manage existing projects and create a new one.</p>
                     </div>
-                    <button className="btn-primary" onClick={() => navigate('/projects/new')}>
-                        Create a project +
-                    </button>
+
+                    <div style={{display: "flex", gap: "10px"}}>
+                        <button
+                            className="btn-primary"
+                            onClick={() => navigate('/')}
+                        >
+                            ← Back to Home page
+                        </button>
+
+                        <button
+                            className="btn-primary"
+                            onClick={() => navigate('/projects/new')}
+                        >
+                            Create a project +
+                        </button>
+                    </div>
                 </div>
 
                 <div className="projects-container">

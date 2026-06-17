@@ -11,6 +11,9 @@ const ProjectInformationPage = () => {
     const [phases, setPhases] = useState([]);
     const [kpi, setKpi] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [closing, setClosing] = useState(false);
+    const [closeError, setCloseError] = useState(null);
+    const [closeSuccess, setCloseSuccess] = useState(false);
 
     const fetchData = () => {
         Promise.all([
@@ -22,15 +25,34 @@ const ProjectInformationPage = () => {
             setPhases(fazePRes.data || []);
             setKpi(kpiRes.data);
         }).catch(() => {})
-          .finally(() => setLoading(false));
+            .finally(() => setLoading(false));
     };
 
     useEffect(() => {
         fetchData();
     }, [id]);
 
+    const handleZatvoriProjekat = async () => {
+        if (!window.confirm("Da li ste sigurni da želite zatvoriti projekat?")) return;
+        setClosing(true);
+        setCloseError(null);
+        try {
+            await api.put(`/projekti/${id}/zatvori`);
+            setCloseSuccess(true);
+            fetchData();
+        } catch (err) {
+            setCloseError(err.response?.data?.message || "Greška pri zatvaranju projekta.");
+        } finally {
+            setClosing(false);
+        }
+    };
+
     if (loading) return <div className="loading-text">Loading...</div>;
     if (!project) return <div className="loading-text">Project not found.</div>;
+
+    const isZavrsen = project.status === "ZAVRSEN";
+    const sveFazeZavrsene = phases.length > 0 && phases.every(f => f.zavrsena);
+    const mozeSeZatvoriti = project.status === "ODOBREN" && sveFazeZavrsene;
 
     return (
         <div className="create-page">
@@ -49,7 +71,9 @@ const ProjectInformationPage = () => {
                         <div className="info-row"><span className="info-label">Project name</span><span>{project.naziv}</span></div>
                         <div className="info-row"><span className="info-label">Status</span>
                             <span className={`status-badge status-${project.status}`}>
-                                {project.status === "ODOBREN" ? "Accepted" : project.status}
+                                {project.status === "ODOBREN" ? "Accepted"
+                                    : project.status === "ZAVRSEN" ? "Finished"
+                                        : project.status}
                             </span>
                         </div>
                         <div className="info-row"><span className="info-label">Start date</span><span>{project.rokPocetak}</span></div>
@@ -69,13 +93,15 @@ const ProjectInformationPage = () => {
             <div className="form-section">
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
                     <h3>Project phases</h3>
-                    <button
-                        className="btn-primary"
-                        style={{ marginTop: 0 }}
-                        onClick={() => navigate(`/projects/${id}/phases/new`)}
-                    >
-                        Add phase +
-                    </button>
+                    {!isZavrsen && (
+                        <button
+                            className="btn-primary"
+                            style={{ marginTop: 0 }}
+                            onClick={() => navigate(`/projects/${id}/phases/new`)}
+                        >
+                            Add phase +
+                        </button>
+                    )}
                 </div>
 
                 {/* Overlap setting */}
@@ -120,16 +146,46 @@ const ProjectInformationPage = () => {
                                 </div>
                             )}
                         </div>
-                        <button
-                            className="btn-primary"
-                            style={{ marginTop: 0, alignSelf: "flex-start", whiteSpace: "nowrap" }}
-                            onClick={() => navigate(`/projects/${id}/phases/${phase.id}/edit`)}
-                        >
-                            Edit
-                        </button>
+                        {!isZavrsen && (
+                            <button
+                                className="btn-primary"
+                                style={{ marginTop: 0, alignSelf: "flex-start", whiteSpace: "nowrap" }}
+                                onClick={() => navigate(`/projects/${id}/phases/${phase.id}/edit`)}
+                            >
+                                Edit
+                            </button>
+                        )}
                     </div>
                 ))}
             </div>
+
+            {/* Success banner */}
+            {closeSuccess && (
+                <div style={{
+                    background: "#d4edda", border: "1px solid #28a745", borderRadius: 8,
+                    padding: "12px 16px", marginBottom: 16, color: "#155724",
+                    display: "flex", alignItems: "center", gap: 8, fontSize: "0.95rem"
+                }}>
+                    ✓ Project is successfully saved.
+                </div>
+            )}
+
+            {/* Close project */}
+            {mozeSeZatvoriti && (
+                <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", marginBottom: 16, gap: 6 }}>
+                    {closeError && (
+                        <span style={{ color: "#c0392b", fontSize: "0.88rem" }}>{closeError}</span>
+                    )}
+                    <button
+                        className="btn-primary"
+                        style={{ background: "#2ecc71", marginTop: 0 }}
+                        onClick={handleZatvoriProjekat}
+                        disabled={closing}
+                    >
+                        {closing ? "Closing..." : "Close project ✓"}
+                    </button>
+                </div>
+            )}
 
             {/* Project KPI */}
             <div className="form-section">

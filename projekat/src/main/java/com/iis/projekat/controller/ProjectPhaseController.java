@@ -99,7 +99,7 @@ public class ProjectPhaseController {
      * Body: { "faza": {...}, "razlog": "..." }
      */
     @PostMapping("/api/projekti/{id}/nova-faza")
-    public ResponseEntity<ProjectPhaseResponseDTO> predloziNovuFazu(
+    public ResponseEntity<ProjectPhaseResponseDTO> dodajNovuFazu(
             @PathVariable Long id,
             @AuthenticationPrincipal UserDetails userDetails,
             @RequestBody Map<String, Object> body) {
@@ -109,7 +109,6 @@ public class ProjectPhaseController {
         // Deserijalizuj manuelno iz mape
         @SuppressWarnings("unchecked")
         Map<String, Object> fazaMap = (Map<String, Object>) body.get("faza");
-        String razlog = (String) body.get("razlog");
 
         ProjectPhaseCreateDTO dto = new ProjectPhaseCreateDTO();
         dto.naziv = (String) fazaMap.get("naziv");
@@ -121,33 +120,29 @@ public class ProjectPhaseController {
         List<Long> vestineIds = (List<Long>) fazaMap.get("potrebneVestineIds");
         dto.potrebneVestineIds = vestineIds;
 
-        return ResponseEntity.ok(phaseService.predloziNovuFazu(id, koordinator.getId(), dto, razlog));
+        return ResponseEntity.ok(phaseService.predloziNovuFazu(id, koordinator.getId(), dto));
     }
 
-    /**
-     * Menadžer odobrava ili odbija predloženu novu fazu.
-     * PUT /api/projekti/{id}/nova-faza/odluka
-     * Body: { "odobri": true, "razlog": "..." }
-     */
-    @PutMapping("/api/projekti/{id}/nova-faza/odluka")
-    public ResponseEntity<?> odluciONovajFazi(
-            @PathVariable Long id,
-            @RequestBody Map<String, Object> body) {
-
-        boolean odobri = (Boolean) body.get("odobri");
-        String razlog = (String) body.getOrDefault("razlog", null);
-
-        ProjectPhaseResponseDTO result = phaseService.odluciONovajFazi(id, odobri, razlog);
-        if (result == null) {
-            return ResponseEntity.ok(Map.of("poruka", "Nova faza je odbijena i obrisana."));
-        }
-        return ResponseEntity.ok(result);
-    }
 
     @GetMapping("/api/faze/{phaseId}/preporuke-volontera")
     public ResponseEntity<com.iis.projekat.dto.VolonterPreporukaResponseDTO> preporuciVolontere(
             @PathVariable Long phaseId) {
         return ResponseEntity.ok(phaseService.preporuciVolontere(phaseId));
+    }
+
+    /**
+     * Ažurira podatke jedne faze (naziv, ciljevi, rokovi, veštine, broj volontera).
+     * Taskovi, zavrsena flag i ID ostaju netaknuti.
+     * PUT /api/faze/{id}
+     */
+    @PutMapping("/api/faze/{id}")
+    public ResponseEntity<ProjectPhaseResponseDTO> azurirajFazu(
+            @PathVariable Long id,
+            @AuthenticationPrincipal UserDetails userDetails,
+            @RequestBody ProjectPhaseCreateDTO dto) {
+
+        Employee koordinator = getUlogovanog(userDetails);
+        return ResponseEntity.ok(phaseService.azurirajFazu(id, koordinator.getId(), dto));
     }
 
 }

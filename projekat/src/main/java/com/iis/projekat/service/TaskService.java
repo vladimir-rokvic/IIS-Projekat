@@ -44,9 +44,11 @@ public class TaskService {
         }
 
         List<SkillType> skills = new ArrayList<>();
-        for(SkillTypeDTO s: dto.getRequiredSkillTypes()) {
-            SkillType sk = skillTypeRepository.findById(s.id).orElse(null);
-            skills.add(sk);
+        if (dto.getRequiredSkillTypes() != null) {
+            for(SkillTypeDTO s: dto.getRequiredSkillTypes()) {
+                SkillType sk = skillTypeRepository.findById(s.id).orElse(null);
+                skills.add(sk);
+            }
         }
 
         task.setStartDate(dto.getStartDate());
