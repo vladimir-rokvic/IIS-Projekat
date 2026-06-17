@@ -1,7 +1,7 @@
 package com.iis.projekat.service;
 
-import com.iis.projekat.dto.CampaignDTO;
-import com.iis.projekat.dto.CampaignCreateDTO;
+import com.iis.projekat.dto.Campaign.CampaignDTO;
+import com.iis.projekat.dto.Campaign.CampaignCreateDTO;
 import com.iis.projekat.model.Campaign;
 import com.iis.projekat.model.Project;
 import com.iis.projekat.repository.CampaignRepository;

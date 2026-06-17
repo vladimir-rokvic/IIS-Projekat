@@ -1,8 +1,9 @@
 package com.iis.projekat.controller;
 
-import com.iis.projekat.dto.CampaignDTO;
-import com.iis.projekat.dto.CampaignCreateDTO;
-import com.iis.projekat.dto.CoordinatorDashboardDTO;
+import com.iis.projekat.dto.Campaign.CampaignDTO;
+import com.iis.projekat.dto.Campaign.CampaignCreateDTO;
+import com.iis.projekat.dto.Campaign.CampaignStatisticsDTO;
+import com.iis.projekat.dto.Campaign.CoordinatorDashboardDTO;
 import com.iis.projekat.service.CampaignService;
 import com.iis.projekat.service.CampaignStatisticsService;
 import org.springframework.http.ResponseEntity;
@@ -50,5 +51,10 @@ public class CampaignController {
 	@GetMapping("/coordinator-dashboard")
 	public ResponseEntity<CoordinatorDashboardDTO> getCoordinatorDashboard() {
 		return ResponseEntity.ok(campaignStatisticsService.getCoordinatorDashboard());
+	}
+
+	@GetMapping("/statistics")
+	public ResponseEntity<CampaignStatisticsDTO> getCampaignStatistics() {
+		return ResponseEntity.ok(campaignStatisticsService.getCampaignStatistics());
 	}
 }

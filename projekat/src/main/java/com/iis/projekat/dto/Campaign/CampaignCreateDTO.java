@@ -1,4 +1,4 @@
-package com.iis.projekat.dto;
+package com.iis.projekat.dto.Campaign;
 
 import com.iis.projekat.model.CampaignCategory;
 import com.iis.projekat.model.CampaignStatus;

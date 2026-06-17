@@ -1,16 +1,15 @@
 package com.iis.projekat.service;
 
-import com.iis.projekat.dto.CampaignDTO;
-import com.iis.projekat.dto.CoordinatorDashboardDTO;
+import com.iis.projekat.dto.Campaign.*;
 import com.iis.projekat.model.Campaign;
+import com.iis.projekat.model.CampaignCategory;
 import com.iis.projekat.model.CampaignStatus;
 import com.iis.projekat.repository.CampaignRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.time.YearMonth;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -87,5 +86,97 @@ public class CampaignStatisticsService {
         List<String> recentActivity = getRecentActivity(5);
 
         return new CoordinatorDashboardDTO(totalActiveCampaigns, totalRaisedAmount, totalFinishedCampaigns, totalDonors, topPerformingCampaigns, recentActivity);
+    }
+
+    public List<DonationTrendDTO> getDonationTrends() {
+        Map<YearMonth, Double> monthlyTotals = new TreeMap<>();
+
+        List<Campaign> campaigns = campaignRepository.findAll();
+
+        for (Campaign campaign : campaigns) {
+            donationService.findByCampaignId(campaign.getId())
+                    .forEach(donation -> {
+                        YearMonth month = YearMonth.from(
+                                donation.getPaymentDate()
+                        );
+
+                        monthlyTotals.merge(
+                                month,
+                                donation.getAmount(),
+                                Double::sum
+                        );
+                    });
+        }
+
+        return monthlyTotals.entrySet().stream()
+                .map(entry -> new DonationTrendDTO(
+                        entry.getKey().toString(),
+                        entry.getValue()
+                ))
+                .toList();
+    }
+
+    public List<CategoryDonationDTO> getDonationsPerCategory() {
+        Map<CampaignCategory, Double> categoryTotals = new HashMap<>();
+
+        List<Campaign> campaigns = campaignRepository.findAll();
+
+        for (Campaign campaign : campaigns) {
+            double raised = donationService
+                    .findByCampaignId(campaign.getId())
+                    .stream()
+                    .mapToDouble(d -> d.getAmount())
+                    .sum();
+                if (raised == 0) {
+                    continue;
+                }
+            categoryTotals.merge(
+                    campaign.getCategory(),
+                    raised,
+                    Double::sum
+            );
+        }
+
+        return categoryTotals.entrySet().stream()
+                .map(entry ->
+                        new CategoryDonationDTO(
+                                entry.getKey(),
+                                entry.getValue()
+                        ))
+                .toList();
+    }
+
+    public List<CampaignComparisonDTO> getCampaignComparison() {
+        return campaignRepository.findAll()
+                .stream()
+                .map(campaign -> {
+
+                    double raised = donationService
+                            .findByCampaignId(campaign.getId())
+                            .stream()
+                            .mapToDouble(d -> d.getAmount())
+                            .sum();
+
+                    return new CampaignComparisonDTO(
+                            campaign.getName(),
+                            raised,
+                            campaign.getGoal()
+                    );
+                })
+                .sorted((c1, c2) ->
+                        Double.compare(
+                                c2.getRaised(),
+                                c1.getRaised()
+                        ))
+                .limit(10)
+                .toList();
+    }
+
+    public CampaignStatisticsDTO getCampaignStatistics() {
+        return new CampaignStatisticsDTO(
+                getDonationTrends(),
+                getDonationsPerCategory(),
+                getCampaignComparison()
+        );
     }
 }

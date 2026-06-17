@@ -1,5 +1,7 @@
 import "./CampaignCoordinatorDashboard.css";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import api from "../api/axios";
 
 import {
 	LineChart,
@@ -19,6 +21,20 @@ import {
 
 const CampaignCoordinatorStatisticsPage = () => {
 	const navigate = useNavigate();
+	const [statisticsData, setStatisticsData] = useState(null);
+
+	const fetchStatisticsData = async () => {
+		try {
+			const response = await api.get("/campaigns/statistics");
+			setStatisticsData(response.data);
+		} catch (error) {
+			console.error("Error fetching statistics data:", error);
+		}
+	};
+
+	useEffect(() => {
+		fetchStatisticsData();
+	}, []);
 
 	// -----------------------
 	// Dummy data (replace later with API)
@@ -83,7 +99,7 @@ const CampaignCoordinatorStatisticsPage = () => {
 					</div>
 
 					<ResponsiveContainer width="100%" height={300}>
-						<LineChart data={donationTrendData}>
+						<LineChart data={statisticsData?.donationTrends || donationTrendData}>
 							<CartesianGrid strokeDasharray="3 3" />
 							<XAxis dataKey="month" />
 							<YAxis />
@@ -107,13 +123,13 @@ const CampaignCoordinatorStatisticsPage = () => {
 					<ResponsiveContainer width="100%" height={300}>
 						<PieChart>
 							<Pie
-								data={categoryData}
-								dataKey="value"
-								nameKey="name"
+								data={statisticsData?.donationsPerCategory || categoryData}
+								dataKey="amount"
+								nameKey="category"
 								outerRadius={100}
 								label
 							>
-								{categoryData.map((entry, index) => (
+								{(statisticsData?.donationsPerCategory || categoryData).map((entry, index) => (
 									<Cell
 										key={`cell-${index}`}
 										fill={
@@ -137,9 +153,9 @@ const CampaignCoordinatorStatisticsPage = () => {
 					</div>
 
 					<ResponsiveContainer width="100%" height={300}>
-						<BarChart data={campaignComparisonData}>
+						<BarChart data={statisticsData?.campaignComparison || campaignComparisonData}>
 							<CartesianGrid strokeDasharray="3 3" />
-							<XAxis dataKey="name" />
+							<XAxis dataKey="campaignName" />
 							<YAxis />
 							<Tooltip />
 							<Legend />
