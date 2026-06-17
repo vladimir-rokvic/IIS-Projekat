@@ -163,6 +163,9 @@ public class AidDistributionService {
     }
 
     private DistributionLocationResponse toLocationResponse(DistributionLocation l) {
+        if (l ==null){
+            return null;
+        }
         return DistributionLocationResponse.builder()
                 .id(l.getId())
                 .name(l.getName())

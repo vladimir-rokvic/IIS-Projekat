@@ -1,6 +1,7 @@
 package com.iis.projekat.controller.Beneficiary;
 
 import com.iis.projekat.dto.Beneficiary.BeneficiaryDTO;
+import com.iis.projekat.dto.Beneficiary.BeneficiaryPackageResponse;
 import com.iis.projekat.dto.NeedsReassessmentRequestDTO;
 import com.iis.projekat.model.Beneficiary.Beneficiary;
 import com.iis.projekat.service.Beneficiary.BeneficiaryService;
@@ -10,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/beneficiary")
@@ -74,6 +77,11 @@ public class BeneficiaryController {
         dto.setType(b.getType());
 
         return ResponseEntity.ok(dto);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<BeneficiaryPackageResponse>> getAll(){
+        return ResponseEntity.ok(beneficiaryService.getAll());
     }
 
 

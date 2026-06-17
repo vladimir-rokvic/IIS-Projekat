@@ -3,11 +3,16 @@ package com.iis.projekat.service.Beneficiary;
 import com.iis.projekat.dto.Beneficiary.DistributionLocationDTO;
 import com.iis.projekat.dto.Beneficiary.DistributionLocationResponse;
 import com.iis.projekat.model.Address;
+import com.iis.projekat.model.Beneficiary.AidDistribution;
 import com.iis.projekat.model.Beneficiary.DistributionLocation;
+import com.iis.projekat.model.Beneficiary.DistributionStatus;
 import com.iis.projekat.repository.AddressRepository;
+import com.iis.projekat.repository.Beneficiary.AidDistributionRepository;
 import com.iis.projekat.repository.Beneficiary.DistributionLocationRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +22,9 @@ public class DistributionLocationService {
 
     @Autowired
     private DistributionLocationRepository distributionLocationRepository;
+
+    @Autowired
+    private AidDistributionRepository distributionRepository;
 
     @Autowired
     private AddressRepository addressRepository;
@@ -102,10 +110,28 @@ public class DistributionLocationService {
                 .name(l.getName())
                 .capacity(l.getCapacity())
                 .type(l.getType())
+                .city(l.getAddress().getCity())
+                .street(l.getAddress().getStreet())
+                .country(l.getAddress().getCountry())
                 .contactName(l.getContactName())
                 .contactNumber(l.getContactNumber())
                 .workHoursBegin(l.getWorkHoursBegin())
                 .workHoursEnd(l.getWorkHoursEnd())
                 .build();
+    }
+
+    @Transactional
+    public void delete(Long id) {
+        DistributionLocation location = distributionLocationRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Location not found"));
+
+        List<AidDistribution> distributions = distributionRepository.findAllByLocation(location);
+        for (AidDistribution d : distributions) {
+            d.setStatus(DistributionStatus.CANCELLED);
+            d.setLocation(null);
+        }
+        distributionRepository.saveAll(distributions);
+
+        distributionLocationRepository.delete(location);
     }
 }

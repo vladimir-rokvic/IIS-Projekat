@@ -1,5 +1,6 @@
 package com.iis.projekat.dto.Beneficiary;
 
+import com.iis.projekat.model.Address;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,6 +16,9 @@ public class DistributionLocationResponse {
     private String name;
     private int capacity;
     private String type;
+    private String city;
+    private String street;
+    private String country;
     private String contactName;
     private String contactNumber;
     private LocalTime workHoursBegin;

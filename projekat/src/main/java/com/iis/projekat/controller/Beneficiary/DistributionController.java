@@ -47,6 +47,12 @@ public class DistributionController {
         return ResponseEntity.ok(distributionLocationService.getAll());
     }
 
+    @DeleteMapping("/location/{id}")
+    public ResponseEntity<Void> deleteLocation(@PathVariable Long id) {
+        distributionLocationService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
     @PostMapping
     public ResponseEntity<AidDistributionResponse> create(@RequestBody AidDistributionRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(distributionService.create(request));

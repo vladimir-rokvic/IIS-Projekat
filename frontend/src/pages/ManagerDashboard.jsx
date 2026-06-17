@@ -52,7 +52,31 @@ const ManagerDashboard = () => {
                     <h2>Create new distribution location</h2>
                     <p>Create a new distribution location so that it may be used for future distributions.</p>
                     <button className="btn-primary" onClick={() => navigate('/manager/distributionlocation')}>
-                        Create distribution location
+                        Create a distribution location
+                    </button>
+                </div>
+
+                <div className="dashboard-card" style={{ marginTop: 16 }}>
+                    <h2>Distribution locations</h2>
+                    <p>View and manage existing distribution locations.</p>
+                    <button className="btn-primary" onClick={() => navigate('/manager/distributionlocations')}>
+                        See all distribution locations
+                    </button>
+                </div>
+
+                <div className="dashboard-card" style={{ marginTop: 16 }}>
+                    <h2>Create a new distribution</h2>
+                    <p>Create a new aid distribution session so that it may be realized in the future.</p>
+                    <button className="btn-primary" onClick={() => navigate('/manager/distribution/new')}>
+                        Create a distribution
+                    </button>
+                </div>
+
+                <div className="dashboard-card" style={{ marginTop: 16 }}>
+                    <h2>Distributions</h2>
+                    <p>View and manage existing distributions.</p>
+                    <button className="btn-primary" onClick={() => navigate('/manager/distributions')}>
+                        See all distributions
                     </button>
                 </div>
 

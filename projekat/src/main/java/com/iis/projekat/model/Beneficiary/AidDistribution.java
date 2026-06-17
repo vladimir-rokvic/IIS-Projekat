@@ -31,7 +31,7 @@ public class AidDistribution {
     private DistributionStatus status;
 
     @ManyToOne
-    @JoinColumn(name = "location_id", nullable = false)
+    @JoinColumn(name = "location_id", nullable = true)
     private DistributionLocation location;
 
     @OneToMany(mappedBy = "distribution", cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.EAGER)
