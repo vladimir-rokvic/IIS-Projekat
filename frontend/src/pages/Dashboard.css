@@ -91,6 +91,29 @@ body {
     cursor: not-allowed;
 }
 
+.btn-primary-red {
+    margin-top: 4px;
+    align-self: flex-start;
+    padding: 8px 18px;
+    background-color: #ca2626;
+    color: #000000;
+    font-size: 0.9rem;
+    font-weight: 500;
+    border: 1px solid #000000;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-primary-red:hover {
+    background-color: #ae1919;
+}
+
+.btn-primary-red:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
 .btn-secondary {
     margin-top: 4px;
     align-self: flex-start;
@@ -178,7 +201,8 @@ body {
     line-height: 1.5;
 }
 
-.project-card .btn-primary {
+.project-card .btn-primary,
+.project-card .btn-primary-red {
     margin-top: 8px;
     align-self: flex-start;
 }
@@ -421,6 +445,8 @@ body {
 }
 
 /* Manager dashboard */
+
+
 .manager-dashboard {
     padding: 32px 40px;
 }

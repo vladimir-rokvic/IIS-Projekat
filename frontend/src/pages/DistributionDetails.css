@@ -1,0 +1,275 @@
+.distribution-page {
+    padding: 28px 40px;
+}
+
+/* HEADER */
+
+.distribution-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 24px;
+}
+
+.distribution-top-left h1 {
+    font-size: 1.9rem;
+    font-weight: 700;
+}
+
+.distribution-top-left p {
+    color: #666;
+    margin-top: 4px;
+    font-size: 0.92rem;
+}
+
+/* MAIN CARD */
+
+.distribution-card {
+    border: 1px solid #d7d7d7;
+    border-radius: 16px;
+    padding: 28px;
+    background: #ffffff;
+}
+
+/* TOP GRID */
+
+.distribution-main-grid {
+    display: grid;
+    grid-template-columns: 0.6fr 0.3fr 0.6fr;
+    gap: 28px;
+    align-items: start;
+    margin-bottom: 32px;
+}
+
+/* SECTIONS */
+
+.dist-section {
+    border: 1px solid #e4e4e4;
+    border-radius: 14px;
+    padding: 20px;
+    background: #fafafa;
+}
+
+.dist-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+}
+
+.dist-section-header h3 {
+    font-size: 1.05rem;
+    font-weight: 700;
+}
+
+/* FIELDS */
+
+.dist-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 16px;
+}
+
+.dist-field label {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #333;
+}
+
+.dist-field input,
+.dist-field textarea,
+.dist-field select {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #cfcfcf;
+    background: #ededed;
+    font-size: 0.9rem;
+    font-family: inherit;
+    outline: none;
+}
+
+.dist-field textarea {
+    min-height: 140px;
+    resize: vertical;
+}
+
+.dist-field input:focus,
+.dist-field textarea:focus,
+.dist-field select:focus {
+    border-color: #369FBC;
+}
+
+/* VOLUNTEERS */
+
+.volunteer-select {
+    margin-bottom: 16px;
+}
+
+.selected-volunteers {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.volunteer-chip {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #e7e7e7;
+    border-radius: 10px;
+    padding: 10px 12px;
+    border: 1px solid #d0d0d0;
+}
+
+.volunteer-chip span {
+    font-size: 0.88rem;
+    font-weight: 500;
+}
+
+/* PACKAGES */
+
+.packages-section {
+    margin-top: 8px;
+}
+
+.packages-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+}
+
+.packages-header h2 {
+    font-size: 1.2rem;
+}
+
+.packages-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+}
+
+/* PACKAGE CARD */
+
+.package-card {
+    border: 1px solid #d9d9d9;
+    border-radius: 14px;
+    background: #f9f9f9;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    min-height: 260px;
+}
+
+.package-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.package-card-title h3 {
+    font-size: 1rem;
+    margin-bottom: 4px;
+}
+
+.package-card-title p {
+    font-size: 0.85rem;
+    color: #555;
+}
+
+.package-items {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.package-item {
+    background: #ececec;
+    border-radius: 10px;
+    padding: 10px;
+    border: 1px solid #ddd;
+}
+
+.package-item p {
+    font-size: 0.82rem;
+    margin-bottom: 4px;
+    line-height: 1.4;
+}
+
+.package-item p:last-child {
+    margin-bottom: 0;
+}
+
+/* ACTIONS */
+
+.dist-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 28px;
+}
+
+/* EMPTY */
+
+.empty-text {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 1200px) {
+    .packages-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 900px) {
+
+    .distribution-main-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .packages-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* STATUS */
+
+.distribution-status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    border: 1px solid transparent;
+}
+
+/* PLANNED */
+
+.status-PLANNED {
+    background: #fff4cc;
+    color: #856404;
+    border-color: #f0d878;
+}
+
+/* COMPLETED */
+
+.status-COMPLETED {
+    background: #d7f5df;
+    color: #166534;
+    border-color: #9ad9ad;
+}
+
+/* CANCELLED */
+
+.status-CANCELLED {
+    background: #ffd9d9;
+    color: #991b1b;
+    border-color: #f0aaaa;
+}

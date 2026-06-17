@@ -1,8 +1,14 @@
 package com.iis.projekat.model.Beneficiary;
 
 import jakarta.persistence.*;
+import lombok.*;
 
+@Getter
+@Setter
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class PackageItem {
 
     @Id
@@ -13,41 +19,10 @@ public class PackageItem {
 
     private Float quantity;
 
+    private String description;
+    private String unit; // kg, kom, l...
+
     @ManyToOne
     private AidPackage aidPackage;
 
-    public PackageItem() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getProduct() {
-        return product;
-    }
-
-    public Float getQuantity() {
-        return quantity;
-    }
-
-    public AidPackage getAidPackage() {
-        return aidPackage;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setProduct(String product) {
-        this.product = product;
-    }
-
-    public void setQuantity(Float quantity) {
-        this.quantity = quantity;
-    }
-
-    public void setAidPackage(AidPackage aidPackage) {
-        this.aidPackage = aidPackage;
-    }
 }

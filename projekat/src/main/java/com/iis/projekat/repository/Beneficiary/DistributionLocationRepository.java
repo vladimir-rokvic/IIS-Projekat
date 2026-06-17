@@ -1,4 +1,4 @@
-package com.iis.projekat.repository;
+package com.iis.projekat.repository.Beneficiary;
 
 import com.iis.projekat.model.Beneficiary.DistributionLocation;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,6 +1,5 @@
 package com.iis.projekat.service.Beneficiary;
 
-import com.iis.projekat.controller.Beneficiary.BeneficiaryController;
 import com.iis.projekat.dto.Beneficiary.DocumentResponse;
 
 import com.iis.projekat.model.Beneficiary.AidType;
@@ -9,7 +8,7 @@ import com.iis.projekat.model.Beneficiary.BeneficiaryDocument;
 import com.iis.projekat.model.Beneficiary.DocumentTypeBeneficiary;
 
 import com.iis.projekat.repository.Beneficiary.BeneficiaryDocumentRepository;
-import com.iis.projekat.repository.BeneficiaryRepository;
+import com.iis.projekat.repository.Beneficiary.BeneficiaryRepository;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
