@@ -1,4 +1,4 @@
-package com.iis.projekat.service;
+package com.iis.projekat.service.Beneficiary;
 
 import com.iis.projekat.dto.Beneficiary.AidPackageDTO;
 import com.iis.projekat.dto.Beneficiary.PackageItemDTO;

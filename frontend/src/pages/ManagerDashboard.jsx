@@ -49,6 +49,15 @@ const ManagerDashboard = () => {
                 </div>
 
                 <div className="dashboard-card" style={{ marginTop: 16 }}>
+                    <h2>View all beneficiaries</h2>
+                    <p>View all registered beneficiares, thieir statuses and types.</p>
+                    <button className="btn-primary" onClick={() => navigate('/manager/beneficiaries')}>
+                        See all beneficiaries
+                    </button>
+                </div>
+
+
+                <div className="dashboard-card" style={{ marginTop: 16 }}>
                     <h2>Create new distribution location</h2>
                     <p>Create a new distribution location so that it may be used for future distributions.</p>
                     <button className="btn-primary" onClick={() => navigate('/manager/distributionlocation')}>
