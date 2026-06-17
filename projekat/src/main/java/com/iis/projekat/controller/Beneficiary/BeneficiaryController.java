@@ -1,6 +1,7 @@
 package com.iis.projekat.controller.Beneficiary;
 
 import com.iis.projekat.dto.Beneficiary.BeneficiaryDTO;
+import com.iis.projekat.dto.Beneficiary.BeneficiaryDetailsResponse;
 import com.iis.projekat.dto.Beneficiary.BeneficiaryPackageResponse;
 import com.iis.projekat.dto.NeedsReassessmentRequestDTO;
 import com.iis.projekat.model.Beneficiary.Beneficiary;
@@ -82,6 +83,11 @@ public class BeneficiaryController {
     @GetMapping
     public ResponseEntity<List<BeneficiaryPackageResponse>> getAll(){
         return ResponseEntity.ok(beneficiaryService.getAll());
+    }
+
+    @GetMapping("/details")
+    public ResponseEntity<List<BeneficiaryDetailsResponse>> getAllDetails(){
+        return ResponseEntity.ok(beneficiaryService.getAllDetails());
     }
 
 
