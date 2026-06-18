@@ -13,6 +13,7 @@ const buildInitialState = (campaign) => ({
 	endDate: toDateInputValue(campaign?.endDate),
 	description: campaign?.description ?? "",
 	status: campaign?.status ?? "PLANNED",
+	category: campaign?.category ?? "",
 	projectId: campaign?.projectId ? String(campaign.projectId) : "",
 });
 
@@ -75,6 +76,7 @@ const CampaignEditModal = ({ campaign, onClose, onSaved }) => {
 				endDate: formState.endDate,
 				description: formState.description,
 				status: formState.status,
+				category: formState.category,
 				projectId: formState.projectId ? Number(formState.projectId) : null,
 			};
 
@@ -120,6 +122,18 @@ const CampaignEditModal = ({ campaign, onClose, onSaved }) => {
 								<option value="FINISHED">FINISHED</option>
 							</select>
 						</div>
+						<div className="campaign-form-field">
+							<label>Category</label>
+							<select placeholder="Campaign category" value={formState.category} onChange={(event) => handleFieldChange("category", event.target.value)}>
+								<option value="EDUCATION">Education</option>
+								<option value="FOOD_AID">Food Aid</option>
+								<option value="MEDICAL">Medical</option>
+								<option value="SHELTER">Shelter</option>
+								<option value="DISASTER_RELIEF">Disaster Relief</option>
+								<option value="COMMUNITY_SUPPORT">Community Support</option>
+							</select>
+						</div>
+						<div />
 						<div className="campaign-form-field">
 							<label>Start date</label>
 							<input type="date" value={formState.startDate} onChange={(event) => handleFieldChange("startDate", event.target.value)} />

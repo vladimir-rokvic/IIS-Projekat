@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
 import "./CampaignCoordinatorDashboard.css";
+import RecommendationsModal from "../components/RecommendationModal";
 
 const CampaignCoordinatorCreateCampaignPage = () => {
 	const navigate = useNavigate();
@@ -10,13 +11,23 @@ const CampaignCoordinatorCreateCampaignPage = () => {
 	const [goal, setGoal] = useState("");
 	const [startDate, setStartDate] = useState("");
 	const [endDate, setEndDate] = useState("");
+	const [category, setCategory] = useState("");
 	const [error, setError] = useState("");
 	const [saving, setSaving] = useState(false);
+
+	const [showRecommendations, setShowRecommendations] = useState(false);
+	const [recommendations, setRecommendations] = useState([]);
+
+	const handleRecommend = async () => {
+    	const res = await api.get("/campaigns/recommend");
+    	setRecommendations(res.data);
+    	setShowRecommendations(true);
+	};
 
 	const handleCreate = async () => {
 		setError("");
 
-		if (!name || !description || !goal || !startDate || !endDate) {
+		if (!name || !description || !goal || !startDate || !endDate || !category) {
 			setError("All fields are required.");
 			return;
 		}
@@ -31,6 +42,7 @@ const CampaignCoordinatorCreateCampaignPage = () => {
 				description,
 				status: "PLANNED",
 				projectId: null,
+				category: category
 			});
 			navigate("/campaign-coordinator/campaigns");
 		} catch (err) {
@@ -53,7 +65,9 @@ const CampaignCoordinatorCreateCampaignPage = () => {
 			</div>
 			<section className="campaign-form-card">
 				<div className="campaign-form-header">
-					<button className="campaign-recommend-btn" type="button">Recommend</button>
+					<button className="campaign-recommend-btn" type="button" onClick={handleRecommend}>
+						Recommend
+					</button>
 				</div>
 				<div className="campaign-form-grid">
 					<div className="campaign-form-field campaign-form-wide">
@@ -68,7 +82,17 @@ const CampaignCoordinatorCreateCampaignPage = () => {
 						<label>Funding goal</label>
 						<input type="number" placeholder="0" value={goal} onChange={(e) => setGoal(e.target.value)} />
 					</div>
-					<div />
+					<div className="campaign-form-field">
+						<label>Category</label>
+						<select value={category} onChange={(e) => setCategory(e.target.value)}>
+							<option value="EDUCATION">Education</option>
+							<option value="FOOD_AID">Food Aid</option>
+							<option value="MEDICAL">Medical</option>
+							<option value="SHELTER">Shelter</option>
+							<option value="DISASTER_RELIEF">Disaster Relief</option>
+							<option value="COMMUNITY_SUPPORT">Community Support</option>
+						</select>
+					</div>
 					<div className="campaign-form-field">
 						<label>Start date</label>
 						<input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
@@ -88,6 +112,21 @@ const CampaignCoordinatorCreateCampaignPage = () => {
 					</button>
 				</div>
 			</section>
+			{showRecommendations && (
+				<RecommendationsModal
+					recommendations={recommendations}
+					onClose={() => setShowRecommendations(false)}
+					onClick={(rec) => {
+						setGoal(rec.recommendedGoal);
+						setCategory(rec.recommendedCategory);
+						setStartDate(new Date().toISOString().split("T")[0]);
+						const endDate = new Date();
+						endDate.setDate(endDate.getDate() + rec.recommendedDurationDays);
+						setEndDate(endDate.toISOString().split("T")[0]);
+						setShowRecommendations(false);
+					}}
+				/>
+			)}
 		</div>
 	);
 };
