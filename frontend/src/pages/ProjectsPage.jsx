@@ -11,6 +11,7 @@ const statusLabel = {
     ODOBREN: "Accepted",
     ODBIJEN: "Denied",
     NEOPHODNA_IZMENA: "Necessary change",
+    ZAVRSEN: "Finished",
 };
 
 // Statusi na kojima koordinator može da edituje projekat
@@ -106,7 +107,10 @@ const ProjectsPage = () => {
                                                 navigate(`/projects/${project.id}/edit`);
                                             } else if (project.status === 'ODBIJEN') {
                                                 navigate(`/projects/${project.id}/denied`);
-                                            } else if (project.status === 'ODOBREN') {
+                                            } else if (
+                                                project.status === 'ODOBREN' ||
+                                                project.status === 'ZAVRSEN'
+                                            ) {
                                                 navigate(`/projects/${project.id}/info`);
                                             } else {
                                                 navigate(`/projects/${project.id}`);

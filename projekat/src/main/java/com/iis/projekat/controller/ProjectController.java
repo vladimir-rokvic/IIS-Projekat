@@ -182,7 +182,10 @@ public class ProjectController {
         return ResponseEntity.ok(projectService.saveKpi(id, koordinator.getId(), req));
     }
 
-    // endpoint za čitanje KPI (koristi ProjectAcceptedPage pri učitavanju)
+    /**
+     * Endpoint za čitanje KPI (koristi ProjectAcceptedPage pri učitavanju)
+     */
+
     @GetMapping("/{id}/kpi")
     public ResponseEntity<KpiResponseDTO> getKpi(@PathVariable Long id) {
         KpiResponseDTO kpi = projectService.getKpi(id);
@@ -197,7 +200,6 @@ public class ProjectController {
 
     /**
      * Koordinator zatvara projekat nakon završetka poslednje faze.
-     * PUT /api/projekti/{id}/zatvori
      */
     @PutMapping("/{id}/zatvori")
     public ResponseEntity<ProjectResponseDTO> zatvoriProjekat(

@@ -273,13 +273,7 @@ public class ProjectPhaseService {
                     "Nova faza se može predložiti samo za projekte u statusu ODOBREN.");
         }
 
-        // Provjera da li su sve postojeće faze završene
         List<ProjectPhase> sveFaze = phaseRepository.findByProjectIdOrderByRedosled(projectId);
-        boolean sveZavrsene = sveFaze.stream().allMatch(ProjectPhase::isZavrsena);
-        if (!sveZavrsene) {
-            throw new IllegalStateException(
-                    "Nova faza se može dodati tek kada su sve postojeće faze završene.");
-        }
 
         // Odredi sledeći redosled
         int sledeciRedosled = sveFaze.stream()
@@ -294,6 +288,32 @@ public class ProjectPhaseService {
         novaFaza.setCiljevi(dto.ciljevi);
         novaFaza.setRokPocetak(LocalDate.parse(dto.rokPocetak));
         novaFaza.setRokKraj(LocalDate.parse(dto.rokKraj));
+
+        LocalDate pocetak = LocalDate.parse(dto.rokPocetak);
+        LocalDate kraj = LocalDate.parse(dto.rokKraj);
+
+        if (pocetak.isBefore(project.getRokPocetak())
+                || kraj.isAfter(project.getRokKraj())) {
+            throw new IllegalArgumentException(
+                    "Rokovi faze moraju biti unutar rokova projekta.");
+        }
+
+        if (!project.isFazeMoguDaSePreklapaju()) {
+
+            for (ProjectPhase postojeca : sveFaze) {
+
+                boolean preklapanje =
+                        !kraj.isBefore(postojeca.getRokPocetak())
+                                && !pocetak.isAfter(postojeca.getRokKraj());
+
+                if (preklapanje) {
+                    throw new IllegalArgumentException(
+                            "Nova faza se preklapa sa fazom '" +
+                                    postojeca.getNaziv() + "'");
+                }
+            }
+        }
+
         novaFaza.setBrojVolontera(dto.brojVolontera);
         novaFaza.setRedosled(sledeciRedosled);
 
