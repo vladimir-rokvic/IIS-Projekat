@@ -30,8 +30,10 @@ public class TaskService {
         task.setName(dto.getName());
         task.setDescription(dto.getDescription());
 
-        Volunteer v = volunteerRepository.getReferenceById(dto.getVolunteerId());
-        task.setVolunteer(v);
+        if(dto.getVolunteerId() != null) {
+            Volunteer v = volunteerRepository.getReferenceById(dto.getVolunteerId());
+            task.setVolunteer(v);
+        }
 
         Employee coordiantor = employeeRepository.findById(dto.getCoordinatorId())
                 .orElse(null);

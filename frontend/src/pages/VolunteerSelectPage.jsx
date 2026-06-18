@@ -27,7 +27,8 @@ const VolunteerSelectPage = () => {
 				if(!taskId) return;
 				const res = await api.get(`/volunteer/rank/${taskId}`);
 				console.log(res.data);
-				setRatedVolunteers(res.data);
+				setRatedVolunteers(res.data.sort((a,b) => b.predictedGrade - a.predictedGrade));
+				//setRatedVolunteers(ratedVolunteers.sort((a,b) => b.predictedGrade - a.predictedGrade));
 			} catch (err) {
 				console.log(err);
 			}

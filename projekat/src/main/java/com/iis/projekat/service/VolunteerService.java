@@ -2,10 +2,7 @@ package com.iis.projekat.service;
 
 import com.iis.projekat.dto.*;
 import com.iis.projekat.model.*;
-import com.iis.projekat.repository.AddressRepository;
-import com.iis.projekat.repository.PerformanceRepository;
-import com.iis.projekat.repository.TaskRepository;
-import com.iis.projekat.repository.VolunteerRepository;
+import com.iis.projekat.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -30,6 +27,9 @@ public class VolunteerService {
 
     @Autowired
     private PerformanceRepository performanceRepository;
+
+    @Autowired
+    private SkillTypeRepository skillTypeRepository;
 
     private final PasswordEncoder passwordEncoder;
     private final RestTemplate restTemplate;
@@ -114,6 +114,15 @@ public class VolunteerService {
         oldVolunteer.setBio(dto.getBio());
         if(dto.getPassword() != null && !dto.getPassword().isEmpty()) {
             oldVolunteer.setPassword(passwordEncoder.encode(dto.getPassword()));
+        }
+
+        if(dto.getSkillTypes() != null) {
+            List<SkillType> skillTypes = new ArrayList<>();
+            for(SkillTypeDTO s: dto.getSkillTypes()) {
+                SkillType sk = skillTypeRepository.findById(s.id).orElse(null);
+                skillTypes.add(sk);
+            }
+            oldVolunteer.setVolunteerSkillTypes(skillTypes);
         }
 
         if (dto.getSkills() != null) {

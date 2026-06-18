@@ -78,8 +78,7 @@ const TaskDetailsPage = () => {
 							<p className="contact-info">Email: {task.coordinator.email}</p>
 							{task.coordinator.phone ? 
 							<p className="contact-info">Phone: {task.coordinator.phone}</p> : <p style={{color: '#555', fontSize: '1.3rem'}}>No phone given</p>}
-							<h3>Address</h3>
-							<p className="contact-info">{volunteer.address.street}  {volunteer.address.city} {volunteer.address.country}</p>
+							
 						</div>
 				    )}
                 </div>
@@ -89,7 +88,7 @@ const TaskDetailsPage = () => {
 			<label className="addressLabelInre">Volunteer information</label>
             <div className="volunteer-section">
                 <div className="volunteer-row">
-				    {volunteer ? (
+				    {(volunteer !== null) ? (
 						<div className="choosen-volunteer">
 							<div style={{display: 'flex'}}>
                     		<div className="avatar-small" />

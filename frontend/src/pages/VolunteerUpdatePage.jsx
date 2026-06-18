@@ -16,7 +16,21 @@ const VolunteerUpdatePage = () => {
             try {
                 const id = JSON.parse(localStorage.getItem("user")).id;
                 const res = await api.get("/volunteer/" + id);
-                setUser(res.data);
+				setUser({
+				    ...res.data,
+				    name: res.data.name || "",
+				    surname: res.data.surname || "",
+				    email: res.data.email || "",
+				    phone: res.data.phone || "",
+				    bio: res.data.bio || "",
+				    address: {
+				        country: res.data.address?.country || "Serbia",
+				        city: res.data.address?.city || "Novi Sad",
+				        street: res.data.address?.street || "Presernova 12",
+				    },
+					dateOfBirth: res.data.dateOfBirth || "",
+				    skillTypes: res.data.skillTypes || [],
+				});
                 if (res.data.skills) {
                     setSkills(res.data.skills);
                 }
@@ -82,16 +96,27 @@ const VolunteerUpdatePage = () => {
         }));
     };
 
-    const handleSave = async () => {
-        try {
-            const id = JSON.parse(localStorage.getItem("user")).id;
-            const body = { ...user, skills };
-            await api.put("/volunteer/" + id, body);
-            navigate("/volunteer/profile");
-        } catch (err) {
-            console.log(err);
-        }
-    };
+	const handleSave = async () => {
+	    try {
+	        const id = JSON.parse(localStorage.getItem("user")).id;
+	        const body = {
+	            name: user.name,
+	            surname: user.surname,
+	            email: user.email,
+	            phone: user.phone,
+	            bio: user.bio,
+	            dob: user.dateOfBirth,
+	            street: user.address.street,
+	            city: user.address.city,
+	            country: user.address.country,
+	            skills,
+	        };
+	        await api.put("/volunteer/" + id, body);
+	        navigate("/volunteer/profile");
+	    } catch (err) {
+	        console.log(err);
+	    }
+	};
 
     if (!user) return <p>Loading...</p>;
 

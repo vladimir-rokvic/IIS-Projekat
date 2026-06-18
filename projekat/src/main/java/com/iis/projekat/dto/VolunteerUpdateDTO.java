@@ -15,6 +15,7 @@ public class VolunteerUpdateDTO {
     private String password;
     private String bio;
     private List<SkillDTO> skills;
+    private List<SkillTypeDTO> skillTypes;
 
     public String getName() {
         return name;
@@ -102,5 +103,13 @@ public class VolunteerUpdateDTO {
 
     public void setSkills(List<SkillDTO> skills) {
         this.skills = skills;
+    }
+
+    public List<SkillTypeDTO> getSkillTypes() {
+        return skillTypes;
+    }
+
+    public void setSkillTypes(List<SkillTypeDTO> skillTypes) {
+        this.skillTypes = skillTypes;
     }
 }

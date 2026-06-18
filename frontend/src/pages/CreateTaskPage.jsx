@@ -56,7 +56,6 @@ const CreateTaskPage = () => {
     };
 
     const handleSave = async () => {
-		if(!v_id) return;
         const body = {
             name: taskName.current.value,
             description: description.current.value,
