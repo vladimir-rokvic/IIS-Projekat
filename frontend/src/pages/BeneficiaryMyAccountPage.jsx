@@ -38,20 +38,23 @@ export default function BeneficiaryMyAccount() {
   }, [user]);
 
   useEffect(() => {
-    if (user) {
-      setForm((prev) => ({
+
+    if (beneficiary) {
+
+      setForm(prev => ({
         ...prev,
-        name: user.name || "",
-        surname: user.surname || "",
-        phone: user.phone || "",
-        city: user.city || "",
-        street: user.street || "",
-        country: user.country || "",
-        // Ako user.dateOfBirth dolazi kao "2000-03-15" već je u ispravnom formatu
-        dateOfBirth: user.dateOfBirth || "",
+
+        name: beneficiary.name || "",
+        surname: beneficiary.surname || "",
+        phone: beneficiary.phone || "",
+        city: beneficiary.city || "",
+        street: beneficiary.street || "",
+        country: beneficiary.country || "",
+        dateOfBirth: beneficiary.dateOfBirth || "",
       }));
     }
-  }, [user]);
+
+  }, [beneficiary]);
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -83,17 +86,17 @@ export default function BeneficiaryMyAccount() {
   return (
     <div className="ben-page">
       <header className="dashboard-header">
-                <div>
-                    <h1>{user?.name} {user?.surname}</h1>
-                    <p style={{ fontSize: '0.9rem', color: '#555', marginTop: 2 }}>Aid type:{" "}
-          {beneficiary?.type?.replaceAll("_", " ")} | Status:{" "}
-          {beneficiary?.eligible ? "Eligible" : "Not eligible"}</p>
-                </div>
-                <div className="user-info" onClick={() => { logout(); navigate('/login'); }} title="Logout">
-                    <div className="avatar" />
-                    <span>{user?.name} {user?.surname}</span>
-                </div>
-            </header>
+        <div>
+          <h1>{user?.name} {user?.surname}</h1>
+          <p style={{ fontSize: '0.9rem', color: '#555', marginTop: 2 }}>Aid type:{" "}
+            {beneficiary?.type?.replaceAll("_", " ")} | Status:{" "}
+            {beneficiary?.eligible ? "Eligible" : "Not eligible"}</p>
+        </div>
+        <div className="user-info" onClick={() => { logout(); navigate('/login'); }} title="Logout">
+          <div className="avatar" />
+          <span>{user?.name} {user?.surname}</span>
+        </div>
+      </header>
 
       <hr className="ben-divider" />
 
@@ -103,7 +106,7 @@ export default function BeneficiaryMyAccount() {
           <div className="form-section-header">
             <h3>My Account</h3>
 
-            <div className="btn-secondary" onClick={() =>navigate('/beneficiary/documents')}>
+            <div className="btn-secondary" onClick={() => navigate('/beneficiary/documents')}>
               My Documents
             </div>
           </div>
