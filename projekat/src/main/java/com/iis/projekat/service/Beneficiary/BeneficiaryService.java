@@ -1,16 +1,20 @@
 package com.iis.projekat.service.Beneficiary;
 
 import com.iis.projekat.dto.Beneficiary.BeneficiaryDTO;
+import com.iis.projekat.dto.Beneficiary.BeneficiaryDetailsResponse;
+import com.iis.projekat.dto.Beneficiary.BeneficiaryPackageResponse;
 import com.iis.projekat.model.Address;
 import com.iis.projekat.model.Beneficiary.Beneficiary;
 import com.iis.projekat.repository.AddressRepository;
-import com.iis.projekat.repository.BeneficiaryRepository;
+import com.iis.projekat.repository.Beneficiary.BeneficiaryRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -91,7 +95,7 @@ public class BeneficiaryService {
         b.setPhone(dto.getPhone());
         b.setDateOfBirth(dto.getDateOfBirth());
 
-        b.setEligible(dto.isEligible());
+        b.setEligible(false);
 
         b.setPassword(passwordEncoder.encode(dto.getPassword()));
         b.setType(dto.getType());
@@ -137,5 +141,47 @@ public class BeneficiaryService {
 
     private boolean isNotEmpty(String s) {
         return s != null && !s.isBlank();
+    }
+
+    public List<BeneficiaryPackageResponse> getAll() {
+        List<Beneficiary> beneficiaries = beneficiaryRepository.findAll();
+
+        List<BeneficiaryPackageResponse> responses = new ArrayList<>();
+        for(Beneficiary b : beneficiaries){
+            responses.add(ToResponse(b));
+        }
+
+        return responses;
+    }
+
+    private BeneficiaryPackageResponse ToResponse(Beneficiary b){
+        return BeneficiaryPackageResponse.builder()
+                .name(b.getName())
+                .surname(b.getSurname()).id(b.getId()).aidType(b.getType()).eligible(b.isEligible()).build();
+    }
+
+    public List<BeneficiaryDetailsResponse> getAllDetails() {
+        List<Beneficiary> beneficiaries = beneficiaryRepository.findAll();
+
+        List<BeneficiaryDetailsResponse> responses = new ArrayList<>();
+        for(Beneficiary b : beneficiaries){
+            responses.add(ToResponseDetails(b));
+        }
+
+        return responses;
+    }
+
+    private BeneficiaryDetailsResponse ToResponseDetails(Beneficiary b){
+        return BeneficiaryDetailsResponse.builder()
+                .id(b.getId())
+                .name(b.getName())
+                .surname(b.getSurname())
+                .aidType(b.getType())
+                .eligible(b.isEligible())
+                .country(b.getAddress().getCountry())
+                .city(b.getAddress().getCity())
+                .street(b.getAddress().getStreet())
+                .dateOfBirth(b.getDateOfBirth())
+                .build();
     }
 }

@@ -1,12 +1,12 @@
-package com.iis.projekat.service;
+package com.iis.projekat.service.Beneficiary;
 
 import com.iis.projekat.dto.Beneficiary.AidPackageDTO;
 import com.iis.projekat.dto.Beneficiary.PackageItemDTO;
 import com.iis.projekat.model.Beneficiary.AidPackage;
 import com.iis.projekat.model.Beneficiary.Beneficiary;
 import com.iis.projekat.model.Beneficiary.PackageItem;
-import com.iis.projekat.repository.AidPackageRepository;
-import com.iis.projekat.repository.BeneficiaryRepository;
+import com.iis.projekat.repository.Beneficiary.AidPackageRepository;
+import com.iis.projekat.repository.Beneficiary.BeneficiaryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

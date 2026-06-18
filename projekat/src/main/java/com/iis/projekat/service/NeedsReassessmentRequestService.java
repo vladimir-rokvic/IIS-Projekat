@@ -3,7 +3,7 @@ package com.iis.projekat.service;
 import com.iis.projekat.dto.NeedsReassessmentRequestDTO;
 import com.iis.projekat.model.Beneficiary.Beneficiary;
 import com.iis.projekat.model.Beneficiary.NeedsReassessmentRequest;
-import com.iis.projekat.repository.BeneficiaryRepository;
+import com.iis.projekat.repository.Beneficiary.BeneficiaryRepository;
 import com.iis.projekat.repository.NeedsReassessmentRequestRepository;
 import org.springframework.stereotype.Service;
 

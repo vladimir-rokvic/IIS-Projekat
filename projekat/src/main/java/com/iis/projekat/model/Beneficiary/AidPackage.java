@@ -1,10 +1,17 @@
 package com.iis.projekat.model.Beneficiary;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 public class AidPackage {
 
@@ -18,7 +25,16 @@ public class AidPackage {
     @OneToMany(mappedBy = "aidPackage", cascade = CascadeType.ALL)
     private List<PackageItem> items = new ArrayList<>();
 
-    public AidPackage() {
+    @ManyToOne
+    @JoinColumn(name = "distribution_id", nullable = false)
+    private AidDistribution distribution;
+
+    public AidDistribution getDistribution() {
+        return distribution;
+    }
+
+    public void setDistribution(AidDistribution distribution) {
+        this.distribution = distribution;
     }
 
     public Long getId() {

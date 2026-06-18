@@ -209,7 +209,7 @@ export default function BeneficiaryMyAccount() {
           </div>
 
           <div className="form-actions">
-            <button className="btn-save" onClick={handleUpdate}>
+            <button className="btn-primary" onClick={handleUpdate}>
               Update
             </button>
           </div>

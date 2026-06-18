@@ -93,79 +93,23 @@ const PhaseFormPage = () => {
         let savedPhaseId = null;
         try {
             if (isEdit) {
-                // Edit: pošalji samo ovu fazu kao listu od jednog elementa (replace semantika)
-                // ili koristimo poseban PUT endpoint ako postoji
-                // Ovde koristimo POST /projekti/{id}/faze — zamjena svih faza novom listom,
-                // ali to bi obrisalo ostale. Umjesto toga, za edit koristimo drugačiji pristup:
-                // Šaljemo sve faze projekta, zamenjujući podatke ove jedne.
-                const sveFazeRes = await api.get(`/projekti/${projectId}/faze`);
-                const sveFaze = sveFazeRes.data || [];
-
-                // Sačuvaj pomoćne koordinatore svih faza PRE replace-all operacije,
-                // jer postaviFaze briše i ponovo kreira sve faze (nove ID-eve),
-                // pa se i postojeći pomoćni koordinatori gube ako se ne vrate.
-                const pomocniPoNazivuIRedosledu = sveFaze.map(f => ({
-                    naziv: f.naziv,
-                    redosled: f.redosled,
-                    pomocniKoordinatoriIds: f.pomocniKoordinatoriIds || [],
-                }));
-
-                const azurirana = sveFaze.map(f => {
-                    if (String(f.id) === String(phaseId)) {
-                        return {
-                            naziv,
-                            ciljevi,
-                            rokPocetak,
-                            rokKraj,
-                            brojVolontera: Number(brojVolontera),
-                            potrebneVestineIds: selectedSkills,
-                            redosled: Number(redosled) || f.redosled,
-                        };
-                    }
-                    return {
-                        naziv: f.naziv,
-                        ciljevi: f.ciljevi,
-                        rokPocetak: f.rokPocetak,
-                        rokKraj: f.rokKraj,
-                        brojVolontera: f.brojVolontera,
-                        potrebneVestineIds: f.potrebneVestine?.map(v => v.id) || [],
-                        redosled: f.redosled,
-                    };
+                // Ažuriraj samo ovu fazu — taskovi, zavrsena i ID ostaju netaknuti
+                await api.put(`/faze/${phaseId}`, {
+                    naziv,
+                    ciljevi,
+                    rokPocetak,
+                    rokKraj,
+                    brojVolontera: Number(brojVolontera),
+                    potrebneVestineIds: selectedSkills,
+                    redosled: Number(redosled) || undefined,
                 });
 
-                await api.post(`/projekti/${projectId}/faze`, {
-                    fazeMoguDaSePreklapaju: project.fazeMoguDaSePreklapaju,
-                    faze: azurirana,
+                // Postavi pomoćne koordinatore za ovu fazu
+                await api.put(`/faze/${phaseId}/pomocni-koordinatori`, {
+                    pomocniKoordinatoriIds: selectedCoordinators,
                 });
 
-                // Ponovo postavi pomoćne koordinatore za SVE faze (replace-all ih je obrisao).
-                // Faza koja se editovala dobija novo izabrane koordinatore (selectedCoordinators),
-                // sve ostale dobijaju svoje stare koordinatore vraćene.
-                const refreshRes = await api.get(`/projekti/${projectId}/faze`);
-                const refreshFaze = refreshRes.data || [];
-
-                for (const f of refreshFaze) {
-                    const isEditovanaFaza = f.naziv === naziv
-                        && String(f.redosled) === String(Number(redosled) || redosled);
-
-                    let pkIds;
-                    if (isEditovanaFaza) {
-                        pkIds = selectedCoordinators;
-                    } else {
-                        const stara = pomocniPoNazivuIRedosledu.find(
-                            p => p.naziv === f.naziv && p.redosled === f.redosled
-                        );
-                        pkIds = stara?.pomocniKoordinatoriIds || [];
-                    }
-
-                    await api.put(`/faze/${f.id}/pomocni-koordinatori`, {
-                        pomocniKoordinatoriIds: pkIds,
-                    });
-
-                    if (isEditovanaFaza) {
-                        savedPhaseId = f.id;
-                    }
-                }
+                savedPhaseId = Number(phaseId);
             } else {
                 // Create: dodaj novu fazu na postojeće
                 const sveFazeRes = await api.get(`/projekti/${projectId}/faze`);
@@ -186,6 +130,7 @@ const PhaseFormPage = () => {
                     brojVolontera: f.brojVolontera,
                     potrebneVestineIds: f.potrebneVestine?.map(v => v.id) || [],
                     redosled: f.redosled,
+                    zavrsena: f.zavrsena || false,
                 }));
 
                 const novaFaza = {
@@ -196,6 +141,7 @@ const PhaseFormPage = () => {
                     brojVolontera: Number(brojVolontera),
                     potrebneVestineIds: selectedSkills,
                     redosled: noviFaze.length + 1,
+                    zavrsena: false,
                 };
                 noviFaze.push(novaFaza);
 
@@ -241,13 +187,10 @@ const PhaseFormPage = () => {
                     setRecommendations(null);
                 }
 
-                // Replace-all operacija (postaviFaze) briše i ponovo kreira SVE faze,
-                // pa čak i kod editovanja postojeće faze, njen ID se menja.
-                // Ažuriraj URL na novi phaseId da naredne akcije (npr. "Add task +")
-                // ne koriste zastareli (obrisani) ID.
-                if (String(savedPhaseId) !== String(phaseId)) {
+                if (!isEdit) {
                     navigate(`/projects/${projectId}/phases/${savedPhaseId}/edit`, { replace: true });
                 }
+                // U edit modu ID se nije promenio, nema potrebe za navigacijom
             } else {
                 navigate(`/projects/${projectId}/info`);
             }
