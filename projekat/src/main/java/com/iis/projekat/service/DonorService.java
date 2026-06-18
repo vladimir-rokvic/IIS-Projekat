@@ -8,6 +8,7 @@ import com.iis.projekat.model.Address;
 import com.iis.projekat.model.Donation;
 import com.iis.projekat.model.Donor;
 import com.iis.projekat.repository.AddressRepository;
+import com.iis.projekat.repository.CampaignRepository;
 import com.iis.projekat.repository.DonationRepository;
 import com.iis.projekat.repository.DonorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,9 @@ public class DonorService {
 
     @Autowired
     private DonationRepository donationRepository;
+
+    @Autowired
+    private CampaignRepository campaignRepository;
 
     @Autowired
     private DtoMapperService mapper;
@@ -105,10 +109,11 @@ public class DonorService {
 
         List<DonationHistoryDTO> history = donations.stream()
             .map(donation -> new DonationHistoryDTO(
-                "Project name",
+                donation.getCampaign() != null ? donation.getCampaign().getName() : "N/a",
                 donation.getAmount(),
                 donation.getPaymentDate(),
-                "Completed"))
+                donation.getCampaign() != null ? donation.getCampaign().getStatus().toString() : "N/a"
+            ))
             .collect(Collectors.toList());
         profile.setDonationHistory(history);
 

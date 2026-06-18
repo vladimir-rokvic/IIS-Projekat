@@ -14,6 +14,7 @@ const CampaignCoordinatorCreateCampaignPage = () => {
 	const [category, setCategory] = useState("");
 	const [error, setError] = useState("");
 	const [saving, setSaving] = useState(false);
+	const [status, setStatus] = useState("form");
 
 	const [showRecommendations, setShowRecommendations] = useState(false);
 	const [recommendations, setRecommendations] = useState([]);
@@ -44,7 +45,10 @@ const CampaignCoordinatorCreateCampaignPage = () => {
 				projectId: null,
 				category: category
 			});
-			navigate("/campaign-coordinator/campaigns");
+			setStatus("success");
+			setTimeout(() => {
+				navigate("/campaign-coordinator/campaigns");
+			}, 2000);
 		} catch (err) {
 			console.log(err);
 			setError("Failed to create campaign.");
@@ -112,6 +116,17 @@ const CampaignCoordinatorCreateCampaignPage = () => {
 					</button>
 				</div>
 			</section>
+			{status === "success" && (
+				<div className="campaign-success-overlay">
+					<div className="campaign-success-modal">
+						<h2>Campaign Created</h2>
+						<p>
+							Campaign <strong>{name}</strong> has been successfully created!
+						</p>
+					</div>
+				</div>
+			)}
+
 			{showRecommendations && (
 				<RecommendationsModal
 					recommendations={recommendations}

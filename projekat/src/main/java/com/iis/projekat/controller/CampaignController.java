@@ -46,6 +46,11 @@ public class CampaignController {
 		return ResponseEntity.ok(campaignService.listCampaigns());
 	}
 
+	@GetMapping("/active")
+	public ResponseEntity<List<CampaignDTO>> listActiveCampaigns() {
+		return ResponseEntity.ok(campaignService.listActiveCampaigns());
+	}
+
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> deleteCampaign(@PathVariable Long id) {
 		campaignService.deleteCampaign(id);

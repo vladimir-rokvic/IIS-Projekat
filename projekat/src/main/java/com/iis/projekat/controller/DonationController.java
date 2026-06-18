@@ -2,6 +2,7 @@ package com.iis.projekat.controller;
 
 import com.iis.projekat.dto.DonationCreateDTO;
 import com.iis.projekat.dto.DonationDTO;
+import com.iis.projekat.model.DocumentType;
 import com.iis.projekat.service.DonationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,12 @@ public class DonationController {
     @PostMapping
     public ResponseEntity<DonationDTO> create(@RequestBody DonationCreateDTO dto) {
         DonationDTO res = donationService.createDonation(dto);
+        return ResponseEntity.ok(res);
+    }
+
+    @PostMapping("/with-document")
+    public ResponseEntity<DonationDTO> createWithDocument(@RequestBody DonationCreateDTO dto, @RequestParam DocumentType documentType) {
+        DonationDTO res = donationService.createDonationWithDocument(dto, documentType);
         return ResponseEntity.ok(res);
     }
 

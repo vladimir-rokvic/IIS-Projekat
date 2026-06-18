@@ -36,31 +36,7 @@ const CampaignCoordinatorStatisticsPage = () => {
 		fetchStatisticsData();
 	}, []);
 
-	// -----------------------
-	// Dummy data (replace later with API)
-	// -----------------------
-	const donationTrendData = [
-		{ month: "Jan", amount: 1200 },
-		{ month: "Feb", amount: 1800 },
-		{ month: "Mar", amount: 2400 },
-		{ month: "Apr", amount: 2100 },
-		{ month: "May", amount: 3200 },
-		{ month: "Jun", amount: 4100 },
-	];
 
-	const categoryData = [
-		{ name: "Food Aid", value: 4000 },
-		{ name: "Education", value: 2500 },
-		{ name: "Medical", value: 3000 },
-		{ name: "Housing", value: 1500 },
-	];
-
-	const campaignComparisonData = [
-		{ name: "Campaign A", raised: 12000, goal: 15000 },
-		{ name: "Campaign B", raised: 8000, goal: 10000 },
-		{ name: "Campaign C", raised: 15000, goal: 18000 },
-		{ name: "Campaign D", raised: 6000, goal: 12000 },
-	];
 
 	const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
@@ -90,7 +66,13 @@ const CampaignCoordinatorStatisticsPage = () => {
 					</button>
 				</div>
 			</div>
-
+			{!statisticsData && (
+				<div style={{ textAlign: "center", marginTop: 50 }}>
+					Loading statistics...
+				</div>
+			)}
+			{statisticsData && (
+			<div>
 			<section className="campaign-stats-layout">
 				{/* LINE CHART */}
 				<div className="campaign-chart-card">
@@ -99,7 +81,7 @@ const CampaignCoordinatorStatisticsPage = () => {
 					</div>
 
 					<ResponsiveContainer width="100%" height={300}>
-						<LineChart data={statisticsData?.donationTrends || donationTrendData}>
+						<LineChart data={statisticsData?.donationTrends}>
 							<CartesianGrid strokeDasharray="3 3" />
 							<XAxis dataKey="month" />
 							<YAxis />
@@ -123,13 +105,13 @@ const CampaignCoordinatorStatisticsPage = () => {
 					<ResponsiveContainer width="100%" height={300}>
 						<PieChart>
 							<Pie
-								data={statisticsData?.donationsPerCategory || categoryData}
+								data={statisticsData?.donationsPerCategory}
 								dataKey="amount"
 								nameKey="category"
 								outerRadius={100}
 								label
 							>
-								{(statisticsData?.donationsPerCategory || categoryData).map((entry, index) => (
+								{(statisticsData?.donationsPerCategory).map((entry, index) => (
 									<Cell
 										key={`cell-${index}`}
 										fill={
@@ -153,7 +135,7 @@ const CampaignCoordinatorStatisticsPage = () => {
 					</div>
 
 					<ResponsiveContainer width="100%" height={300}>
-						<BarChart data={statisticsData?.campaignComparison || campaignComparisonData}>
+						<BarChart data={statisticsData?.campaignComparison}>
 							<CartesianGrid strokeDasharray="3 3" />
 							<XAxis dataKey="campaignName" />
 							<YAxis />
@@ -165,6 +147,8 @@ const CampaignCoordinatorStatisticsPage = () => {
 					</ResponsiveContainer>
 				</div>
 			</section>
+			</div>
+			)}
 		</div>
 	);
 };
