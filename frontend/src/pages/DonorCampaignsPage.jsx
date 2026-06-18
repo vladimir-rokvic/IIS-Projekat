@@ -21,7 +21,7 @@
 
 		const fetchCampaigns = async () => {
 			try {
-				const res = await api.get("/campaigns");
+				const res = await api.get("/campaigns/active");
 				setCampaigns(res.data);
 			} catch (err) {
 				console.log(err);

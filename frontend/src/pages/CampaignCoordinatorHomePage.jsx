@@ -50,6 +50,11 @@ const CampaignCoordinatorHomePage = () => {
 				</div>
 			</div>
 
+			{loading && (
+				<div style={{ textAlign: "center", marginTop: 50 }}>
+					Loading dashboard data...
+				</div>
+			)}
 			{dashboardData && (
 			<>
 			<section className="campaign-stats-grid">
