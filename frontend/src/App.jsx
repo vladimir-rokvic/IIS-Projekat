@@ -57,6 +57,7 @@ import DistributionsPage from "./pages/DistributionsPage";
 import CreateRegiment from "./pages/CreateRegiment";
 import SelectCertificatePage from "./pages/SelectCertificatePage";
 import BeneficiariesListPage from "./pages/BeneficiariesListPage";
+import BeneficiaryHistoryPage from "./pages/BeneficiaryHistoryPage";
 
 function App() {
 	return (
@@ -96,6 +97,8 @@ function App() {
 					<Route path="/beneficiary/profile" element={<PrivateRoute allowedRoles={["BENEFICIARY"]}><BeneficiaryMyAccountPage /></PrivateRoute>} />
 					<Route path="/beneficiary/register" element={<BeneficiaryRegisterPage />}/>
 					<Route path="/beneficiary/documents" element={<PrivateRoute allowedRoles={["BENEFICIARY"]}><BeneficiaryDocumentsPage /></PrivateRoute>} />
+					<Route path="/beneficiary/history" element={<PrivateRoute allowedRoles={["BENEFICIARY"]}><BeneficiaryHistoryPage /></PrivateRoute>} />
+
 
 					<Route path="/manager/distributionlocation" element={<PrivateRoute allowedRoles={["MANAGER"]}><NewDistributionLocation /></PrivateRoute>}/>
 					<Route path="/manager/distribution/:id/package/create" element={<PrivateRoute allowedRoles={["MANAGER"]}><CreatePackage /></PrivateRoute>}/>
