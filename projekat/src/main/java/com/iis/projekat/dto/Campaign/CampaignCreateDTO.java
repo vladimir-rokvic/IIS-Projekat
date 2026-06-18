@@ -1,40 +1,21 @@
-package com.iis.projekat.dto;
+package com.iis.projekat.dto.Campaign;
 
-import com.iis.projekat.model.Campaign;
+import com.iis.projekat.model.CampaignCategory;
 import com.iis.projekat.model.CampaignStatus;
 
 import java.time.LocalDate;
 
-public class CampaignDTO {
-	private Long id;
+public class CampaignCreateDTO {
 	private String name;
 	private Double goal;
 	private LocalDate startDate;
 	private LocalDate endDate;
 	private String description;
 	private CampaignStatus status;
+	private CampaignCategory category;
 	private Long projectId;
 
-	public CampaignDTO() {
-	}
-
-	public CampaignDTO(Campaign campaign) {
-		this.id = campaign.getId();
-		this.name = campaign.getName();
-		this.goal = campaign.getGoal();
-		this.startDate = campaign.getStartDate();
-		this.endDate = campaign.getEndDate();
-		this.description = campaign.getDescription();
-		this.status = campaign.getStatus();
-		this.projectId = campaign.getProject() != null ? campaign.getProject().getId() : null;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
+	public CampaignCreateDTO() {
 	}
 
 	public String getName() {
@@ -83,6 +64,14 @@ public class CampaignDTO {
 
 	public void setStatus(CampaignStatus status) {
 		this.status = status;
+	}
+
+	public CampaignCategory getCategory() {
+		return category;
+	}
+
+	public void setCategory(CampaignCategory category) {
+		this.category = category;
 	}
 
 	public Long getProjectId() {

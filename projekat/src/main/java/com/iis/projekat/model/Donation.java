@@ -56,6 +56,10 @@ public class Donation {
     @JoinColumn(name = "project_id")
     private Project project;
 
+    @ManyToOne
+    @JoinColumn(name = "campaign_id")
+    private Campaign campaign;
+
     public Long getId() {
         return id;
     }
@@ -134,5 +138,13 @@ public class Donation {
 
     public void setProject(Project project) {
         this.project = project;
+    }
+
+    public Campaign getCampaign() {
+        return campaign;
+    }
+
+    public void setCampaign(Campaign campaign) {
+        this.campaign = campaign;
     }
 }
