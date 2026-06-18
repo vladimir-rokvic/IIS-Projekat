@@ -167,6 +167,14 @@
     color: #555;
 }
 
+.btn-select-certificate {
+	padding: 6px 10px;
+	margin-top: 20px;
+	background-color: #369FBC;
+	border-radius: 6px;
+	cursor: pointer;
+}
+
 .contact-info {
     font-size: 1.3rem;
 	font-weight: 300;
@@ -184,6 +192,7 @@
 	border: 1px solid #d9d9d9;
 	border-radius: 10px;
 	margin: 10px;
+	padding: 10px;
 }
 
 .volunteer-section {

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import api from "../api/axios";
 import { useNavigate, useParams } from "react-router-dom";
 import "./TaskDetailsPage.css";
+import { useAuth } from "../context/AuthContext";
 
 const TaskDetailsPage = () => {
 	const {id} = useParams();
@@ -11,6 +12,8 @@ const TaskDetailsPage = () => {
 
 	const comment = useRef('');
 	const grade = useRef(3);
+
+	const { user } = useAuth();
 
 	const weekDays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 	const [startDay, setStartDay] = useState(0);
@@ -52,9 +55,9 @@ const TaskDetailsPage = () => {
                 <div className="header-left">
                     <h1>{task.name}</h1>
                 </div>
-                <div className="header-buttons">
+				{user.role !== "VOLUNTEER" && (<div className="header-buttons">
                     <button className="btn-edit" onClick={() => navigate(`/coord/tasksEdit/${id}`)}>Edit</button>
-                </div>
+                </div>)}
             </div>
 
 					<label className="addressLabelInre">
@@ -142,7 +145,7 @@ fontSize: '1.3rem'}}>Volunteer doesn't have any skills yet</p> :
             </div>
 		
 		{(Date.parse(task.endDate) < Date.now()
-		&& task.performance == null) && (
+		&& task.performance == null && user.role !== "VOLUNTEER") && (
 			<>
             	<label className="addressLabelInre">Rate the performance of the volunteer</label>
 				<div className="performance-class">

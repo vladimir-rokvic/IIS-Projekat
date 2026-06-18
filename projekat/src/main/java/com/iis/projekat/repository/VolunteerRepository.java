@@ -10,9 +10,10 @@ import java.util.List;
 public interface VolunteerRepository extends JpaRepository<Volunteer, Long> {
     public boolean existsByEmail(String email);
     @Query(value = """
-            SELECT * FROM volunteers v
-            WHERE v.id not in (SELECT volunteer_id FROM trainees)
-            """, nativeQuery = true
-    )
+        SELECT v.*, u.*
+        FROM volunteers v
+        JOIN users u ON u.id = v.id
+        WHERE v.id NOT IN (SELECT volunteer_id FROM trainees)
+        """, nativeQuery = true)
     public List<Volunteer> findAllNotInTraining();
 }

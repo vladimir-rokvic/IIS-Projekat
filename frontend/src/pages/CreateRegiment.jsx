@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "./CreateTaskPage.css";
+import api from "../api/axios";
 
 const CreateRegiment = () => {
 	const navigate = useNavigate();
@@ -24,7 +25,7 @@ const CreateRegiment = () => {
 	}, []);
 
 	const handleSave = async () => {
-		body = {
+		const body = {
 			description: description.current.value,
 			startDate: startDate.current.value,
 			endDate: endDate.current.value,
@@ -33,13 +34,16 @@ const CreateRegiment = () => {
 			trainer: volunteer
 		}
 		try {
+			const res = await api.post('regiment/', body);
+			navigate('/manager');
+			//console.log(res.data);
 		} catch (err) {
 			console.log(err);
 		}
 	}
 
 	const handleAddVolunteer = () => {
-		navigate('/coord/createTask/addVolunteer', {state: {from: "training-create"}})
+		navigate('/coord/createTask/addVolunteer', {state: {from: "training-create", cert: certificate}});
 	}
 
 	return (
@@ -52,6 +56,20 @@ const CreateRegiment = () => {
             <p className="create-subtitle">Fill in the required information to create a new training regiment.</p>
 
 			{ (certificate) ? (<>
+			<label className="addressLabelInre">Certificate information</label>
+			<div className="dashboard-certificate">
+				<div style={{display: 'flex', flexDirection: 'column'}}>
+					<span style={{fontWeight: 'bold'}} className="volunteer-name">
+						{certificate.name}
+					</span>
+					<p style={{
+						wordWrap: 'break-word', 
+						margin: '20px',
+						fontSize: '1.3rem'
+						}}>
+						{certificate.description}</p>
+				</div>
+			</div>
 
 			<label className="addressLabelInre">Trainer information</label>
             <div className="volunteer-section">
