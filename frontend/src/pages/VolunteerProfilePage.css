@@ -31,6 +31,57 @@
     background-color: #369FBC;
 }
 
+.vp-basic-info {
+	border: 1px solid #d9d9d9;
+	border-radius: 10px;
+	padding: 10px;
+	margin-bottom: 40px;
+}
+
+.vp-basic-info p {
+	margin-top: 10px;
+	font-size: 1.6rem;
+}
+
+.vp-basic-info h2{
+	margin-top: 30px;
+	font-size: 1.8rem;
+}
+
+.skill-card {
+    display: flex;
+	flex-direction: column;
+    align-items: center;
+	width: 200px;
+    background-color: #d9d9d9;
+    border-radius: 20px;
+	margin: 3px;
+    font-size: 1.3rem;
+}
+
+.skill-card p {
+    font-size: 1.3rem;
+	justify-self: left;
+}
+
+.vp-bio-section {
+	border-radius: 10px;
+	border: 1px solid #d9d9d9;
+	padding: 10px;
+}
+
+.back-to-shore {
+	border-radius: 10px;
+	border: 1px solid #d9d9d9;
+	padding: 10px;
+	display: flex;
+	margin-bottom: 40px;
+}
+
+.back-to-shore p {
+	margin: 0 auto;
+}
+
 .content {
     display: flex;
     justify-content: space-between;

@@ -116,7 +116,7 @@ function App() {
 					<Route path="/volunteer/details/:id" element={<PrivateRoute allowedRoles={["COORDINATOR"]}><VolunteerDetailsPage /></PrivateRoute>}/>
 					<Route path="/tasks" element={<PrivateRoute allowedRoles={["COORDINATOR"]}><TasksPage /></PrivateRoute>}/>
 					<Route path="/selectCertificate" element={<PrivateRoute allowedRoles={["MANAGER"]}><SelectCertificatePage /></PrivateRoute>}/>
-					<Route path="/coord/tasks/:id" element={<PrivateRoute allowedRoles={["COORDINATOR"]}><TaskDetailsPage /></PrivateRoute>}/>
+					<Route path="/coord/tasks/:id" element={<PrivateRoute allowedRoles={["COORDINATOR", "VOLUNTEER"]}><TaskDetailsPage /></PrivateRoute>}/>
 					<Route path="/coord/tasksEdit/:id" element={<PrivateRoute allowedRoles={["COORDINATOR"]}><TaskDetailsEdit /></PrivateRoute>}/>
 
 					<Route path="/projects/:id/info" element={<PrivateRoute allowedRoles={["COORDINATOR"]}><ProjectInformationPage /></PrivateRoute>} />

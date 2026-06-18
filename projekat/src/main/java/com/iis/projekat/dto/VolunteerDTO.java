@@ -21,6 +21,8 @@ public class VolunteerDTO {
     private List<SkillDTO> skillTypes;
     private Double predictedGrade;
 
+    public VolunteerDTO() {}
+
     public VolunteerDTO(Volunteer v) {
         this.id = v.getId();
         this.name = v.getName();
