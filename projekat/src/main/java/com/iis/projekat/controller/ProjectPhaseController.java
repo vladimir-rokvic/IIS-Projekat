@@ -28,9 +28,8 @@ public class ProjectPhaseController {
     }
 
     /**
-     * Koordinator postavlja faze za odobreni projekat.
-     * Zamenjuje sve postojeće faze novom listom.
-     * POST /api/projekti/{id}/faze
+     * Koristi se samo za inicijalno postavljanje kompletnog plana faza.
+     * Ne koristiti za dodavanje pojedinačne faze jer briše postojeće faze.
      */
     @PostMapping("/api/projekti/{id}/faze")
     public ResponseEntity<List<ProjectPhaseResponseDTO>> postaviFaze(
@@ -44,7 +43,6 @@ public class ProjectPhaseController {
 
     /**
      * Vraća listu faza za određeni projekat.
-     * GET /api/projekti/{id}/faze
      */
     @GetMapping("/api/projekti/{id}/faze")
     public ResponseEntity<List<ProjectPhaseResponseDTO>> getFaze(@PathVariable Long id) {
@@ -53,7 +51,6 @@ public class ProjectPhaseController {
 
     /**
      * Postavlja pomoćne koordinatore na konkretnu fazu.
-     * PUT /api/faze/{phaseId}/pomocni-koordinatori
      * Body: { "pomocniKoordinatoriIds": [1, 2, 3] }
      */
     @PutMapping("/api/faze/{phaseId}/pomocni-koordinatori")
@@ -70,7 +67,6 @@ public class ProjectPhaseController {
 
     /**
      * Vraća sve dostupne tipove veština — za dropdown pri kreiranju faza.
-     * GET /api/skill-types
      */
     @GetMapping("/api/skill-types")
     public ResponseEntity<List<SkillTypeDTO>> sveVestine() {
@@ -84,7 +80,7 @@ public class ProjectPhaseController {
     }
 
     @PutMapping("/api/faze/{phaseId}/zavrsi")
-    public ResponseEntity<ProjectPhaseResponseDTO> zavrshiFazu(
+    public ResponseEntity<ProjectPhaseResponseDTO> zavrsiFazu(
             @PathVariable Long phaseId,
             @AuthenticationPrincipal UserDetails userDetails) {
 
@@ -93,10 +89,7 @@ public class ProjectPhaseController {
     }
 
     /**
-     * Koordinator predlaže novu fazu projekta (kada su sve faze završene).
-     * Projekat prelazi u CEKA_ODOBRENJE_NOVE_FAZE.
-     * POST /api/projekti/{id}/nova-faza
-     * Body: { "faza": {...}, "razlog": "..." }
+     * Dodavanje nove faze u projektu.
      */
     @PostMapping("/api/projekti/{id}/nova-faza")
     public ResponseEntity<ProjectPhaseResponseDTO> dodajNovuFazu(
@@ -133,7 +126,6 @@ public class ProjectPhaseController {
     /**
      * Ažurira podatke jedne faze (naziv, ciljevi, rokovi, veštine, broj volontera).
      * Taskovi, zavrsena flag i ID ostaju netaknuti.
-     * PUT /api/faze/{id}
      */
     @PutMapping("/api/faze/{id}")
     public ResponseEntity<ProjectPhaseResponseDTO> azurirajFazu(
