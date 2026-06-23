@@ -480,3 +480,40 @@
 		flex-direction: column;
 	}
 }
+
+.campaign-success-overlay {
+	position: fixed;
+	inset: 0;
+	background: rgba(0, 0, 0, 0.5);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 9999;
+}
+
+.campaign-success-modal {
+	background: white;
+	padding: 2rem;
+	border-radius: 12px;
+	min-width: 400px;
+	max-width: 500px;
+	text-align: center;
+	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+	animation: successPop 0.25s ease-out;
+}
+
+.campaign-success-modal h2 {
+	margin-top: 0;
+	margin-bottom: 1rem;
+}
+
+@keyframes successPop {
+	from {
+		transform: scale(0.9);
+		opacity: 0;
+	}
+	to {
+		transform: scale(1);
+		opacity: 1;
+	}
+}

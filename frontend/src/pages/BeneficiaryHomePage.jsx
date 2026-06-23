@@ -70,6 +70,14 @@ export default function BeneficiaryHomePage() {
                     </button>
                 </div>
 
+                <div className="dashboard-card" style={{ marginTop: 16 }}>
+                    <h2>Aid History</h2>
+                    <p>View every package you have received so far.</p>
+                    <button className="btn-primary" onClick={()=>navigate("/beneficiary/history")}>
+                        Aid History
+                    </button>
+                </div>
+
             </main>
         </div>
   );

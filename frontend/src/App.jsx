@@ -56,6 +56,8 @@ import DistributionsPage from "./pages/DistributionsPage";
 
 import CreateRegiment from "./pages/CreateRegiment";
 import SelectCertificatePage from "./pages/SelectCertificatePage";
+import BeneficiariesListPage from "./pages/BeneficiariesListPage";
+import BeneficiaryHistoryPage from "./pages/BeneficiaryHistoryPage";
 
 function App() {
 	return (
@@ -95,6 +97,8 @@ function App() {
 					<Route path="/beneficiary/profile" element={<PrivateRoute allowedRoles={["BENEFICIARY"]}><BeneficiaryMyAccountPage /></PrivateRoute>} />
 					<Route path="/beneficiary/register" element={<BeneficiaryRegisterPage />}/>
 					<Route path="/beneficiary/documents" element={<PrivateRoute allowedRoles={["BENEFICIARY"]}><BeneficiaryDocumentsPage /></PrivateRoute>} />
+					<Route path="/beneficiary/history" element={<PrivateRoute allowedRoles={["BENEFICIARY"]}><BeneficiaryHistoryPage /></PrivateRoute>} />
+
 
 					<Route path="/manager/distributionlocation" element={<PrivateRoute allowedRoles={["MANAGER"]}><NewDistributionLocation /></PrivateRoute>}/>
 					<Route path="/manager/distribution/:id/package/create" element={<PrivateRoute allowedRoles={["MANAGER"]}><CreatePackage /></PrivateRoute>}/>
@@ -102,6 +106,7 @@ function App() {
 					<Route path="/manager/distribution/new" element={<PrivateRoute allowedRoles={["MANAGER"]}><NewAidDistributionPage /></PrivateRoute>}/>
 					<Route path="/manager/distribution/:id" element={<PrivateRoute allowedRoles={["MANAGER"]}><DistributionDetailsPage /></PrivateRoute>}/>
 					<Route path="/manager/distributions" element={<PrivateRoute allowedRoles={["MANAGER"]}><DistributionsPage /></PrivateRoute>}/>
+					<Route path="/manager/beneficiaries" element={<PrivateRoute allowedRoles={["MANAGER"]}><BeneficiariesListPage /></PrivateRoute>}/>
 
 
 					<Route path="/volunteer" element={<PrivateRoute allowedRoles={["VOLUNTEER"]}><VolunteerDashboard /></PrivateRoute>}/>
@@ -114,7 +119,7 @@ function App() {
 					<Route path="/volunteer/details/:id" element={<PrivateRoute allowedRoles={["COORDINATOR"]}><VolunteerDetailsPage /></PrivateRoute>}/>
 					<Route path="/tasks" element={<PrivateRoute allowedRoles={["COORDINATOR"]}><TasksPage /></PrivateRoute>}/>
 					<Route path="/selectCertificate" element={<PrivateRoute allowedRoles={["MANAGER"]}><SelectCertificatePage /></PrivateRoute>}/>
-					<Route path="/coord/tasks/:id" element={<PrivateRoute allowedRoles={["COORDINATOR"]}><TaskDetailsPage /></PrivateRoute>}/>
+					<Route path="/coord/tasks/:id" element={<PrivateRoute allowedRoles={["COORDINATOR", "VOLUNTEER"]}><TaskDetailsPage /></PrivateRoute>}/>
 					<Route path="/coord/tasksEdit/:id" element={<PrivateRoute allowedRoles={["COORDINATOR"]}><TaskDetailsEdit /></PrivateRoute>}/>
 
 					<Route path="/projects/:id/info" element={<PrivateRoute allowedRoles={["COORDINATOR"]}><ProjectInformationPage /></PrivateRoute>} />

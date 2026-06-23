@@ -6,6 +6,7 @@ import "./VolunteerSelectPage.css";
 const VolunteerSelectPage = () => {
     const [volunteers, setVolunteers] = useState([]);
 	const [ratedVolunteers, setRatedVolunteers] = useState([]);
+	const [cert, setCert] = useState([]);
     const navigate = useNavigate();
 
 	const location = useLocation();
@@ -21,7 +22,6 @@ const VolunteerSelectPage = () => {
         };
 
 		const recommendVolunteers = async () => {
-			if(location.state?.from !== "edit") return;
 			try {
 				const taskId = location.state?.taskId;
 				if(!taskId) return;
@@ -33,8 +33,14 @@ const VolunteerSelectPage = () => {
 			}
 		};
 
+		if(location.state?.cert) {
+			setCert(location.state?.cert);
+		}
+
         fetchVolunteers();
-		recommendVolunteers();
+		if(location.state?.from === "edit") {
+			recommendVolunteers();
+		}
     }, []);
 
 	const handleDetails = (id) => {
@@ -47,7 +53,7 @@ const VolunteerSelectPage = () => {
 		} else if(location.state?.from === "create") {
 			navigate('/coord/createTask', { state: {v_id: v.id} });
 		} else if(location.state?.from === "training-create") {
-			navigate('/manager/createRegiment', {state: {trainer: v}});
+			navigate('/manager/createRegiment', {state: {trainer: v, certificate: cert}});
 		}
 	}
 

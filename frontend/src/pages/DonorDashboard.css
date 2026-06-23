@@ -118,7 +118,6 @@
 
 .donor-progress-fill {
 	height: 100%;
-	background: linear-gradient(90deg, #c9c9c9 0%, #8c8c8c 100%);
 }
 
 .donor-chart-panel {
@@ -181,6 +180,7 @@
 	padding: 18px 16px 14px;
 	min-height: 300px;
 	display: flex;
+	justify-content: space-between;
 	flex-direction: column;
 	gap: 10px;
 }
@@ -201,7 +201,7 @@
 
 .donor-btn {
 	align-self: center;
-	margin-top: auto;
+	margin-top: 5px;
 	padding: 8px 20px;
 	border: 1px solid #7f7f7f;
 	border-radius: 8px;

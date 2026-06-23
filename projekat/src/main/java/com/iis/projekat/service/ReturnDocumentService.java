@@ -58,6 +58,18 @@ public class ReturnDocumentService {
         return mapper.toReturnDocumentDto(rd);
     }
 
+    public ReturnDocumentDTO createReturnDocument(Donation donation , DocumentType documentType) {
+        ReturnDocument rd = new ReturnDocument();
+        rd.setIssuedDate(java.time.LocalDate.now());
+        rd.setContent(documentType + " for donation with ID: " + donation.getId());
+        rd.setDocumentType(documentType);
+        rd.setDocumentStatus(DocumentStatus.DRAFT);
+        rd.setDonation(donation);
+
+        returnDocumentRepository.save(rd);
+        return mapper.toReturnDocumentDto(rd);
+    }
+
     public boolean updateReturnDocument(Long id, ReturnDocumentCreateDTO dto) {
         ReturnDocument rd = returnDocumentRepository.findById(id).orElse(null);
         if(rd == null) return false;

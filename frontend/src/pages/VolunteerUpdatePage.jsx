@@ -1,26 +1,15 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import api from "../api/axios";
 import "./VolunteerUpdatePage.css";
 import { useNavigate } from "react-router-dom";
 
 const VolunteerUpdatePage = () => {
     const [user, setUser] = useState(null);
+    const [skills, setSkills] = useState([]);
+    const [newSkill, setNewSkill] = useState({ name: "", desc: "" });
+    const [allSkillTypes, setAllSkillTypes] = useState([]);
+    const [selectedSkillTypeId, setSelectedSkillTypeId] = useState("");
     const navigate = useNavigate();
-
-    const firstName = useRef();
-    const lastName = useRef();
-    const bio = useRef();
-    const dateOfBirth = useRef();
-    const street = useRef();
-    const city = useRef();
-    const country = useRef();
-    const phone = useRef();
-    const email = useRef();
-	const [skills, setSkills] = useState([]);
-	const [skill, setSkill] = useState('');
-
-    const [password, setPassword] = useState(null);
-    const [confirmPassword, setConfirmPassword] = useState(null);
 
     useEffect(() => {
         const fetchVolunteer = async () => {
@@ -28,203 +17,253 @@ const VolunteerUpdatePage = () => {
                 const id = JSON.parse(localStorage.getItem("user")).id;
                 const res = await api.get("/volunteer/" + id);
                 setUser(res.data);
-				if(res.data.skills) {
-					setSkills(res.data.skills);
-				}
+                if (res.data.skills) {
+                    setSkills(res.data.skills);
+                }
+            } catch (err) {
+                console.log(err);
+            }
+        };
+        const fetchSkillTypes = async () => {
+            try {
+                const res = await api.get("/skill-types");
+                setAllSkillTypes(res.data);
+                if (res.data.length > 0) setSelectedSkillTypeId(String(res.data[0].id));
             } catch (err) {
                 console.log(err);
             }
         };
         fetchVolunteer();
+        fetchSkillTypes();
     }, []);
 
+    const handleChange = (field, value) => {
+        setUser((prev) => ({ ...prev, [field]: value }));
+    };
 
-	const addSkill = () => {
-	    if (!skill.trim()) return;
-	    setSkills([...skills, { name: skill, desc: "" }]);
-	    setSkill('');
-	};
+    const handleAddressChange = (field, value) => {
+        setUser((prev) => ({
+            ...prev,
+            address: { ...prev.address, [field]: value },
+        }));
+    };
 
-	const removeSkill = (index) => {
-	    setSkills(skills.filter((_, i) => i !== index));
-	};
+    const calculateAge = (u) => {
+        const today = new Date();
+        const birthDay = new Date(u.dateOfBirth);
+        return today.getFullYear() - birthDay.getFullYear();
+    };
+
+    const handleAddSkill = () => {
+        if (!newSkill.name.trim()) return;
+        setSkills((prev) => [...prev, { ...newSkill }]);
+        setNewSkill({ name: "", desc: "" });
+    };
+
+    const handleRemoveSkill = (index) => {
+        setSkills((prev) => prev.filter((_, i) => i !== index));
+    };
+
+    const handleAddSkillType = () => {
+        const toAdd = allSkillTypes.find((st) => String(st.id) === selectedSkillTypeId);
+        if (!toAdd) return;
+        const alreadyAdded = user.skillTypes.some((st) => st.id === toAdd.id);
+        if (alreadyAdded) return;
+        setUser((prev) => ({
+            ...prev,
+            skillTypes: [...prev.skillTypes, toAdd],
+        }));
+    };
+
+    const handleRemoveSkillType = (index) => {
+        setUser((prev) => ({
+            ...prev,
+            skillTypes: prev.skillTypes.filter((_, i) => i !== index),
+        }));
+    };
 
     const handleSave = async () => {
-        const id = JSON.parse(localStorage.getItem("user")).id;
-        const body = {
-            name: firstName.current.value,
-            surname: lastName.current.value,
-            bio: bio.current.value,
-            dob: dateOfBirth.current.value,
-            street: street.current.value,
-            city: city.current.value,
-            country: country.current.value,
-            phone: phone.current.value,
-            email: email.current.value,
-			password: password,
-			skills: skills,
-        };
-        console.log(body);
-		
-		try {
-			await api.put("/volunteer/" + id, body);
-			navigate("/profile");
-		} catch (err) {
-			console.log(err);
-		}
+        try {
+            const id = JSON.parse(localStorage.getItem("user")).id;
+            const body = { ...user, skills };
+            await api.put("/volunteer/" + id, body);
+            navigate("/volunteer/profile");
+        } catch (err) {
+            console.log(err);
+        }
     };
 
     if (!user) return <p>Loading...</p>;
 
     return (
-        <div className="volunteer-update">
+        <div className="volunteer-profile">
             <div className="header">
-                <h2>Volunteer profile view</h2>
                 <div className="header-buttons">
-                    <button className="btn-save" onClick={handleSave}>Save</button>
+                    <button className="btn-edit" onClick={handleSave}>
+                        Save
+                    </button>
                 </div>
             </div>
 
-            <div className="content">
-                <div className="left">
-                    <div className="row">
-                        <div className="field">
-                            <label>First name</label>
+            <label className="addressLabelInre">Basic information</label>
+            <div className="vp-basic-info">
+                <h2 style={{ marginTop: "10px" }}>Name</h2>
+                <div style={{ display: "flex", gap: "16px" }}>
+                    <input
+                        className="vp-input"
+                        type="text"
+                        value={user.name}
+                        placeholder={user.name}
+                        onChange={(e) => handleChange("name", e.target.value)}
+                    />
+                    <input
+                        className="vp-input"
+                        type="text"
+                        value={user.surname}
+                        placeholder={user.surname}
+                        onChange={(e) => handleChange("surname", e.target.value)}
+                    />
+                </div>
+
+                <h2>Contact information</h2>
+                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                        <span className="vp-input-label">Email:</span>
+                        <input
+                            className="vp-input"
+                            type="text"
+                            value={user.email}
+                            placeholder={user.email}
+                            onChange={(e) => handleChange("email", e.target.value)}
+                        />
+                    </div>
+                    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                        <span className="vp-input-label">Phone:</span>
+                        <input
+                            className="vp-input"
+                            type="text"
+                            value={user.phone}
+                            placeholder={user.phone}
+                            onChange={(e) => handleChange("phone", e.target.value)}
+                        />
+                    </div>
+                </div>
+
+                <h2>Address</h2>
+                <div style={{ display: "flex", gap: "50px" }}>
+                    {["country", "city", "street"].map((field) => (
+                        <div key={field}>
+                            <p style={{ fontSize: "1.3rem", textTransform: "capitalize" }}>
+                                {field}
+                            </p>
                             <input
-                                ref={firstName}
+                                className="vp-input"
                                 type="text"
-                                defaultValue={user.name}
-                                placeholder="Enter your first name"
+                                value={user.address[field]}
+                                placeholder={user.address[field]}
+                                onChange={(e) => handleAddressChange(field, e.target.value)}
                             />
                         </div>
-                        <div className="field">
-                            <label>Last name</label>
-                            <input
-                                ref={lastName}
-                                type="text"
-                                defaultValue={user.surname}
-                                placeholder="Enter your last name"
-                            />
+                    ))}
+                </div>
+
+                <h2>Date of birth</h2>
+                <input
+                    className="vp-input"
+                    type="date"
+                    value={user.dateOfBirth}
+                    onChange={(e) => handleChange("dateOfBirth", e.target.value)}
+                />
+                <p>Age: {calculateAge(user)}</p>
+
+                <h2>Biography</h2>
+                <textarea
+                    className="vp-input vp-textarea"
+                    value={user.bio || ""}
+                    placeholder="Write a short bio..."
+                    onChange={(e) => handleChange("bio", e.target.value)}
+                />
+            </div>
+
+            <label className="addressLabelInre">Skill types</label>
+            <div className="vp-add-skill">
+                <select
+                    className="vp-input"
+                    value={selectedSkillTypeId}
+                    onChange={(e) => setSelectedSkillTypeId(e.target.value)}
+                >
+                    {allSkillTypes.map((st) => (
+                        <option key={st.id} value={String(st.id)}>
+                            {st.name}
+                        </option>
+                    ))}
+                </select>
+                <button className="btn-add" onClick={handleAddSkillType}>
+                    Add +
+                </button>
+            </div>
+            <div className="back-to-shore">
+                {user.skillTypes.length !== 0 ? (
+                    user.skillTypes.map((skillType, index) => (
+                        <div key={index} className="skill-card">
+                            <h3>{skillType.name}</h3>
+                            <p>{skillType.desc}</p>
+                            <button
+                                className="btn-remove"
+                                onClick={() => handleRemoveSkillType(index)}
+                            >
+                                Remove
+                            </button>
                         </div>
-                    </div>
+                    ))
+                ) : (
+                    <p style={{ color: "#555", fontSize: "1.3rem" }}>
+                        No skill types set
+                    </p>
+                )}
+            </div>
 
-                    <div className="field">
-                        <label>Bio</label>
-                        <textarea
-                            ref={bio}
-                            defaultValue={user.bio || ""}
-                            placeholder="Short volunteer biography"
-                        />
-                    </div>
-
-                    <div className="field">
-                        <label>Date of birth</label>
-                        <input
-                            ref={dateOfBirth}
-                            type="date"
-                            defaultValue={user.dateOfBirth || ""}
-                        />
-                    </div>
-
-                    <div className="input-group">
-                        <label className="group-label">Address</label>
-                        <div className="row">
-                            <div className="field">
-                                <input
-                                    ref={street}
-                                    type="text"
-                                    defaultValue={user.address?.street || ""}
-                                    placeholder="Volunteer living address"
-                                />
-                            </div>
-                            <div className="field">
-                                <input
-                                    ref={city}
-                                    type="text"
-                                    defaultValue={user.address?.city || ""}
-                                    placeholder="City"
-                                />
-                            </div>
-                            <div className="field">
-                                <input
-                                    ref={country}
-                                    type="text"
-                                    defaultValue={user.address?.country || ""}
-                                    placeholder="Country"
-                                />
-                            </div>
+            <label className="addressLabelInre">Skills</label>
+            <div className="vp-add-skill">
+                <input
+                    className="vp-input"
+                    type="text"
+                    placeholder="Skill name"
+                    value={newSkill.name}
+                    onChange={(e) =>
+                        setNewSkill((prev) => ({ ...prev, name: e.target.value }))
+                    }
+                />
+                <input
+                    className="vp-input"
+                    type="text"
+                    placeholder="Short description"
+                    value={newSkill.desc}
+                    onChange={(e) =>
+                        setNewSkill((prev) => ({ ...prev, desc: e.target.value }))
+                    }
+                />
+                <button className="btn-add" onClick={handleAddSkill}>
+                    Add +
+                </button>
+            </div>
+            <div className="back-to-shore">
+                {skills.length !== 0 ? (
+                    skills.map((s, index) => (
+                        <div key={index} className="skill-card">
+                            <h3>{s.name}</h3>
+                            <p>{s.desc}</p>
+                            <button
+                                className="btn-remove"
+                                onClick={() => handleRemoveSkill(index)}
+                            >
+                                Remove
+                            </button>
                         </div>
-                    </div>
-
-                    <div className="field">
-                        <label>Phone number</label>
-                        <input
-                            ref={phone}
-                            type="text"
-                            defaultValue={user.phone || ""}
-                            placeholder="Volunteer phone number"
-                        />
-                    </div>
-
-                    <div className="field">
-                        <label>Email</label>
-                        <input
-                            ref={email}
-                            type="text"
-                            defaultValue={user.email || ""}
-                            placeholder="Volunteer email"
-                        />
-                    </div>
-
-                    <div className="input-group">
-						<div className="row">
-                    		<div className="field">
-                    		    <label>New password</label>
-                    		    <input
-                    		        type="password"
-                    		        value={password}
-                    		        onChange={(e) => setPassword(e.target.value)}
-                    		        placeholder="Enter new password"
-                    		    />
-                    		</div>
-
-                    		<div className="field">
-                    		    <label>Confirm new password</label>
-                    		    <input
-                    		        type="password"
-                    		        value={confirmPassword}
-                    		        onChange={(e) => setConfirmPassword(e.target.value)}
-                    		        placeholder="Confirm password"
-                    		    />
-                    		</div>
-                    	</div>
-						{((password !== confirmPassword)
-						&& <span className="error-text">Passwords must match</span>)}
-					</div>
-
-				<div className="input-group">
-				    <label className="group-label">Skills</label>
-				    <div className="row">
-				        <div className="field">
-				            <input
-				                type="text"
-				                value={skill}
-				                onChange={(e) => setSkill(e.target.value)}
-				                placeholder="Enter a skill"
-				            />
-				        </div>
-				        <button className="btn-save" onClick={addSkill}>Add</button>
-				    </div>
-				    <div className="skills-list">
-				        {skills.map((s, index) => (
-				            <div key={index} className="skill-item">
-				                <span>{s.name}</span>
-				                <button className="btn-remove" onClick={() => removeSkill(index)}>x</button>
-				            </div>
-				        ))}
-				    </div>
-				</div>
-				</div>
+                    ))
+                ) : (
+                    <p style={{ color: "#555", fontSize: "1.3rem" }}>No skills set</p>
+                )}
             </div>
         </div>
     );

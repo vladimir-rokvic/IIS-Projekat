@@ -1,6 +1,7 @@
 package com.iis.projekat.service.Beneficiary;
 
 import com.iis.projekat.dto.Beneficiary.BeneficiaryDTO;
+import com.iis.projekat.dto.Beneficiary.BeneficiaryDetailsResponse;
 import com.iis.projekat.dto.Beneficiary.BeneficiaryPackageResponse;
 import com.iis.projekat.model.Address;
 import com.iis.projekat.model.Beneficiary.Beneficiary;
@@ -156,6 +157,31 @@ public class BeneficiaryService {
     private BeneficiaryPackageResponse ToResponse(Beneficiary b){
         return BeneficiaryPackageResponse.builder()
                 .name(b.getName())
-                .surname(b.getSurname()).id(b.getId()).aidType(b.getType()).build();
+                .surname(b.getSurname()).id(b.getId()).aidType(b.getType()).eligible(b.isEligible()).build();
+    }
+
+    public List<BeneficiaryDetailsResponse> getAllDetails() {
+        List<Beneficiary> beneficiaries = beneficiaryRepository.findAll();
+
+        List<BeneficiaryDetailsResponse> responses = new ArrayList<>();
+        for(Beneficiary b : beneficiaries){
+            responses.add(ToResponseDetails(b));
+        }
+
+        return responses;
+    }
+
+    private BeneficiaryDetailsResponse ToResponseDetails(Beneficiary b){
+        return BeneficiaryDetailsResponse.builder()
+                .id(b.getId())
+                .name(b.getName())
+                .surname(b.getSurname())
+                .aidType(b.getType())
+                .eligible(b.isEligible())
+                .country(b.getAddress().getCountry())
+                .city(b.getAddress().getCity())
+                .street(b.getAddress().getStreet())
+                .dateOfBirth(b.getDateOfBirth())
+                .build();
     }
 }

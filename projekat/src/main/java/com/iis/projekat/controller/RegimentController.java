@@ -28,7 +28,7 @@ public class RegimentController {
             return  ResponseEntity.badRequest().build();
         }
 
-        return  ResponseEntity.ok("Regiment saved successfully");
+        return  ResponseEntity.ok(regiment);
     }
 
     @GetMapping("/{id}")
@@ -42,5 +42,13 @@ public class RegimentController {
     @GetMapping("/allCertificates")
     public ResponseEntity<List<Certificate>> getAllCertificates() {
         return ResponseEntity.ok(regimentService.getAllCertificates());
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<RegimentDTO> UpdateRegiment(@RequestBody RegimentDTO regimentDTO) {
+        RegimentDTO ret = regimentService.update(regimentDTO);
+        if(ret == null) return ResponseEntity.badRequest().build();
+
+        return ResponseEntity.ok(ret);
     }
 }

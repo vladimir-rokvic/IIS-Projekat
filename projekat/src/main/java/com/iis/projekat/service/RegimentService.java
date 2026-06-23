@@ -50,6 +50,7 @@ public class RegimentService {
 
         Volunteer trainer = volunteerRepository.findById(regiment.getTrainer().getId()).orElse(null);
         if(trainer == null) return null;
+        r.setTrainer(trainer);
 
         List<Volunteer> volunteers = volunteerRepository.findAllNotInTraining();
         if(volunteers.isEmpty()) return null;
@@ -59,6 +60,20 @@ public class RegimentService {
         r.setTrainees(trainees);
 
         return regimentRepository.save(r);
+    }
+
+    public RegimentDTO update(RegimentDTO regiment) {
+        Regiment r = regimentRepository.findById(regiment.getId()).orElse(null);
+        if(r == null) return null;
+
+        Volunteer trainer = volunteerRepository.findById(regiment.getTrainer().getId()).orElse(null);
+        if(trainer == null) return null;
+        r.setTrainer(trainer);
+        r.setDescription(regiment.getDescription());
+        r.setEndDate(regiment.getEndDate());
+        r.setStartDate(regiment.getStartDate());
+
+        return regiment;
     }
 
     public List<RegimentDTO> getAll() {

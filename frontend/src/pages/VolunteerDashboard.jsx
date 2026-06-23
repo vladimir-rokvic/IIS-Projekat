@@ -61,13 +61,18 @@ const VolunteerDashboard = () => {
 			</div>
 			</div>
 			<br />
-			{tasks != null && tasks.map((task) => (
-				<div className='task-card'>
-					<h4>{task.name}</h4>
-					<span>Start date: {task.startDate}</span>
-					<span>End date: {task.endDate}</span>
+			{tasks != null && (
+				<div className='volunteer-task-list'>
+					{tasks.map((task) => (
+						<div className='volunteer-task-card'>
+							<h4>{task.name}</h4>
+							<span>Start date: {task.startDate}</span>
+							<span>End date: {task.endDate}</span>
+							<button onClick={() => navigate(`/coord/tasks/${task.id}`)}>Details</button>
+						</div>
+						))}
 				</div>
-			))}
+				)}
 		</div>
 	);
 };

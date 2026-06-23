@@ -120,6 +120,21 @@ const DistributionLocationsPage = () => {
                                     </p>
 
                                     <p>
+                                        <strong>City:</strong>{" "}
+                                        {location.city}
+                                    </p>
+
+                                    <p>
+                                        <strong>Street:</strong>{" "}
+                                        {location.street}
+                                    </p>
+
+                                    <p>
+                                        <strong>Country:</strong>{" "}
+                                        {location.country}
+                                    </p>
+
+                                    <p>
                                         <strong>Phone:</strong>{" "}
                                         {location.contactNumber}
                                     </p>
@@ -137,16 +152,6 @@ const DistributionLocationsPage = () => {
                                             marginTop: "8px",
                                         }}
                                     >
-                                        <button
-                                            className="btn-primary"
-                                            onClick={() =>
-                                                navigate(
-                                                    `/distribution-locations/${location.id}`
-                                                )
-                                            }
-                                        >
-                                            Details
-                                        </button>
                                         <button
                                             className="btn-primary-red"
                                             onClick={() =>
