@@ -7,6 +7,7 @@ import com.iis.projekat.model.Employee;
 import com.iis.projekat.model.EmployeeType;
 import com.iis.projekat.model.Project;
 import com.iis.projekat.repository.EmployeeRepository;
+import com.iis.projekat.service.ProjectReportService;
 import com.iis.projekat.service.ProjectService;
 import com.iis.projekat.dto.KpiRequest;
 import com.iis.projekat.dto.KpiResponseDTO;
@@ -31,10 +32,14 @@ public class ProjectController {
     private final ProjectService projectService;
     private final EmployeeRepository employeeRepository;
 
+    private final ProjectReportService projectReportService;
+
     public ProjectController(ProjectService projectService,
-                             EmployeeRepository employeeRepository) {
+                             EmployeeRepository employeeRepository,
+                             ProjectReportService projectReportService) {
         this.projectService = projectService;
         this.employeeRepository = employeeRepository;
+        this.projectReportService = projectReportService;
     }
 
     // Pomoćna metoda: izvuci Employee iz JWT principal-a
@@ -209,5 +214,32 @@ public class ProjectController {
         return ResponseEntity.ok(projectService.zatvoriProjekat(id, koordinator.getId()));
     }
 
+    /**
+     * Generise PDF izveštaj o efektivnosti projekta, utrošenim sredstvima
+     * i postignutim ishodima. Dostupno samo za projekte u statusu ZAVRSEN.
+     *
+     * <p>Endpoint: GET /api/projekti/{id}/izvestaj
+     * <p>Pristup: samo MANAGER
+     */
+    @GetMapping(value = "/{id}/izvestaj", produces = MediaType.APPLICATION_PDF_VALUE)
+    public ResponseEntity<byte[]> generisiIzvestaj(
+            @PathVariable Long id,
+            @AuthenticationPrincipal UserDetails userDetails) {
+
+        provjeriManagera(userDetails);
+
+        byte[] pdf = projectReportService.generisiIzvestaj(id);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDispositionFormData(
+                "attachment",
+                "izvestaj-projekat-" + id + ".pdf");
+        headers.setContentLength(pdf.length);
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(pdf);
+    }
 
 }
