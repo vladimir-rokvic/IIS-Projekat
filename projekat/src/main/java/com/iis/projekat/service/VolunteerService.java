@@ -263,6 +263,7 @@ public class VolunteerService {
         }
 
         for(AvailabilityDTO dto : availabilities) {
+            boolean saved = false;
             for(int i=0; i<oldAvailabilities.size(); ++i) {
                 Availability a = oldAvailabilities.get(i);
                 if(a.getDay() == dto.getDay()) {
@@ -270,8 +271,21 @@ public class VolunteerService {
                     a.setStartHour(dto.getStartHour());
                     a.setEndHour(dto.getEndHour());
                     availabilityRepository.save(a);
+                    saved = true;
                     break;
                 }
+            }
+
+            if(!saved) {
+                Availability na = new Availability();
+                na.setEndHour(dto.getEndHour());
+                na.setStartHour(dto.getStartHour());
+                na.setEnabled(dto.isEnabled());
+                na.setDay(dto.getDay());
+                Volunteer v = volunteerRepository.findById(dto.getVolunteerId()).orElse(null);
+                if(v == null) return null;
+                na.setVolunteer(v);
+                availabilityRepository.save(na);
             }
         }
 

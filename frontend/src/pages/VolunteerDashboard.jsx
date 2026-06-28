@@ -28,6 +28,19 @@ const VolunteerDashboard = () => {
 				const res = await api.get(`volunteer/${user.id}`);
 				console.log(res.data);
 				setVolunteer(res.data);
+				setAvailabillity(prev => {
+					//napravimo shallow copy
+					const updated = {...prev};
+					res.data.availabilities.forEach(a => {
+					//pritom ga ovde menjamo kako hocemo
+					//tj ovo nam omogucava da menjamo samo one koje trebamo
+						updated[a.day] = {
+							enabled: a.enabled,
+							range: [a.startHour, a.endHour]
+						}
+					});
+					return updated;
+				});
 			} catch (err) {
 				console.log(err);
 			}
