@@ -1,9 +1,7 @@
 package com.iis.projekat.dto;
 
-import com.iis.projekat.model.Address;
-import com.iis.projekat.model.Skill;
-import com.iis.projekat.model.SkillType;
-import com.iis.projekat.model.Volunteer;
+import com.iis.projekat.model.*;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +18,7 @@ public class VolunteerDTO {
     private List<SkillDTO> skills;
     private List<SkillDTO> skillTypes;
     private Double predictedGrade;
+    private List<AvailabilityDTO> availabilities;
 
     public VolunteerDTO() {}
 
@@ -36,9 +35,14 @@ public class VolunteerDTO {
         this.bio = v.getBio();
         this.skills = new ArrayList<>();
         this.skillTypes = new ArrayList<>();
+        this.availabilities = new ArrayList<>();
 
         for(Skill s: v.getSkills()){
             this.skills.add(new SkillDTO(s));
+        }
+
+        for(Availability a: v.getAvailabilities()) {
+            this.availabilities.add(new AvailabilityDTO(a));
         }
 
         for(SkillType st: v.getVolunteerSkillTypes()) {
@@ -97,5 +101,13 @@ public class VolunteerDTO {
 
     public void setSkillTypes(List<SkillDTO> skillTypes) {
         this.skillTypes = skillTypes;
+    }
+
+    public List<AvailabilityDTO> getAvailabilities() {
+        return availabilities;
+    }
+
+    public void setAvailabilities(List<AvailabilityDTO> availabilities) {
+        this.availabilities = availabilities;
     }
 }

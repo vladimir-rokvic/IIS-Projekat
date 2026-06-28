@@ -6,6 +6,7 @@ import com.iis.projekat.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.*;
 
 @Service
@@ -78,7 +79,7 @@ public class TaskService {
     }
 
     public List<TaskDTO> getTasksForVolunteer(Long volunteerId) {
-        List<Task> tasks = taskRepository.findAllByVolunteerId(volunteerId);
+        List<Task> tasks = taskRepository.findAllNotEndedByVolunteerId(volunteerId, LocalDate.now());
 
         List<TaskDTO> ret = new ArrayList<>();
         for(Task t: tasks){
@@ -150,5 +151,16 @@ public class TaskService {
         p.setGrade(grade.getGrade());
 
         return performanceRepository.save(p);
+    }
+
+    public List<PerformanceDTO> findRatingsForVolunteer(Long volunteerId) {
+        List<PerformanceDTO> ret = new ArrayList<>();
+        List<Performance> performances = performanceRepository.findByRatedVolunteerId(volunteerId);
+
+        for(Performance p: performances) {
+            ret.add(new PerformanceDTO(p));
+        }
+
+        return ret;
     }
 }

@@ -1,7 +1,9 @@
 package com.iis.projekat.controller;
 
+import com.iis.projekat.dto.AvailabilityDTO;
 import com.iis.projekat.dto.VolunteerDTO;
 import com.iis.projekat.dto.VolunteerUpdateDTO;
+import com.iis.projekat.model.Availability;
 import com.iis.projekat.service.EmailService;
 import com.iis.projekat.service.VolunteerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,5 +73,13 @@ public class VolunteerController {
         List<VolunteerDTO> ret = volunteerService.rank(taskId);
         if(ret == null) return ResponseEntity.badRequest().body(null);
         return ResponseEntity.ok(ret);
+    }
+
+    //Odavde mi krece Availability
+    @PostMapping("/saveAvailability")
+    public ResponseEntity<?> saveAvailability(@RequestBody List<AvailabilityDTO> availabilities) {
+        return ResponseEntity.ok(
+                volunteerService.saveAvailability(availabilities)
+        );
     }
 }

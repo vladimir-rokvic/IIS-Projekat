@@ -31,6 +31,9 @@ public class VolunteerService {
     @Autowired
     private SkillTypeRepository skillTypeRepository;
 
+    @Autowired
+    private AvailabilityRepository availabilityRepository;
+
     private final PasswordEncoder passwordEncoder;
     private final RestTemplate restTemplate;
 
@@ -66,6 +69,18 @@ public class VolunteerService {
 
             addressRepository.save(a);
         }
+
+        List<Availability> defaultA = new ArrayList<>();
+        for(WeekDays wd : WeekDays.values()) {
+            Availability na = new Availability();
+            na.setDay(wd);
+            na.setStartHour(9);
+            na.setStartHour(17);
+            na.setEnabled(false);
+            na.setVolunteer(v);
+            defaultA.add(na);
+        }
+        v.setAvailabilities(defaultA);
 
         v.setAddress(a);
         v.setName(dto.getName());
@@ -220,5 +235,46 @@ public class VolunteerService {
 
     public void deleteVolunteer(Long id) {
         volunteerRepository.delete(volunteerRepository.getReferenceById(id));
+    }
+
+    public List<Availability> saveAvailability(List<AvailabilityDTO> availabilities) {
+        List<Availability> oldAvailabilities =
+                availabilityRepository.findAllByVolunteerId(availabilities.get(0).getVolunteerId());
+
+        if(oldAvailabilities.isEmpty()) {
+            Volunteer v = volunteerRepository.findById(
+                    availabilities.get(0).getVolunteerId()
+            ).orElse(null);
+            if(v == null) return null;
+
+
+            List<Availability> defaultA = new ArrayList<>();
+            for(AvailabilityDTO dto : availabilities) {
+                Availability na = new Availability();
+                na.setDay(dto.getDay());
+                na.setStartHour(dto.getStartHour());
+                na.setEndHour(dto.getEndHour());
+                na.setEnabled(dto.isEnabled());
+                na.setVolunteer(v);
+                defaultA.add(na);
+            }
+            availabilityRepository.saveAll(defaultA);
+            return defaultA;
+        }
+
+        for(AvailabilityDTO dto : availabilities) {
+            for(int i=0; i<oldAvailabilities.size(); ++i) {
+                Availability a = oldAvailabilities.get(i);
+                if(a.getDay() == dto.getDay()) {
+                    a.setEnabled(dto.isEnabled());
+                    a.setStartHour(dto.getStartHour());
+                    a.setEndHour(dto.getEndHour());
+                    availabilityRepository.save(a);
+                    break;
+                }
+            }
+        }
+
+        return oldAvailabilities;
     }
 }
