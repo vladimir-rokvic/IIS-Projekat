@@ -268,7 +268,7 @@ const VolunteerDashboard = () => {
 								}}>{regiment.certificate.name}</p>
 							</div>
 							<button onClick={() => navigate(`/regiment/${regiment.id}`,
-													{state: {from: 'volunteer'}})}>Details</button>
+													{state: {from: 'volunteer', vId: user.id}})}>Details</button>
 						</div>
 						))}
 				</div>

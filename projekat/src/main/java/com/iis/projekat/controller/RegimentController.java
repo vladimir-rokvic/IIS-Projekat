@@ -31,6 +31,11 @@ public class RegimentController {
         return  ResponseEntity.ok(regiment);
     }
 
+    @PutMapping("/{id}/removeTrainees")
+    public ResponseEntity<?> removeTrainees(@PathVariable Long id, @RequestBody RegimentDTO dto) {
+        return ResponseEntity.ok(regimentService.removeTrainees(id, dto));
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<RegimentDTO> getRegimentById(@PathVariable Long id) {
         RegimentDTO ret = regimentService.findById(id);

@@ -113,4 +113,14 @@ public class RegimentService {
 
         return ret;
     }
+
+    public Regiment removeTrainees(Long id, RegimentDTO dto) {
+        Regiment r = regimentRepository.findById(id).orElse(null);
+        if(r == null) return null;
+
+        r.getTrainees().removeIf(v ->
+                dto.getTrainees().stream().noneMatch(t -> t.getId().equals(v.getId())));
+        regimentRepository.save(r);
+        return r;
+    }
 }
