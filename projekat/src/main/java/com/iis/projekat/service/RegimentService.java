@@ -54,6 +54,7 @@ public class RegimentService {
 
         List<Volunteer> volunteers = volunteerRepository.findAllNotInTraining();
         if(volunteers.isEmpty()) return null;
+        volunteers.removeIf(v -> v.getId().equals(trainer.getId()));
         r.setNumOfTrainees(Math.min(volunteers.size(), regiment.getNumOfTrainees()));
         List<Volunteer> trainees = createTraineeGroup(volunteers, regiment.getNumOfTrainees());
 
@@ -95,5 +96,31 @@ public class RegimentService {
 
     public List<Certificate> getAllCertificates() {
         return certificateRepository.findAll();
+    }
+
+    public List<RegimentDTO> getForVolunteer(Long id) {
+        List<Regiment> trainee_regiments = regimentRepository.findAllByTraineesId(id);
+        List<Regiment> trainer_regiments = regimentRepository.findAllByTrainerId(id);
+
+        List<RegimentDTO> ret = new ArrayList<>();
+
+        for(Regiment r: trainee_regiments) {
+            ret.add(new RegimentDTO(r));
+        }
+        for(Regiment r: trainer_regiments) {
+            ret.add(new RegimentDTO(r));
+        }
+
+        return ret;
+    }
+
+    public Regiment removeTrainees(Long id, RegimentDTO dto) {
+        Regiment r = regimentRepository.findById(id).orElse(null);
+        if(r == null) return null;
+
+        r.getTrainees().removeIf(v ->
+                dto.getTrainees().stream().noneMatch(t -> t.getId().equals(v.getId())));
+        regimentRepository.save(r);
+        return r;
     }
 }

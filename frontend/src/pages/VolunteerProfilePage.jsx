@@ -53,6 +53,7 @@ const VolunterProfilePage = () => {
 				<p>Email: {user.email}</p>
 				<p>Phone: {user.phone}</p>
 				<h2>Address</h2>
+				{(user.address) ? (
 				<div style={{display: 'flex', gap: '50px'}}>
 					<div>
 						<p style={{fontSize: '1.3rem'}}>Country</p>
@@ -66,7 +67,7 @@ const VolunterProfilePage = () => {
 						<p style={{fontSize: '1.3rem'}}>Street</p>
 						<p>{user.address.street}</p>
 					</div>
-				</div>
+				</div>) : (<p style={{color: '#555', fontSize: '1.3rem'}}>No address provided</p>)}
 				<h2>Date of birth</h2>
 				<p>{user.dateOfBirth}</p>
 				<p>Age: {calculateAge(user)}</p>

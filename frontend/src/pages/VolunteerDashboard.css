@@ -13,12 +13,63 @@
 	gap: 15px;
 }
 
+.slider-root {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.slider-track {
+    background: #d9d9d9;
+    position: relative;
+    flex-grow: 1;
+    border-radius: 9999px;
+    height: 4px;
+}
+
+.slider-range {
+    position: absolute;
+    background: #c0c0c0;
+    border-radius: 9999px;
+    height: 100%;
+}
+
+.slider-thumb {
+    display: block;
+    width: 18px;
+    height: 18px;
+    background: #369FBC;
+    border-radius: 50%;
+    cursor: grab;
+}
+
 .v-dashboard {
 	border: 1px solid #d9d9d9;
 	border-radius: 10px;
 	display: flex;
 	padding: 10px;
 	margin-top: 25px;
+}
+
+.v-availability-dash {
+	margin-left: 100px;
+	padding: 10px;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+}
+
+.day-card {
+	border: 1px solid #c0c0c0;
+	border-radius: 10px;
+	padding: 10px;
+	background-color: #d9d9d9;
+	width: 400px;
+}
+
+.day-card h2{
+	margin-bottom: 10px;
 }
 
 .volunteer-dash button {
@@ -37,16 +88,24 @@
     border-radius: 10px;
     padding: 16px;
     display: flex;
+	width: 400px;
     flex-direction: column;
     gap: 4px;
-	max-width: 275px;
+	max-width: 400px;
 }
+
+.task-card-coordinator {
+	margin-bottom: 10px;
+}
+
 
 .volunteer-task-card button {
     padding: 6px 16px;
     border: none;
     border-radius: 6px;
     cursor: pointer;
+	margin: 0 auto;
+	margin-top: 10px;
     color: black;
     background-color: #369FBC;
 	width: 150px;
@@ -55,10 +114,11 @@
 
 .volunteer-task-list {
 	display: flex;
-	gap: 10px;
+	gap: 20px;
 	padding: 10px;
 	border: 1px solid #d9d9d9;
 	border-radius: 10px;
+	margin-top: 10px;
 }
 
 .top-bar {

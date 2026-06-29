@@ -8,7 +8,7 @@ public class PerformanceDTO {
     private String comment;
     private Long volunteerId;
     private Long taskId;
-    private Long coordinatorId;
+    private UserDTO coordinator;
 
     public PerformanceDTO() {}
 
@@ -18,6 +18,12 @@ public class PerformanceDTO {
         this.comment = performance.getComment();
         this.volunteerId = performance.getRatedVolunteer().getId();
         this.taskId =  performance.getTask().getId();
+
+        if(performance.getTask().getCoordinator() != null) {
+            this.coordinator = new UserDTO(performance.getTask().getCoordinator());
+        } else {
+            this.coordinator = null;
+        }
     }
 
     public Long getId() {
@@ -60,11 +66,11 @@ public class PerformanceDTO {
         this.taskId = taskId;
     }
 
-    public Long getCoordinatorId() {
-        return coordinatorId;
+    public UserDTO getCoordinator() {
+        return coordinator;
     }
 
-    public void setCoordinatorId(Long coordinatorId) {
-        this.coordinatorId = coordinatorId;
+    public void setCoordinator(UserDTO coordinator) {
+        this.coordinator = coordinator;
     }
 }

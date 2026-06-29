@@ -31,6 +31,11 @@ public class RegimentController {
         return  ResponseEntity.ok(regiment);
     }
 
+    @PutMapping("/{id}/removeTrainees")
+    public ResponseEntity<?> removeTrainees(@PathVariable Long id, @RequestBody RegimentDTO dto) {
+        return ResponseEntity.ok(regimentService.removeTrainees(id, dto));
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<RegimentDTO> getRegimentById(@PathVariable Long id) {
         RegimentDTO ret = regimentService.findById(id);
@@ -50,5 +55,12 @@ public class RegimentController {
         if(ret == null) return ResponseEntity.badRequest().build();
 
         return ResponseEntity.ok(ret);
+    }
+
+    //dobavi za volontera, da i za trenere i
+    //za one koji polazu
+    @GetMapping("/volunteer/{id}")
+    public ResponseEntity<List<RegimentDTO>> getForVolunteer(@PathVariable Long id) {
+        return ResponseEntity.ok(regimentService.getForVolunteer(id));
     }
 }

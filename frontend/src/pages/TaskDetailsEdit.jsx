@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import api from "../api/axios";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import "./TaskDetailsEdit.css";
 
 const TaskDetailsEdit = () => {
@@ -8,6 +8,8 @@ const TaskDetailsEdit = () => {
 	const [task, setTask] = useState(null);
 	const [volunteer, setVolunteer] = useState(null);
 	const navigate = useNavigate();
+
+	const location = useLocation();
 
     const taskName = useRef();
     const description = useRef();
@@ -46,8 +48,20 @@ const TaskDetailsEdit = () => {
 			}
 		};
 
+		const fetchVolunteer = async () => {
+			try {
+				const res = await api.get(`/volunteer/${location.state?.v_id}`);
+				setVolunteer(res.data);
+				console.log(res.data);
+			} catch (err) {
+				console.log(err);
+			}
+		};
+
+
 		fetchTask();
 		fetchSkillTypes();
+		fetchVolunteer();
 	}, []);
 
     const addSkill = () => {
@@ -121,8 +135,6 @@ const TaskDetailsEdit = () => {
 							<p className="contact-info">Email: {task.coordinator.email}</p>
 							{task.coordinator.phone ? 
 							<p className="contact-info">Phone: {task.coordinator.phone}</p> : <p style={{color: '#555', fontSize: '1.3rem'}}>No phone given</p>}
-							<h3>Address</h3>
-							<p className="contact-info">{volunteer.address.street}  {volunteer.address.city} {volunteer.address.country}</p>
 						</div>
 				    )}
                 </div>
@@ -138,7 +150,7 @@ const TaskDetailsEdit = () => {
 														>Change volunteer</button>)}
             <div className="volunteer-section">
                 <div className="volunteer-row">
-				    {volunteer ? (
+				    {(volunteer) ? (
 						<div className="choosen-volunteer">
 							<div style={{display: 'flex'}}>
                     		<div className="avatar-small" />
