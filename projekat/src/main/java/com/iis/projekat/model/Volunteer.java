@@ -27,7 +27,8 @@ public class Volunteer extends User {
     @OneToMany(mappedBy = "volunteer", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Availability> availabilities = new ArrayList<>();
 
-    @Value("0")
+    private String profileImgPath;
+
     private Integer hoursWorked;
 
     private String bio;
@@ -80,5 +81,13 @@ public class Volunteer extends User {
 
     public void setAvailabilities(List<Availability> availabilities) {
         this.availabilities = availabilities;
+    }
+
+    public String getProfileImgPath() {
+        return profileImgPath;
+    }
+
+    public void setProfileImgPath(String profileImgPath) {
+        this.profileImgPath = profileImgPath;
     }
 }

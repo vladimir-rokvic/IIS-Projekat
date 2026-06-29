@@ -7,10 +7,15 @@ import com.iis.projekat.model.Availability;
 import com.iis.projekat.service.EmailService;
 import com.iis.projekat.service.VolunteerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.reactive.HttpComponentsClientHttpConnector;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -61,6 +66,14 @@ public class VolunteerController {
         return new ResponseEntity<VolunteerDTO>(dto, HttpStatus.OK);
     }
 
+    @PostMapping("/{id}/image")
+    public ResponseEntity<?> uploadImage(
+            @PathVariable Long id,
+            @RequestParam("image") MultipartFile file) throws IOException {
+        volunteerService.saveImage(id, file);
+        return ResponseEntity.ok("Image saved");
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteVolunteerById(@PathVariable Long id) {
        volunteerService.deleteVolunteer(id);
@@ -81,5 +94,19 @@ public class VolunteerController {
         return ResponseEntity.ok(
                 volunteerService.saveAvailability(availabilities)
         );
+    }
+
+    @GetMapping("/{id}/report")
+    public ResponseEntity<byte[]> generateReport(@PathVariable Long id) {
+        byte[] pdf = volunteerService.generateReport(id);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDispositionFormData(
+                "attachment",
+                "report-volunteer-" + id +".pdf");
+        headers.setContentLength(pdf.length);
+
+        return ResponseEntity.ok().headers(headers).body(pdf);
     }
 }

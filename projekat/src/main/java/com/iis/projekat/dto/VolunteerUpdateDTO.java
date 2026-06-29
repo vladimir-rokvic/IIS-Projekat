@@ -14,6 +14,7 @@ public class VolunteerUpdateDTO {
     private String email;
     private String password;
     private String bio;
+    private String profileImgPath;
     private List<SkillDTO> skills;
     private List<SkillTypeDTO> skillTypes;
 
@@ -111,5 +112,13 @@ public class VolunteerUpdateDTO {
 
     public void setSkillTypes(List<SkillTypeDTO> skillTypes) {
         this.skillTypes = skillTypes;
+    }
+
+    public String getProfileImgPath() {
+        return profileImgPath;
+    }
+
+    public void setProfileImgPath(String profileImgPath) {
+        this.profileImgPath = profileImgPath;
     }
 }

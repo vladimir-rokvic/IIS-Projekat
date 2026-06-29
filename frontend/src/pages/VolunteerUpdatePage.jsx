@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import api from "../api/axios";
 import "./VolunteerUpdatePage.css";
 import { useNavigate } from "react-router-dom";
@@ -10,6 +10,31 @@ const VolunteerUpdatePage = () => {
     const [allSkillTypes, setAllSkillTypes] = useState([]);
     const [selectedSkillTypeId, setSelectedSkillTypeId] = useState("");
     const navigate = useNavigate();
+
+	const fileInputRef = useRef();
+	const [previewUrl, setPreviewUrl] = useState(null);
+	
+	const handleImageChange = (e) => {
+	    const file = e.target.files[0];
+	    if (!file) return;
+	    setPreviewUrl(URL.createObjectURL(file));
+	};
+	
+	const handleUpload = async () => {
+	    const file = fileInputRef.current.files[0];
+	    if (!file) return;
+	
+	    const formData = new FormData();
+	    formData.append("image", file);
+	
+	    try {
+	        await api.post(`/volunteer/${user.id}/image`, formData, {
+	            headers: { "Content-Type": "multipart/form-data" }
+	        });
+	    } catch (err) {
+	        console.log(err);
+	    }
+	};
 
     useEffect(() => {
         const fetchVolunteer = async () => {
@@ -132,82 +157,103 @@ const VolunteerUpdatePage = () => {
 
             <label className="addressLabelInre">Basic information</label>
             <div className="vp-basic-info">
-                <h2 style={{ marginTop: "10px" }}>Name</h2>
-                <div style={{ display: "flex", gap: "16px" }}>
-                    <input
-                        className="vp-input"
-                        type="text"
-                        value={user.name}
-                        placeholder={user.name}
-                        onChange={(e) => handleChange("name", e.target.value)}
-                    />
-                    <input
-                        className="vp-input"
-                        type="text"
-                        value={user.surname}
-                        placeholder={user.surname}
-                        onChange={(e) => handleChange("surname", e.target.value)}
-                    />
-                </div>
+				<div style={{display: 'flex'}}>
+					<div>
+            		    <h2 style={{ marginTop: "10px" }}>Name</h2>
+            		    <div style={{ display: "flex", gap: "16px" }}>
+            		        <input
+            		            className="vp-input"
+            		            type="text"
+            		            value={user.name}
+            		            placeholder={user.name}
+            		            onChange={(e) => handleChange("name", e.target.value)}
+            		        />
+            		        <input
+            		            className="vp-input"
+            		            type="text"
+            		            value={user.surname}
+            		            placeholder={user.surname}
+            		            onChange={(e) => handleChange("surname", e.target.value)}
+            		        />
+            		    </div>
 
-                <h2>Contact information</h2>
-                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                        <span className="vp-input-label">Email:</span>
-                        <input
-                            className="vp-input"
-                            type="text"
-                            value={user.email}
-                            placeholder={user.email}
-                            onChange={(e) => handleChange("email", e.target.value)}
-                        />
-                    </div>
-                    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                        <span className="vp-input-label">Phone:</span>
-                        <input
-                            className="vp-input"
-                            type="text"
-                            value={user.phone}
-                            placeholder={user.phone}
-                            onChange={(e) => handleChange("phone", e.target.value)}
-                        />
-                    </div>
-                </div>
+            		    <h2>Contact information</h2>
+            		    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+            		        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+            		            <span className="vp-input-label">Email:</span>
+            		            <input
+            		                className="vp-input"
+            		                type="text"
+            		                value={user.email}
+            		                placeholder={user.email}
+            		                onChange={(e) => handleChange("email", e.target.value)}
+            		            />
+            		        </div>
+            		        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+            		            <span className="vp-input-label">Phone:</span>
+            		            <input
+            		                className="vp-input"
+            		                type="text"
+            		                value={user.phone}
+            		                placeholder={user.phone}
+            		                onChange={(e) => handleChange("phone", e.target.value)}
+            		            />
+            		        </div>
+            		    </div>
 
-                <h2>Address</h2>
-                <div style={{ display: "flex", gap: "50px" }}>
-                    {["country", "city", "street"].map((field) => (
-                        <div key={field}>
-                            <p style={{ fontSize: "1.3rem", textTransform: "capitalize" }}>
-                                {field}
-                            </p>
-                            <input
-                                className="vp-input"
-                                type="text"
-                                value={user.address[field]}
-                                placeholder={user.address[field]}
-                                onChange={(e) => handleAddressChange(field, e.target.value)}
-                            />
-                        </div>
-                    ))}
-                </div>
+            		    <h2>Address</h2>
+            		    <div style={{ display: "flex", gap: "50px" }}>
+            		        {["country", "city", "street"].map((field) => (
+            		            <div key={field}>
+            		                <p style={{ fontSize: "1.3rem", textTransform: "capitalize" }}>
+            		                    {field}
+            		                </p>
+            		                <input
+            		                    className="vp-input"
+            		                    type="text"
+            		                    value={user.address[field]}
+            		                    placeholder={user.address[field]}
+            		                    onChange={(e) => handleAddressChange(field, e.target.value)}
+            		                />
+            		            </div>
+            		        ))}
+            		    </div>
 
-                <h2>Date of birth</h2>
-                <input
-                    className="vp-input"
-                    type="date"
-                    value={user.dateOfBirth}
-                    onChange={(e) => handleChange("dateOfBirth", e.target.value)}
-                />
-                <p>Age: {calculateAge(user)}</p>
+            		    <h2>Date of birth</h2>
+            		    <input
+            		        className="vp-input"
+            		        type="date"
+            		        value={user.dateOfBirth}
+            		        onChange={(e) => handleChange("dateOfBirth", e.target.value)}
+            		    />
+            		    <p>Age: {calculateAge(user)}</p>
 
-                <h2>Biography</h2>
-                <textarea
-                    className="vp-input vp-textarea"
-                    value={user.bio || ""}
-                    placeholder="Write a short bio..."
-                    onChange={(e) => handleChange("bio", e.target.value)}
-                />
+            		    <h2>Biography</h2>
+            		    <textarea
+            		        className="vp-input vp-textarea"
+            		        value={user.bio || ""}
+            		        placeholder="Write a short bio..."
+            		        onChange={(e) => handleChange("bio", e.target.value)}
+            		    />
+					</div>
+					<div className="image-section">
+						<img
+    					    src={previewUrl || "/default-avatar.png"}
+    					    className="profile-image"
+    					/>
+    					<input
+    					    type="file"
+    					    accept="image/*"
+    					    ref={fileInputRef}
+    					    style={{ display: "none" }}
+    					    onChange={handleImageChange}
+    					/>
+    					<button className="btn-save" onClick={() => fileInputRef.current.click()}>
+							Change photo
+						</button>
+    					{previewUrl && <button className="btn-save" onClick={handleUpload}>Save photo</button>}
+					</div>
+            	</div>
             </div>
 
             <label className="addressLabelInre">Skill types</label>

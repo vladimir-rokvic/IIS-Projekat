@@ -3,16 +3,32 @@ package com.iis.projekat.service;
 import com.iis.projekat.dto.*;
 import com.iis.projekat.model.*;
 import com.iis.projekat.repository.*;
+import com.lowagie.text.*;
+import com.lowagie.text.Font;
+import com.lowagie.text.Image;
+import com.lowagie.text.Rectangle;
+import com.lowagie.text.pdf.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
+import javax.swing.*;
+import java.awt.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class VolunteerService {
@@ -291,4 +307,325 @@ public class VolunteerService {
 
         return oldAvailabilities;
     }
+
+    private final String UPLOAD_DIR = "src/main/resources/static/uploads/";
+
+    public void saveImage(Long id, MultipartFile file) throws IOException {
+        Volunteer v = volunteerRepository.findById(id).orElseThrow();
+        Files.createDirectories(Paths.get(UPLOAD_DIR));
+
+        String extension = file.getOriginalFilename()
+                .substring(file.getOriginalFilename().lastIndexOf('.'));
+
+        String fileName = UUID.randomUUID() + extension;
+
+        Path path = Paths.get(UPLOAD_DIR, fileName);
+        Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+
+        v.setProfileImgPath(fileName);
+        volunteerRepository.save(v);
+    }
+
+
+
+    //Ajoj ovo ce da bude dugacko
+    //Odvojena sekcija jer se tako osecam
+
+    private final DateTimeFormatter DATE_FTM =
+            DateTimeFormatter.ofPattern("dd.MM.yyyy");
+
+    private static final Color COLOR_HEADER_BG  = new Color(46, 125, 50);
+    private static final Color COLOR_SECTION_BG = new Color(232, 245, 233);
+    private static final Color COLOR_ROW_ALT = new Color(245, 253, 240);
+    private static final Color COLOR_WHITE = Color.WHITE;
+    private static final Color COLOR_TEXT = new Color(33, 37, 41);
+    private static final Color COLOR_GRAY = Color.GRAY;
+
+    private static Font fontTitle() {return new Font(Font.HELVETICA, 20, Font.BOLD, COLOR_WHITE);}
+    private static Font fontSection() { return new Font(Font.HELVETICA, 12, Font.BOLD,   COLOR_HEADER_BG); }
+    private static Font fontLabel() { return new Font(Font.HELVETICA, 10, Font.BOLD,   COLOR_TEXT); }
+    private static Font fontValue() { return new Font(Font.HELVETICA, 10, Font.NORMAL, COLOR_TEXT); }
+    private static Font fontSmall() { return new Font(Font.HELVETICA,  8, Font.NORMAL, COLOR_GRAY); }
+    private static Font fontTableHdr(){ return new Font(Font.HELVETICA, 10, Font.BOLD,   COLOR_WHITE); }
+    private static Font fontTableRow(){ return new Font(Font.HELVETICA,  9, Font.NORMAL, COLOR_TEXT); }
+
+    public byte[] generateReport(Long id) {
+        Volunteer v = volunteerRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("No no"));
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+        Document document = new Document(PageSize.A4, 50, 50, 60, 50);
+        PdfWriter writer = PdfWriter.getInstance(document, baos);
+
+        document.addTitle("Report for volunteer: " + v.getName() + " " + v.getSurname());
+        document.addAuthor("Subsystem for volunteer managment");
+        document.addCreationDate();
+
+        document.open();
+
+        addTitle(document, v);
+        addBasicInfo(document, v);
+        addCompletedTasks(document, v);
+
+        document.close();
+        return baos.toByteArray();
+    }
+
+    private void addTitle(Document document, Volunteer v) {
+        PdfPTable header = new PdfPTable(1);
+        header.setWidthPercentage(100);
+        header.setSpacingAfter(20);
+
+        PdfPCell cell = new PdfPCell();
+        cell.setBackgroundColor(COLOR_HEADER_BG);
+        cell.setPadding(20);
+        cell.setBorder(Rectangle.NO_BORDER);
+
+        Paragraph title = new Paragraph("Volunteer report", fontTitle());
+        title.setAlignment(Element.ALIGN_CENTER);
+        cell.addElement(title);
+
+        Paragraph volunteerName = new Paragraph(v.getName() + " " + v.getSurname(),
+                new Font(Font.HELVETICA, 14, Font.BOLD, new Color(173, 216, 173)));
+
+        volunteerName.setAlignment(Element.ALIGN_CENTER);
+        volunteerName.setSpacingBefore(6);
+        cell.addElement(volunteerName);
+
+        Paragraph date = new Paragraph("Generated " + LocalDate.now().format(DATE_FTM),
+                new Font(Font.HELVETICA, 9, Font.ITALIC, new Color(200, 240, 220)));
+        date.setAlignment(Element.ALIGN_CENTER);
+        date.setSpacingBefore(4);
+        cell.addElement(date);
+
+        header.addCell(cell);
+        document.add(header);
+    }
+
+    private void addBasicInfo(Document document, Volunteer v) {
+        addSectionHeader(document, "1. BASIC INFORMATION");
+
+        PdfPTable layout = new PdfPTable(new float[]{1f, 2f});
+        layout.setWidthPercentage(100);
+        layout.setSpacingAfter(10);
+
+        // --- LEFT: profile image ---
+        PdfPCell imgCell = new PdfPCell();
+        imgCell.setBorder(Rectangle.NO_BORDER);
+        imgCell.setPadding(6);
+        imgCell.setVerticalAlignment(Element.ALIGN_TOP);
+
+        if (v.getProfileImgPath() != null && !v.getProfileImgPath().isBlank()) {
+            try {
+                Image img = Image.getInstance(UPLOAD_DIR + v.getProfileImgPath());
+                img.scaleToFit(150, 150);
+                img.setRotationDegrees(270);
+                imgCell.addElement(img);
+            } catch (Exception e) {
+                Paragraph noImg = new Paragraph("No photo\navailable", fontSmall());
+                noImg.setAlignment(Element.ALIGN_CENTER);
+                imgCell.addElement(noImg);
+            }
+        } else {
+            Paragraph noImg = new Paragraph("No photo\navailable", fontSmall());
+            noImg.setAlignment(Element.ALIGN_CENTER);
+            imgCell.addElement(noImg);
+        }
+
+        layout.addCell(imgCell);
+
+        // --- RIGHT: info table nested inside the right cell ---
+        PdfPTable infoTable = newTable(new float[]{1f, 1.6f});
+
+        String fullAddress = "–";
+        if (v.getAddress() != null) {
+            Address a = v.getAddress();
+            fullAddress = Stream.of(a.getStreet(), a.getCity(), a.getCountry())
+                    .filter(s -> s != null && !s.isBlank())
+                    .collect(Collectors.joining(", "));
+            if (fullAddress.isBlank()) fullAddress = "–";
+        }
+
+        String dob = fmt(v.getDateOfBirth());
+
+        String[][] rows = {
+                {"Name",          nvl(v.getName())},
+                {"Surname",       nvl(v.getSurname())},
+                {"Email",         nvl(v.getEmail())},
+                {"Phone",         nvl(v.getPhone())},
+                {"Date of birth", dob},
+                {"Address",       fullAddress},
+        };
+
+        for (int i = 0; i < rows.length; i++) {
+            addRow(infoTable, rows[i][0], rows[i][1], i % 2 == 1);
+        }
+
+        PdfPCell rightCell = new PdfPCell();
+        rightCell.setBorder(Rectangle.NO_BORDER);
+        rightCell.setPadding(4);
+        rightCell.addElement(infoTable);
+        layout.addCell(rightCell);
+
+        document.add(layout);
+
+        addTextBlock(document, "Bio", v.getBio());
+
+        if (v.getSkills() != null && !v.getSkills().isEmpty()) {
+            PdfPTable skillTable = newTable(new float[]{1.5f, 3f});
+            addCell(skillTable, "Skill",        fontTableHdr(), COLOR_HEADER_BG, 7);
+            addCell(skillTable, "Description",  fontTableHdr(), COLOR_HEADER_BG, 7);
+
+            int i = 0;
+            for (Skill skill : v.getSkills()) {
+                Color bg = (i % 2 == 1) ? COLOR_ROW_ALT : COLOR_WHITE;
+                addCell(skillTable, nvl(skill.getName()),        fontTableRow(), bg, 6);
+                addCell(skillTable, nvl(skill.getDescription()), fontTableRow(), bg, 6);
+                i++;
+            }
+
+            document.add(skillTable);
+        }
+
+        if (v.getVolunteerSkillTypes() != null && !v.getVolunteerSkillTypes().isEmpty()) {
+            PdfPTable stTable = newTable(new float[]{1.5f, 3f});
+            addCell(stTable, "Type",        fontTableHdr(), COLOR_HEADER_BG, 7);
+            addCell(stTable, "Description", fontTableHdr(), COLOR_HEADER_BG, 7);
+
+            int i = 0;
+            for (SkillType st : v.getVolunteerSkillTypes()) {
+                Color bg = (i % 2 == 1) ? COLOR_ROW_ALT : COLOR_WHITE;
+                addCell(stTable, nvl(st.getName()),        fontTableRow(), bg, 6);
+                addCell(stTable, nvl(st.getDescription()), fontTableRow(), bg, 6);
+                i++;
+            }
+
+            document.add(stTable);
+        }
+    }
+
+    private void addCompletedTasks(Document document, Volunteer v) {
+        addSectionHeader(document, "2. RECENT COMPLETED TASKS");
+        List<Task> tasks = taskRepository.findRecentByVolunteerId(v.getId(), LocalDate.now());
+
+        if (tasks.isEmpty()) {
+            Paragraph none = new Paragraph("No completed tasks found.", fontValue());
+            none.setSpacingBefore(6);
+            document.add(none);
+            return;
+        }
+
+        List<Task> recent = tasks.stream().limit(3).toList();
+
+        for (int t = 0; t < recent.size(); t++) {
+            Task task = recent.get(t);
+
+            if (t > 0) {
+                Paragraph spacer = new Paragraph(" ");
+                spacer.setSpacingBefore(6);
+                document.add(spacer);
+            }
+
+            String skills = (task.getRequiredSkills() == null || task.getRequiredSkills().isEmpty())
+                    ? "–"
+                    : task.getRequiredSkills().stream()
+                    .map(Skill::getName)
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.joining(", "));
+
+            String skillTypes = (task.getRequiredSkillTypes() == null || task.getRequiredSkillTypes().isEmpty())
+                    ? "–"
+                    : task.getRequiredSkillTypes().stream()
+                    .map(SkillType::getName)
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.joining(", "));
+
+            String coordinator = "–";
+            if (task.getCoordinator() != null) {
+                coordinator = nvl(task.getCoordinator().getName()) + " " + nvl(task.getCoordinator().getSurname());
+            }
+
+            PdfPTable table = newTable(new float[]{1f, 1.6f});
+
+            String[][] rows = {
+                    {"Name",         nvl(task.getName())},
+                    {"Description",  nvl(task.getDescription())},
+                    {"Start date",   fmt(task.getStartDate())},
+                    {"End date",     fmt(task.getEndDate())},
+                    {"Coordinator",  coordinator},
+                    {"Skills",       skills},
+                    {"Skill types",  skillTypes},
+            };
+
+            for (int i = 0; i < rows.length; i++) {
+                addRow(table, rows[i][0], rows[i][1], i % 2 == 1);
+            }
+
+            document.add(table);
+        }
+    }
+
+    private void addSectionHeader(Document document, String text) {
+        PdfPTable t = new PdfPTable(1);
+        t.setWidthPercentage(100);
+        t.setSpacingBefore(14);
+        t.setSpacingAfter(6);
+
+        PdfPCell c = new PdfPCell(new Phrase(text, fontSection()));
+        c.setBackgroundColor(COLOR_SECTION_BG);
+        c.setPadding(8);
+        c.setBorderColor(COLOR_HEADER_BG);
+        c.setBorderWidth(1);
+        t.addCell(c);
+        document.add(t);
+    }
+
+    private PdfPTable newTable(float[] widths) {
+        PdfPTable t = new PdfPTable(widths);
+        t.setWidthPercentage(100);
+        return t;
+    }
+
+    private void addRow(PdfPTable table, String label, String value, boolean alt) {
+        Color bg = alt ? COLOR_ROW_ALT : COLOR_WHITE;
+
+        PdfPCell lCell = new PdfPCell(new Phrase(label, fontLabel()));
+        lCell.setBackgroundColor(bg);
+        lCell.setPadding(6);
+        lCell.setBorderColor(new Color(210, 218, 227));
+        table.addCell(lCell);
+
+        PdfPCell vCell = new PdfPCell(new Phrase(value != null ? value : "–", fontValue()));
+        vCell.setBackgroundColor(bg);
+        vCell.setPadding(6);
+        vCell.setBorderColor(new Color(210, 218, 227));
+        table.addCell(vCell);
+    }
+
+    private void addCell(PdfPTable t, String text, Font font, Color bg, float padding) {
+        PdfPCell c = new PdfPCell(new Phrase(text, font));
+        c.setBackgroundColor(bg);
+        c.setPadding(padding);
+        c.setBorderColor(new Color(210, 218, 227));
+        t.addCell(c);
+    }
+
+    private void addTextBlock(Document document, String title, String text) {
+        if (text == null || text.isBlank()) return;
+
+        Paragraph p = new Paragraph();
+        p.setSpacingBefore(8);
+        p.add(new Chunk(title + ": ", fontLabel()));
+        p.add(new Chunk(text, fontValue()));
+        document.add(p);
+    }
+
+    private String fmt(java.time.LocalDate d) {
+        return d != null ? d.format(DATE_FTM) : "–";
+    }
+
+    private String nvl(String s) {
+        return (s != null && !s.isBlank()) ? s : "–";
+    }
+
 }

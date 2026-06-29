@@ -20,4 +20,13 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
             AND end_date >= :date_ended
             """, nativeQuery = true)
     List<Task> findAllNotEndedByVolunteerId(@Param("volunteer_id") Long volunteerId, @Param("date_ended") LocalDate dateEnded);
+
+    @Query(value =
+            """
+            SELECT * FROM task
+            WHERE volunteer_id = :volunteer_id
+            AND end_date < :date_ended
+            ORDER BY end_date DESC
+            """, nativeQuery = true)
+    List<Task> findRecentByVolunteerId(@Param("volunteer_id") Long id, @Param("date_ended") LocalDate dateEnded);
 }

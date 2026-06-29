@@ -19,6 +19,7 @@ public class VolunteerDTO {
     private List<SkillDTO> skillTypes;
     private Double predictedGrade;
     private List<AvailabilityDTO> availabilities;
+    private String profileImgPath;
 
     public VolunteerDTO() {}
 
@@ -36,6 +37,7 @@ public class VolunteerDTO {
         this.skills = new ArrayList<>();
         this.skillTypes = new ArrayList<>();
         this.availabilities = new ArrayList<>();
+        this.profileImgPath = v.getProfileImgPath();
 
         for(Skill s: v.getSkills()){
             this.skills.add(new SkillDTO(s));
@@ -109,5 +111,13 @@ public class VolunteerDTO {
 
     public void setAvailabilities(List<AvailabilityDTO> availabilities) {
         this.availabilities = availabilities;
+    }
+
+    public String getProfileImgPath() {
+        return profileImgPath;
+    }
+
+    public void setProfileImgPath(String profileImgPath) {
+        this.profileImgPath = profileImgPath;
     }
 }
