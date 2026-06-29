@@ -8,6 +8,10 @@ import com.lowagie.text.Font;
 import com.lowagie.text.Image;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.*;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.PiePlot;
+import org.jfree.data.general.DefaultPieDataset;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.core.Local;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,8 +19,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -349,7 +355,7 @@ public class VolunteerService {
     private static Font fontTableHdr(){ return new Font(Font.HELVETICA, 10, Font.BOLD,   COLOR_WHITE); }
     private static Font fontTableRow(){ return new Font(Font.HELVETICA,  9, Font.NORMAL, COLOR_TEXT); }
 
-    public byte[] generateReport(Long id) {
+    public byte[] generateReport(Long id) throws IOException {
         Volunteer v = volunteerRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("No no"));
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -366,6 +372,8 @@ public class VolunteerService {
         addTitle(document, v);
         addBasicInfo(document, v);
         addCompletedTasks(document, v);
+        addGrades(document, v);
+        addPersonalStatistics(document, v);
 
         document.close();
         return baos.toByteArray();
@@ -563,6 +571,121 @@ public class VolunteerService {
 
             document.add(table);
         }
+    }
+
+    private void addGrades(Document document, Volunteer v) {
+        addSectionHeader(document, "3. GRADES");
+
+        List<Performance> performances = performanceRepository
+                .findByRatedVolunteerId(v.getId());
+        //grade, comment, coordinator name, task name
+        PdfPTable t = newTable(new float[]{1f, 1.5f, 1.6f, 1.5f});
+        addCell(t, "Grade", fontTableHdr(), COLOR_HEADER_BG, 7);
+        addCell(t, "Comment", fontTableHdr(), COLOR_HEADER_BG, 7);
+        addCell(t, "Coordinator", fontTableHdr(), COLOR_HEADER_BG, 7);
+        addCell(t, "Task", fontTableHdr(), COLOR_HEADER_BG, 7);
+
+        int i = 0;
+        for(Performance p: performances) {
+            String coordinator = p.getTask().getCoordinator().getName();
+            coordinator += p.getTask().getCoordinator().getSurname();
+            Color bg = i%2 == 0 ? COLOR_ROW_ALT : COLOR_WHITE;
+            addCell(t, p.getGrade().toString(), fontTableRow(), bg, 6);
+            addCell(t, p.getComment(), fontTableRow(), bg, 6);
+            addCell(t, coordinator, fontTableRow(), bg, 6);
+            addCell(t, p.getTask().getName(), fontTableRow(), bg, 6);
+            i++;
+        }
+
+        document.add(t);
+    }
+
+    private void addPersonalStatistics(Document document, Volunteer v) throws IOException {
+        addSectionHeader(document, "4. PERSONAL STATISTICS");
+        double avgGrade = performanceRepository
+                .findAverageGradeByVolunteerId(v.getId());
+        int numGrades = performanceRepository
+                .countGradesByVolunteerId(v.getId());
+        int numTasks = taskRepository
+                .countTasksByVolunteerId(v.getId());
+        //Weekly available hours
+        List<Availability> availabilities = availabilityRepository
+                .findAllByVolunteerId(v.getId());
+        List<Integer> numHours = new ArrayList<>();
+        for(Availability a: availabilities) {
+            numHours.add(a.getEndHour() - a.getStartHour());
+        }
+
+        double avgNumHours = 0;
+        for(Integer i: numHours) {
+            avgNumHours += i;
+        }
+        avgNumHours /= numHours.size();
+
+        String hoursWorked = v.getHoursWorked() != null ? v.getHoursWorked() + " h" : "–";
+        String avgGradeStr = numGrades > 0 ? String.format("%.2f / 5.00", avgGrade) : "–";
+        String avgHoursStr = availabilities.isEmpty() ? "–" : String.format("%.1f h", avgNumHours);
+
+        PdfPTable layout = new PdfPTable(new float[]{1f, 2f});
+        layout.setWidthPercentage(100);
+        layout.setSpacingAfter(10);
+
+        DefaultPieDataset dataset = new DefaultPieDataset();
+        double filled = numGrades > 0 ? Math.min(avgGrade, 5.0) : 0;
+        dataset.setValue("Grade", filled);
+        dataset.setValue("Remaining", 5.0 - filled);
+
+        JFreeChart chart = ChartFactory.createPieChart(
+                null,
+                dataset,
+                false,
+                false,
+                false);
+
+        PiePlot plot = (PiePlot) chart.getPlot();
+        plot.setSectionPaint("Grade",     new Color(255, 153, 51));
+        plot.setSectionPaint("Remaining", new Color(210, 210, 210));
+        plot.setBackgroundPaint(Color.WHITE);
+        plot.setOutlineVisible(false);
+        plot.setShadowPaint(null);
+        plot.setLabelGenerator(null);
+        chart.setBackgroundPaint(Color.WHITE);
+
+        BufferedImage chartImage = chart.createBufferedImage(200, 200);
+        ByteArrayOutputStream chartBaos = new ByteArrayOutputStream();
+        ImageIO.write(chartImage, "png", chartBaos);
+        Image pieImage = Image.getInstance(chartBaos.toByteArray());
+
+        PdfPCell pieCell = new PdfPCell();
+        pieCell.setBorder(Rectangle.NO_BORDER);
+        pieCell.setPadding(6);
+        pieCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        pieCell.addElement(pieImage);
+
+        layout.addCell(pieCell);
+
+        PdfPTable statsTable = newTable(new float[]{1f, 1.6f});
+
+        String[][] rows = {
+                {"Average grade",       avgGradeStr},
+                {"Number of grades",    String.valueOf(numGrades)},
+                {"Tasks completed",     String.valueOf(numTasks)},
+                {"Hours worked",        hoursWorked},
+                {"Avg. weekly hours",   avgHoursStr},
+        };
+
+        for (int i = 0; i < rows.length; i++) {
+            addRow(statsTable, rows[i][0], rows[i][1], i % 2 == 1);
+        }
+
+        PdfPCell rightCell = new PdfPCell();
+        rightCell.setBorder(Rectangle.NO_BORDER);
+        rightCell.setPadding(4);
+        rightCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        rightCell.addElement(statsTable);
+        layout.addCell(rightCell);
+
+        document.add(layout);
     }
 
     private void addSectionHeader(Document document, String text) {

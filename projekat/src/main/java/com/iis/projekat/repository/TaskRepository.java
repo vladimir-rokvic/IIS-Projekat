@@ -29,4 +29,11 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
             ORDER BY end_date DESC
             """, nativeQuery = true)
     List<Task> findRecentByVolunteerId(@Param("volunteer_id") Long id, @Param("date_ended") LocalDate dateEnded);
+
+    @Query(value =
+            """
+            SELECT COUNT(*) FROM task
+            WHERE volunteer_id = :volunteer_id
+            """, nativeQuery = true)
+    int countTasksByVolunteerId(@Param("volunteer_id") Long volunteerId);
 }

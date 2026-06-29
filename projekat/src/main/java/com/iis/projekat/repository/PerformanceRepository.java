@@ -17,5 +17,14 @@ public interface PerformanceRepository extends JpaRepository<Performance, Long> 
     """)
     Double findAverageGradeByVolunteerId(@Param("volunteerId") Long volunteerId);
 
+    @Query(
+            value = """
+            SELECT COUNT(*)
+            FROM performance
+            WHERE rated_volunteer_id = :volunteerId
+            """
+    ,nativeQuery = true)
+    int countGradesByVolunteerId(@Param("volunteerId") Long volunteerId);
+
     List<Performance> findByRatedVolunteerId(Long volunteerId);
 }

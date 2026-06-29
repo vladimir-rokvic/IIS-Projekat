@@ -97,7 +97,7 @@ public class VolunteerController {
     }
 
     @GetMapping("/{id}/report")
-    public ResponseEntity<byte[]> generateReport(@PathVariable Long id) {
+    public ResponseEntity<byte[]> generateReport(@PathVariable Long id) throws IOException {
         byte[] pdf = volunteerService.generateReport(id);
 
         HttpHeaders headers = new HttpHeaders();
