@@ -9,7 +9,7 @@ const VolunteerDashboard = () => {
 	const user = JSON.parse(localStorage.getItem("user"));
 	const [tasks, setTasks] = useState(null);
 	const [ratings, setRatings] = useState(null)
-	const [volunteer, setVolunteer] = useState(null);
+	const [regiments, setRegiments] = useState(null);
 
 	const DAYS = ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"];
 
@@ -27,7 +27,6 @@ const VolunteerDashboard = () => {
 			try {
 				const res = await api.get(`volunteer/${user.id}`);
 				console.log(res.data);
-				setVolunteer(res.data);
 				setAvailabillity(prev => {
 					//napravimo shallow copy
 					const updated = {...prev};
@@ -103,9 +102,19 @@ const VolunteerDashboard = () => {
 		}
 	};
 
+	const seeTraining = async () => {
+		try {
+			const res = await api.get(`/regiment/volunteer/${user.id}`);
+			console.log(res.data);
+			setRegiments(res.data);
+		} catch (err) {
+			console.log(err);
+		}
+	};
+
 	const formatDate = (dateString) => {
 		const date = new Date(dateString);
-		return `${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`;
+		return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
 	};
 
 	return (
@@ -141,7 +150,7 @@ const VolunteerDashboard = () => {
         	    	        <h2>Training regiment</h2>
         	    	        <p>See the training regiment that you have been assigned to.</p>
         	    	        <button className="btn-primary" 
-									onClick={seeTasks}>
+									onClick={seeTraining}>
         	    	            See training regiment
         	    	        </button>
         	    	    </div>
@@ -162,7 +171,7 @@ const VolunteerDashboard = () => {
 
                             {availability[day].enabled && (
                                 <>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                    <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: '15px'}}>
                                         <p>{availability[day].range[0]}:00</p>
                                         <p>{availability[day].range[1]}:00</p>
                                     </div>
@@ -219,6 +228,7 @@ const VolunteerDashboard = () => {
 					{ratings.map((rating) => (
 						<div className='volunteer-task-card'>
 							<h4>{rating.comment}</h4>
+							<h4>Grade: {rating.grade}</h4>
 							<div className='task-card-coordinator'>
 								<p style={{marginBottom: '10px',
 										   marginTop: '10px',
@@ -234,7 +244,35 @@ const VolunteerDashboard = () => {
 						</div>
 						))}
 				</div>
-)}
+			)}
+			{regiments != null && (
+				<div className='volunteer-task-list'>
+					{regiments.map((regiment) => (
+						<div className='volunteer-task-card'>
+							<div className='task-card-coordinator'>
+								<p style={{marginBottom: '10px',
+										   marginTop: '10px',
+										   fontWeight: 'bold'}}>Trainer</p>
+								<p style={{marginBottom: '5px'
+								}}>{regiment.trainer.name} {regiment.trainer.surname}</p>
+							{(regiment.trainer.phone) ? <p>{regiment.trainer.phone}</p> 
+							: <p>No phone given</p>}
+							{(regiment.trainer.email) ? <p>{regiment.trainer.email}</p> 
+							: <p>No email given</p>}
+							</div>
+							<div className='task-card-coordinator'>
+								<p style={{marginBottom: '10px',
+										   marginTop: '10px',
+										   fontWeight: 'bold'}}>Certificate</p>
+								<p style={{marginBottom: '5px'
+								}}>{regiment.certificate.name}</p>
+							</div>
+							<button onClick={() => navigate(`/regiment/${regiment.id}`,
+													{state: {from: 'volunteer'}})}>Details</button>
+						</div>
+						))}
+				</div>
+			)}
 		</div>
 	);
 };

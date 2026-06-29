@@ -51,4 +51,11 @@ public class RegimentController {
 
         return ResponseEntity.ok(ret);
     }
+
+    //dobavi za volontera, da i za trenere i
+    //za one koji polazu
+    @GetMapping("/volunteer/{id}")
+    public ResponseEntity<List<RegimentDTO>> getForVolunteer(@PathVariable Long id) {
+        return ResponseEntity.ok(regimentService.getForVolunteer(id));
+    }
 }

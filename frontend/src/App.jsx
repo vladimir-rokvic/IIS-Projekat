@@ -57,6 +57,7 @@ import DistributionsPage from "./pages/DistributionsPage";
 import CreateRegiment from "./pages/CreateRegiment";
 import SelectCertificatePage from "./pages/SelectCertificatePage";
 import BeneficiariesListPage from "./pages/BeneficiariesListPage";
+import RegimentPage from "./pages/RegimentPage";
 
 function App() {
 	return (
@@ -112,6 +113,7 @@ function App() {
 
 					<Route path="/coord/createTask" element={<PrivateRoute allowedRoles={["COORDINATOR"]}><CreateTaskPage /></PrivateRoute>}/>
 					<Route path="/manager/createRegiment" element={<PrivateRoute allowedRoles={["MANAGER"]}><CreateRegiment /></PrivateRoute>}/>
+					<Route path="/regiment/:id" element={<PrivateRoute allowedRoles={["MANAGER", "VOLUNTEER"]}><RegimentPage /></PrivateRoute>}/>
 					<Route path="/coord/createTask/addVolunteer" element={<PrivateRoute allowedRoles={["COORDINATOR", "MANAGER"]}><VolunteerSelectPage /></PrivateRoute>}/>
 					<Route path="/volunteer/details/:id" element={<PrivateRoute allowedRoles={["COORDINATOR", "MANAGER"]}><VolunteerDetailsPage /></PrivateRoute>}/>
 					<Route path="/tasks" element={<PrivateRoute allowedRoles={["COORDINATOR"]}><TasksPage /></PrivateRoute>}/>
