@@ -18,6 +18,7 @@ public class DonationCreateDTO {
     private Long donorId;
 
     private Long projectId;
+    private Long campaignId;
 
 
     public DonationCreateDTO() {}
@@ -52,5 +53,13 @@ public class DonationCreateDTO {
 
     public void setProjectId(Long projectId) {
         this.projectId = projectId;
+    }
+
+    public Long getCampaignId() {
+        return campaignId;
+    }
+
+    public void setCampaignId(Long campaignId) {
+        this.campaignId = campaignId;
     }
 }

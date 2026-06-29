@@ -58,6 +58,10 @@ import CreateRegiment from "./pages/CreateRegiment";
 import SelectCertificatePage from "./pages/SelectCertificatePage";
 import BeneficiariesListPage from "./pages/BeneficiariesListPage";
 import RegimentPage from "./pages/RegimentPage";
+import BeneficiaryHistoryPage from "./pages/BeneficiaryHistoryPage";
+import ManagerFundingProjectsPage from "./pages/ManagerFundingProjectsPage.jsx";
+import ManagerFundingRequestDetailPage from "./pages/ManagerFundingRequestDetailPage.jsx";
+import ManagerReportsPage from "./pages/ManagerReportsPage";
 
 function App() {
 	return (
@@ -97,6 +101,8 @@ function App() {
 					<Route path="/beneficiary/profile" element={<PrivateRoute allowedRoles={["BENEFICIARY"]}><BeneficiaryMyAccountPage /></PrivateRoute>} />
 					<Route path="/beneficiary/register" element={<BeneficiaryRegisterPage />}/>
 					<Route path="/beneficiary/documents" element={<PrivateRoute allowedRoles={["BENEFICIARY"]}><BeneficiaryDocumentsPage /></PrivateRoute>} />
+					<Route path="/beneficiary/history" element={<PrivateRoute allowedRoles={["BENEFICIARY"]}><BeneficiaryHistoryPage /></PrivateRoute>} />
+
 
 					<Route path="/manager/distributionlocation" element={<PrivateRoute allowedRoles={["MANAGER"]}><NewDistributionLocation /></PrivateRoute>}/>
 					<Route path="/manager/distribution/:id/package/create" element={<PrivateRoute allowedRoles={["MANAGER"]}><CreatePackage /></PrivateRoute>}/>
@@ -126,6 +132,10 @@ function App() {
 					<Route path="/projects/:id/phases/:phaseId/edit" element={<PrivateRoute allowedRoles={["COORDINATOR"]}><PhaseFormPage /></PrivateRoute>} />
 					<Route path="/projects/:id/phases/:phaseId/tasks/new" element={<PrivateRoute allowedRoles={["COORDINATOR"]}><PhaseTaskFormPage /></PrivateRoute>} />
 					<Route path="/projects/:id/phases/:phaseId/tasks/:taskId/edit" element={<PrivateRoute allowedRoles={["COORDINATOR"]}><PhaseTaskFormPage /></PrivateRoute>} />
+
+					<Route path="/manager/funding" element={<PrivateRoute allowedRoles={["MANAGER"]}><ManagerFundingProjectsPage /></PrivateRoute>} />
+					<Route path="/manager/funding/:projectId" element={<PrivateRoute allowedRoles={["MANAGER"]}><ManagerFundingRequestDetailPage /></PrivateRoute>} />
+					<Route path="/manager/reports" element={<PrivateRoute allowedRoles={["MANAGER"]}><ManagerReportsPage /></PrivateRoute>} />
 
 					<Route path="*" element={<Navigate to="/login" replace />} />
 				</Routes>

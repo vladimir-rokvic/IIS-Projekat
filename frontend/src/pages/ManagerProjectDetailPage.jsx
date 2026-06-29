@@ -34,8 +34,12 @@ const ManagerProjectDetailPage = () => {
     const [showSuccessModal, setShowSuccessModal] = useState(false);
     const [showCancelModal, setShowCancelModal] = useState(false);
 
+    // Izveštaj
+    const [downloadingReport, setDownloadingReport] = useState(false);
+
     // Prati je li projekat editabilan za menadžera (samo SPREMAN_ZA_ODOBRENJE)
     const canDecide = project?.status === 'SPREMAN_ZA_ODOBRENJE';
+    const isFinished = project?.status === 'ZAVRSEN';
     const needsReason = selectedStatus === 'NEOPHODNA_IZMENA' || selectedStatus === 'ODBIJEN';
 
     useEffect(() => {
@@ -75,6 +79,27 @@ const ManagerProjectDetailPage = () => {
 
     const handleCancel = () => {
         setShowCancelModal(true);
+    };
+
+    const handleDownloadReport = async () => {
+        setDownloadingReport(true);
+        try {
+            const response = await api.get(`/projekti/${id}/izvestaj`, {
+                responseType: 'blob',
+            });
+            const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', `izvestaj-projekat-${id}.pdf`);
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            window.URL.revokeObjectURL(url);
+        } catch (e) {
+            setError('Failed to download report.');
+        } finally {
+            setDownloadingReport(false);
+        }
     };
 
     if (loading) return <div className="loading-text">Loading project...</div>;
@@ -217,6 +242,17 @@ const ManagerProjectDetailPage = () => {
                     <button className="btn-cancel" onClick={handleCancel}>Cancel</button>
                     <button className="btn-save" onClick={handleSave} disabled={submitting}>
                         {submitting ? 'Saving...' : 'Save'}
+                    </button>
+                </div>
+            )}
+            {isFinished && (
+                <div className="form-actions">
+                    <button
+                        className="btn-save"
+                        onClick={handleDownloadReport}
+                        disabled={downloadingReport}
+                    >
+                        {downloadingReport ? 'Downloading...' : '⬇ Download Report'}
                     </button>
                 </div>
             )}

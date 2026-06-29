@@ -41,6 +41,10 @@ public class Campaign {
 	@Column(nullable = false)
 	private CampaignStatus status;
 
+	@Enumerated(EnumType.STRING)
+	@Column(name = "category", nullable = false)
+	private CampaignCategory category;
+
 	@ManyToOne(optional = true)
 	@JoinColumn(name = "project_id", nullable = true)
 	private Project project;
@@ -99,6 +103,14 @@ public class Campaign {
 
 	public void setStatus(CampaignStatus status) {
 		this.status = status;
+	}
+
+	public CampaignCategory getCategory() {
+		return category;
+	}
+
+	public void setCategory(CampaignCategory category) {
+		this.category = category;
 	}
 
 	public Project getProject() {
