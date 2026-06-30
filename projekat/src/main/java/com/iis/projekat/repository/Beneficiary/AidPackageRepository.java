@@ -55,4 +55,10 @@ public interface AidPackageRepository extends JpaRepository<AidPackage, Long> {
     GROUP BY ap.distribution.id
 """)
     List<Long> countDistinctBeneficiariesPerDistribution();
+
+    @Query("""
+    SELECT COUNT(p)
+    FROM AidPackage p
+""")
+    long countAllPackages();
 }
