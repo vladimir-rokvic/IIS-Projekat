@@ -113,6 +113,15 @@ const ManagerDashboard = () => {
                     </button>
                 </div>
 
+                <div className="dashboard-card" style={{ marginTop: 16 }}>
+                    <h2>Volunteer reports</h2>
+                    <p>Create a new training regiment for the organization</p>
+                    <button className="btn-primary" 
+					onClick={() =>  navigate('/manager/volunteerReports')}>
+						See all reports
+                    </button>
+                </div>
+
             </main>
         </div>
     );

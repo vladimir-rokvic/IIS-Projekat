@@ -332,6 +332,14 @@ public class VolunteerService {
         volunteerRepository.save(v);
     }
 
+    public byte[] getImage(Long id) throws IOException {
+        Volunteer v = volunteerRepository.findById(id).orElseThrow();
+
+        String path = UPLOAD_DIR + v.getProfileImgPath();
+        byte[] ret = Files.readAllBytes(Paths.get(path));
+        return ret;
+    }
+
 
 
     //Ajoj ovo ce da bude dugacko
@@ -448,9 +456,9 @@ public class VolunteerService {
         String fullAddress = "–";
         if (v.getAddress() != null) {
             Address a = v.getAddress();
-            fullAddress = Stream.of(a.getStreet(), a.getCity(), a.getCountry())
-                    .filter(s -> s != null && !s.isBlank())
-                    .collect(Collectors.joining(", "));
+            fullAddress = a.getStreet() + ", "
+                    + a.getCity()
+                    + ", " + a.getCountry();
             if (fullAddress.isBlank()) fullAddress = "–";
         }
 
@@ -479,15 +487,18 @@ public class VolunteerService {
 
         addTextBlock(document, "Bio", v.getBio());
 
+        Paragraph p = new Paragraph(" ");
+        p.setSpacingBefore(6);
+        document.add(p);
         if (v.getSkills() != null && !v.getSkills().isEmpty()) {
             PdfPTable skillTable = newTable(new float[]{1.5f, 3f});
-            addCell(skillTable, "Skill",        fontTableHdr(), COLOR_HEADER_BG, 7);
+            addCell(skillTable, "Skill", fontTableHdr(), COLOR_HEADER_BG, 7);
             addCell(skillTable, "Description",  fontTableHdr(), COLOR_HEADER_BG, 7);
 
             int i = 0;
             for (Skill skill : v.getSkills()) {
                 Color bg = (i % 2 == 1) ? COLOR_ROW_ALT : COLOR_WHITE;
-                addCell(skillTable, nvl(skill.getName()),        fontTableRow(), bg, 6);
+                addCell(skillTable, nvl(skill.getName()), fontTableRow(), bg, 6);
                 addCell(skillTable, nvl(skill.getDescription()), fontTableRow(), bg, 6);
                 i++;
             }
@@ -497,13 +508,13 @@ public class VolunteerService {
 
         if (v.getVolunteerSkillTypes() != null && !v.getVolunteerSkillTypes().isEmpty()) {
             PdfPTable stTable = newTable(new float[]{1.5f, 3f});
-            addCell(stTable, "Type",        fontTableHdr(), COLOR_HEADER_BG, 7);
+            addCell(stTable, "Type", fontTableHdr(), COLOR_HEADER_BG, 7);
             addCell(stTable, "Description", fontTableHdr(), COLOR_HEADER_BG, 7);
 
             int i = 0;
             for (SkillType st : v.getVolunteerSkillTypes()) {
                 Color bg = (i % 2 == 1) ? COLOR_ROW_ALT : COLOR_WHITE;
-                addCell(stTable, nvl(st.getName()),        fontTableRow(), bg, 6);
+                addCell(stTable, nvl(st.getName()), fontTableRow(), bg, 6);
                 addCell(stTable, nvl(st.getDescription()), fontTableRow(), bg, 6);
                 i++;
             }
@@ -529,23 +540,21 @@ public class VolunteerService {
             Task task = recent.get(t);
 
             if (t > 0) {
-                Paragraph spacer = new Paragraph(" ");
-                spacer.setSpacingBefore(6);
-                document.add(spacer);
+                Paragraph p = new Paragraph(" ");
+                p.setSpacingBefore(6);
+                document.add(p);
             }
 
             String skills = (task.getRequiredSkills() == null || task.getRequiredSkills().isEmpty())
                     ? "–"
                     : task.getRequiredSkills().stream()
                     .map(Skill::getName)
-                    .filter(Objects::nonNull)
                     .collect(Collectors.joining(", "));
 
             String skillTypes = (task.getRequiredSkillTypes() == null || task.getRequiredSkillTypes().isEmpty())
                     ? "–"
                     : task.getRequiredSkillTypes().stream()
                     .map(SkillType::getName)
-                    .filter(Objects::nonNull)
                     .collect(Collectors.joining(", "));
 
             String coordinator = "–";
@@ -556,13 +565,13 @@ public class VolunteerService {
             PdfPTable table = newTable(new float[]{1f, 1.6f});
 
             String[][] rows = {
-                    {"Name",         nvl(task.getName())},
-                    {"Description",  nvl(task.getDescription())},
-                    {"Start date",   fmt(task.getStartDate())},
-                    {"End date",     fmt(task.getEndDate())},
-                    {"Coordinator",  coordinator},
-                    {"Skills",       skills},
-                    {"Skill types",  skillTypes},
+                    {"Name", nvl(task.getName())},
+                    {"Description", nvl(task.getDescription())},
+                    {"Start date", fmt(task.getStartDate())},
+                    {"End date", fmt(task.getEndDate())},
+                    {"Coordinator", coordinator},
+                    {"Skills", skills},
+                    {"Skill types", skillTypes},
             };
 
             for (int i = 0; i < rows.length; i++) {
@@ -602,7 +611,7 @@ public class VolunteerService {
 
     private void addPersonalStatistics(Document document, Volunteer v) throws IOException {
         addSectionHeader(document, "4. PERSONAL STATISTICS");
-        double avgGrade = performanceRepository
+        Double avgGrade = performanceRepository
                 .findAverageGradeByVolunteerId(v.getId());
         int numGrades = performanceRepository
                 .countGradesByVolunteerId(v.getId());
@@ -628,7 +637,6 @@ public class VolunteerService {
 
         PdfPTable layout = new PdfPTable(new float[]{1f, 2f});
         layout.setWidthPercentage(100);
-        layout.setSpacingAfter(10);
 
         DefaultPieDataset dataset = new DefaultPieDataset();
         double filled = numGrades > 0 ? Math.min(avgGrade, 5.0) : 0;
@@ -643,7 +651,7 @@ public class VolunteerService {
                 false);
 
         PiePlot plot = (PiePlot) chart.getPlot();
-        plot.setSectionPaint("Grade",     new Color(255, 153, 51));
+        plot.setSectionPaint("Grade", new Color(255, 153, 51));
         plot.setSectionPaint("Remaining", new Color(210, 210, 210));
         plot.setBackgroundPaint(Color.WHITE);
         plot.setOutlineVisible(false);
@@ -667,11 +675,11 @@ public class VolunteerService {
         PdfPTable statsTable = newTable(new float[]{1f, 1.6f});
 
         String[][] rows = {
-                {"Average grade",       avgGradeStr},
-                {"Number of grades",    String.valueOf(numGrades)},
-                {"Tasks completed",     String.valueOf(numTasks)},
-                {"Hours worked",        hoursWorked},
-                {"Avg. weekly hours",   avgHoursStr},
+                {"Average grade", avgGradeStr},
+                {"Number of grades", String.valueOf(numGrades)},
+                {"Tasks completed", String.valueOf(numTasks)},
+                {"Hours worked", hoursWorked},
+                {"Avg. weekly hours", avgHoursStr},
         };
 
         for (int i = 0; i < rows.length; i++) {

@@ -252,6 +252,9 @@ const VolunteerDashboard = () => {
 							<div className='task-card-coordinator'>
 								<p style={{marginBottom: '10px',
 										   marginTop: '10px',
+										   fontWeight: 'bold'}}>Your role: {regiment.trainer.id == user.id ? "Trainer" : "Trainee"}</p>
+								<p style={{marginBottom: '10px',
+										   marginTop: '10px',
 										   fontWeight: 'bold'}}>Trainer</p>
 								<p style={{marginBottom: '5px'
 								}}>{regiment.trainer.name} {regiment.trainer.surname}</p>

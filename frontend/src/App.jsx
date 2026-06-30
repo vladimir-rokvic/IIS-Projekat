@@ -63,6 +63,7 @@ import ManagerFundingProjectsPage from "./pages/ManagerFundingProjectsPage.jsx";
 import ManagerFundingRequestDetailPage from "./pages/ManagerFundingRequestDetailPage.jsx";
 import ManagerReportsPage from "./pages/ManagerReportsPage";
 import BeneficiaryReportsPage from "./pages/BeneficiaryReportsPage.jsx";
+import VolunteerReports from "./pages/VolunteerReports.jsx";
 
 function App() {
 	return (
@@ -138,6 +139,7 @@ function App() {
 					<Route path="/manager/funding" element={<PrivateRoute allowedRoles={["MANAGER"]}><ManagerFundingProjectsPage /></PrivateRoute>} />
 					<Route path="/manager/funding/:projectId" element={<PrivateRoute allowedRoles={["MANAGER"]}><ManagerFundingRequestDetailPage /></PrivateRoute>} />
 					<Route path="/manager/reports" element={<PrivateRoute allowedRoles={["MANAGER"]}><ManagerReportsPage /></PrivateRoute>} />
+					<Route path="/manager/volunteerReports" element={<PrivateRoute allowedRoles={["MANAGER"]}><VolunteerReports /></PrivateRoute>} />
 
 					<Route path="*" element={<Navigate to="/login" replace />} />
 				</Routes>
