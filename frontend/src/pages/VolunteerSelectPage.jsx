@@ -45,7 +45,7 @@ const VolunteerSelectPage = () => {
     }, []);
 
 	const handleDetails = (id) => {
-		navigate(`/volunteer/details/${id}`)
+		navigate(`/volunteer/details/${id.id}`)
 	}
 
 	const handleSelect = (v) => {
