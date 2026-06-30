@@ -17,6 +17,7 @@ export default function RegisterBeneficiaryPage() {
     email: "",
     password: "",
     confirmPassword: "",
+    type:""
   });
 
   const handleChange = (e) =>
@@ -39,6 +40,7 @@ export default function RegisterBeneficiaryPage() {
         phone: form.phone,
         email: form.email,
         password: form.password,
+        type: form.type
       };
 
       const res = await api.post("/beneficiary/register", payload);
@@ -62,7 +64,7 @@ export default function RegisterBeneficiaryPage() {
 
             <div className="field-row">
               <label className="field-label">First Name</label>
-              <input
+              <input required
                 className="field-input"
                 name="name"
                 value={form.name}
@@ -73,7 +75,7 @@ export default function RegisterBeneficiaryPage() {
 
             <div className="field-row">
               <label className="field-label">Last Name</label>
-              <input
+              <input required
                 className="field-input"
                 name="surname"
                 value={form.surname}
@@ -84,7 +86,7 @@ export default function RegisterBeneficiaryPage() {
 
             <div className="field-row">
               <label className="field-label">Date of Birth</label>
-              <input
+              <input required
                 className="field-input field-input--date"
                 type="date"
                 name="dateOfBirth"
@@ -95,7 +97,7 @@ export default function RegisterBeneficiaryPage() {
 
             <div className="field-row">
               <label className="field-label">Street</label>
-              <input
+              <input required
                 className="field-input"
                 name="street"
                 value={form.street}
@@ -106,7 +108,7 @@ export default function RegisterBeneficiaryPage() {
 
             <div className="field-row">
               <label className="field-label">City</label>
-              <input
+              <input required
                 className="field-input"
                 name="city"
                 value={form.city}
@@ -117,7 +119,7 @@ export default function RegisterBeneficiaryPage() {
 
             <div className="field-row">
               <label className="field-label">Country</label>
-              <input
+              <input required
                 className="field-input"
                 name="country"
                 value={form.country}
@@ -128,7 +130,7 @@ export default function RegisterBeneficiaryPage() {
 
             <div className="field-row">
               <label className="field-label">Phone</label>
-              <input
+              <input required
                 className="field-input"
                 name="phone"
                 value={form.phone}
@@ -139,7 +141,7 @@ export default function RegisterBeneficiaryPage() {
 
             <div className="field-row">
               <label className="field-label">Email</label>
-              <input
+              <input required
                 className="field-input"
                 name="email"
                 value={form.email}
@@ -149,8 +151,25 @@ export default function RegisterBeneficiaryPage() {
             </div>
 
             <div className="field-row">
+              <label className="field-label">Aid Type</label>
+              <select required
+                className="field-input"
+                name="type"
+                value={form.type}
+                onChange={handleChange}
+                placeholder="Please select aid type"
+              >
+                <option value="0">FOOD</option>
+                <option value="1">SHELTER</option>
+                <option value="2">MEDICINE</option>
+                <option value="3">CLOTHES</option>
+                <option value="4">FINANCIAL</option>
+              </select>
+            </div>
+
+            <div className="field-row">
               <label className="field-label">Password</label>
-              <input
+              <input required
                 className="field-input"
                 type="password"
                 name="password"
@@ -158,7 +177,7 @@ export default function RegisterBeneficiaryPage() {
                 onChange={handleChange}
                 placeholder="Enter password"
               />
-              <input
+              <input required
                 className="field-input"
                 type="password"
                 name="confirmPassword"

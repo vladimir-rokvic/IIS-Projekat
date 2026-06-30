@@ -11,6 +11,7 @@ const statusLabel = {
     ODOBREN: "Accepted",
     ODBIJEN: "Denied",
     NEOPHODNA_IZMENA: "Necessary change",
+    ZAVRSEN: "Finished",
 };
 
 // Statusi na kojima koordinator može da edituje projekat
@@ -58,9 +59,22 @@ const ProjectsPage = () => {
                         <h1>Projects</h1>
                         <p>Manage existing projects and create a new one.</p>
                     </div>
-                    <button className="btn-primary" onClick={() => navigate('/projects/new')}>
-                        Create a project +
-                    </button>
+
+                    <div style={{display: "flex", gap: "10px"}}>
+                        <button
+                            className="btn-primary"
+                            onClick={() => navigate('/')}
+                        >
+                            ← Back to Home page
+                        </button>
+
+                        <button
+                            className="btn-primary"
+                            onClick={() => navigate('/projects/new')}
+                        >
+                            Create a project +
+                        </button>
+                    </div>
                 </div>
 
                 <div className="projects-container">
@@ -93,7 +107,10 @@ const ProjectsPage = () => {
                                                 navigate(`/projects/${project.id}/edit`);
                                             } else if (project.status === 'ODBIJEN') {
                                                 navigate(`/projects/${project.id}/denied`);
-                                            } else if (project.status === 'ODOBREN') {
+                                            } else if (
+                                                project.status === 'ODOBREN' ||
+                                                project.status === 'ZAVRSEN'
+                                            ) {
                                                 navigate(`/projects/${project.id}/info`);
                                             } else {
                                                 navigate(`/projects/${project.id}`);

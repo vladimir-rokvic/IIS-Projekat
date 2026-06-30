@@ -6,6 +6,7 @@ import "./VolunteerSelectPage.css";
 const VolunteerSelectPage = () => {
     const [volunteers, setVolunteers] = useState([]);
 	const [ratedVolunteers, setRatedVolunteers] = useState([]);
+	const [cert, setCert] = useState([]);
     const navigate = useNavigate();
 
 	const location = useLocation();
@@ -21,31 +22,39 @@ const VolunteerSelectPage = () => {
         };
 
 		const recommendVolunteers = async () => {
-			if(location.state?.from !== "edit") return;
 			try {
 				const taskId = location.state?.taskId;
 				if(!taskId) return;
 				const res = await api.get(`/volunteer/rank/${taskId}`);
 				console.log(res.data);
-				setRatedVolunteers(res.data);
+				setRatedVolunteers(res.data.sort((a,b) => b.predictedGrade - a.predictedGrade));
+				//setRatedVolunteers(ratedVolunteers.sort((a,b) => b.predictedGrade - a.predictedGrade));
 			} catch (err) {
 				console.log(err);
 			}
 		};
 
+		if(location.state?.cert) {
+			setCert(location.state?.cert);
+		}
+
         fetchVolunteers();
-		recommendVolunteers();
+		if(location.state?.from === "edit") {
+			recommendVolunteers();
+		}
     }, []);
 
 	const handleDetails = (id) => {
-		navigate(`/volunteer/details/${id}`)
+		navigate(`/volunteer/details/${id.id}`)
 	}
 
-	const handleSelect = (id) => {
+	const handleSelect = (v) => {
 		if(location.state?.from === "edit") {
-			navigate(`/coord/tasksEdit/${location.state?.taskId}`, { state: {v_id: id} });
-		} else {
-			navigate('/coord/createTask', { state: {v_id: id} });
+			navigate(`/coord/tasksEdit/${location.state?.taskId}`, { state: {v_id: v.id, volunteer: v} });
+		} else if(location.state?.from === "create") {
+			navigate('/coord/createTask', { state: {v_id: v.id} });
+		} else if(location.state?.from === "training-create") {
+			navigate('/manager/createRegiment', {state: {trainer: v, certificate: cert}});
 		}
 	}
 
@@ -74,11 +83,11 @@ const VolunteerSelectPage = () => {
 					<div style={{gap: '20px', margin: '10px'}}>
                         <button
                             className="btn-details"
-                            onClick={() => handleSelect(v.id)}
+                            onClick={() => handleSelect(v)}
                         >Select</button>
                         <button
                             className="btn-details"
-                            onClick={() => handleDetails(v.id)}
+                            onClick={() => handleDetails(v)}
 							style={{marginLeft: '20px'}}
                         >Details</button>
 					</div>
@@ -112,11 +121,11 @@ const VolunteerSelectPage = () => {
 					<div style={{gap: '20px', margin: '10px'}}>
                         <button
                             className="btn-details"
-                            onClick={() => handleSelect(v.id)}
+                            onClick={() => handleSelect(v)}
                         >Select</button>
                         <button
                             className="btn-details"
-                            onClick={() => handleDetails(v.id)}
+                            onClick={() => handleDetails(v)}
 							style={{marginLeft: '20px'}}
                         >Details</button>
 					</div>

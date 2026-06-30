@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import api from "../api/axios";
 import { useNavigate, useParams } from "react-router-dom";
 import "./TaskDetailsPage.css";
+import { useAuth } from "../context/AuthContext";
 
 const TaskDetailsPage = () => {
 	const {id} = useParams();
@@ -12,6 +13,11 @@ const TaskDetailsPage = () => {
 	const comment = useRef('');
 	const grade = useRef(3);
 
+	const { user } = useAuth();
+
+	const weekDays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+	const [startDay, setStartDay] = useState(0);
+	const [endDay, setEndDay] = useState(0);
 	useEffect(() => {
 		const fetchTask = async () => {
 			try {
@@ -19,6 +25,8 @@ const TaskDetailsPage = () => {
 				setTask(res.data);
 				console.log(res.data);
 				setVolunteer(res.data.volunteer);
+				setStartDay(new Date(res.data.startDate).getDay());
+				setEndDay(new Date(res.data.endDate).getDay());
 			} catch (err){
 				console.log(err);
 			}
@@ -47,9 +55,9 @@ const TaskDetailsPage = () => {
                 <div className="header-left">
                     <h1>{task.name}</h1>
                 </div>
-                <div className="header-buttons">
+				{user.role !== "VOLUNTEER" && (<div className="header-buttons">
                     <button className="btn-edit" onClick={() => navigate(`/coord/tasksEdit/${id}`)}>Edit</button>
-                </div>
+                </div>)}
             </div>
 
 					<label className="addressLabelInre">
@@ -70,8 +78,7 @@ const TaskDetailsPage = () => {
 							<p className="contact-info">Email: {task.coordinator.email}</p>
 							{task.coordinator.phone ? 
 							<p className="contact-info">Phone: {task.coordinator.phone}</p> : <p style={{color: '#555', fontSize: '1.3rem'}}>No phone given</p>}
-							<h3>Address</h3>
-							<p className="contact-info">{volunteer.address.street}  {volunteer.address.city} {volunteer.address.country}</p>
+							
 						</div>
 				    )}
                 </div>
@@ -81,7 +88,7 @@ const TaskDetailsPage = () => {
 			<label className="addressLabelInre">Volunteer information</label>
             <div className="volunteer-section">
                 <div className="volunteer-row">
-				    {volunteer ? (
+				    {(volunteer !== null) ? (
 						<div className="choosen-volunteer">
 							<div style={{display: 'flex'}}>
                     		<div className="avatar-small" />
@@ -114,7 +121,11 @@ fontSize: '1.3rem'}}>Volunteer doesn't have any skills yet</p> :
 				<p className="volunteer-name" style={{fontWeight:'bold'}}>{task.name}</p>
 				<p className="contact-info" style={{marginTop: '5px'}}>Description:</p>
 				<p className="task-description">{task.description}</p>
-				<p className="contact-info">Time: {task.startDate} - {task.endDate}</p>
+				<div className="time-details">
+				<p style={{marginBottom: '10px', fontWeight: 'bold'}} className="contact-info">Time period of the task</p>
+				<p style={{marginBottom: '10px'}} className="contact-info">Start date: {weekDays[startDay]} {(task.startDate)}</p>
+				<p className="contact-info">End date: {weekDays[endDay]} {(task.endDate)}</p>
+				</div>
 			</div>
 
 
@@ -133,7 +144,7 @@ fontSize: '1.3rem'}}>Volunteer doesn't have any skills yet</p> :
             </div>
 		
 		{(Date.parse(task.endDate) < Date.now()
-		&& task.performance == null) && (
+		&& task.performance == null && user.role !== "VOLUNTEER") && (
 			<>
             	<label className="addressLabelInre">Rate the performance of the volunteer</label>
 				<div className="performance-class">

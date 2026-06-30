@@ -27,6 +27,22 @@
     gap: 8px;
 }
 
+.trainees-dash {
+	border: 1px solid #d9d9d9;
+	display: flex;
+	flex-wrap: wrap;
+	border-radius: 10px;
+	gap: 10px;
+}
+
+.trainee-card {
+	padding: 10px;
+	background-color: #d9d9d9;
+	border-radius: 10px;
+	border: 1px solid #c0c0c0;
+	margin: 10px;
+}
+
 .btn-save {
     padding: 6px 16px;
     border: none;
@@ -167,10 +183,32 @@
     color: #555;
 }
 
+.btn-select-certificate {
+	padding: 6px 10px;
+	margin-top: 20px;
+	background-color: #369FBC;
+	border-radius: 6px;
+	cursor: pointer;
+}
+
 .contact-info {
     font-size: 1.3rem;
 	font-weight: 300;
 	margin: 0;
+}
+
+.dashboard-certificate {
+	border: 1px solid #d9d9d9;
+	border-radius: 10px;
+	margin: 15px;
+	padding: 10px;
+}
+
+.certificate-item {
+	border: 1px solid #d9d9d9;
+	border-radius: 10px;
+	margin: 10px;
+	padding: 10px;
 }
 
 .volunteer-section {
@@ -180,6 +218,12 @@
 	border: 1px solid #d9d9d9;
 	border-radius: 10px;
 	padding: 15px;
+}
+
+.v-dashboard-skills {
+	padding: 12px;
+	border: 1px solid #d9d9d9;
+	border-radius: 10px;
 }
 
 .volunteer-row {

@@ -7,6 +7,7 @@ import com.iis.projekat.model.Employee;
 import com.iis.projekat.model.EmployeeType;
 import com.iis.projekat.model.Project;
 import com.iis.projekat.repository.EmployeeRepository;
+import com.iis.projekat.service.ProjectReportService;
 import com.iis.projekat.service.ProjectService;
 import com.iis.projekat.dto.KpiRequest;
 import com.iis.projekat.dto.KpiResponseDTO;
@@ -31,10 +32,14 @@ public class ProjectController {
     private final ProjectService projectService;
     private final EmployeeRepository employeeRepository;
 
+    private final ProjectReportService projectReportService;
+
     public ProjectController(ProjectService projectService,
-                             EmployeeRepository employeeRepository) {
+                             EmployeeRepository employeeRepository,
+                             ProjectReportService projectReportService) {
         this.projectService = projectService;
         this.employeeRepository = employeeRepository;
+        this.projectReportService = projectReportService;
     }
 
     // Pomoćna metoda: izvuci Employee iz JWT principal-a
@@ -44,7 +49,7 @@ public class ProjectController {
     }
 
 
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping
     public ResponseEntity<ProjectResponseDTO> kreirajProjekat(
             @AuthenticationPrincipal UserDetails userDetails,
             @RequestParam String naziv,
@@ -54,8 +59,7 @@ public class ProjectController {
             @RequestParam String rokKraj,
             @RequestParam(required = false) String ciljnaGrupa,
             @RequestParam(required = false) String geografskaLokacija,
-            @RequestParam(required = false) String izvoriFinansiranja,
-            @RequestPart("dokument") MultipartFile dokument) throws IOException {
+            @RequestParam(required = false) String izvoriFinansiranja) throws IOException {
 
         Employee koordinator = getUlogovanogZaposlenog(userDetails);
 
@@ -68,8 +72,7 @@ public class ProjectController {
                 LocalDate.parse(rokKraj),
                 ciljnaGrupa,
                 geografskaLokacija,
-                izvoriFinansiranja,
-                dokument
+                izvoriFinansiranja
         );
 
         return ResponseEntity.ok(dto);
@@ -118,18 +121,6 @@ public class ProjectController {
     }
 
 
-    /** Zamjena dokumenta (zasebni endpoint jer je multipart). */
-    @PutMapping(value = "/{id}/dokument", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ProjectResponseDTO> zamijeniDokument(
-            @PathVariable Long id,
-            @AuthenticationPrincipal UserDetails userDetails,
-            @RequestPart("dokument") MultipartFile dokument) throws IOException {
-
-        Employee koordinator = getUlogovanogZaposlenog(userDetails);
-        return ResponseEntity.ok(projectService.zamijeniDokument(id, koordinator.getId(), dokument));
-    }
-
-
     @PutMapping("/{id}/pomocni-koordinatori")
     public ResponseEntity<ProjectResponseDTO> postaviPomocne(
             @PathVariable Long id,
@@ -151,19 +142,6 @@ public class ProjectController {
 
         Employee koordinator = getUlogovanogZaposlenog(userDetails);
         return ResponseEntity.ok(projectService.posaljiNaOdobrenje(id, koordinator.getId()));
-    }
-
-
-    /** Preuzimanje dokumenta kao fajl (download). */
-    @GetMapping("/{id}/dokument")
-    public ResponseEntity<byte[]> preuzmiDokument(@PathVariable Long id) {
-        Project p = projectService.getProjekatEntitet(id);
-
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION,
-                        "attachment; filename=\"" + p.getDokumentIme() + "\"")
-                .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                .body(p.getDokumentSadrzaj());
     }
 
 
@@ -209,7 +187,10 @@ public class ProjectController {
         return ResponseEntity.ok(projectService.saveKpi(id, koordinator.getId(), req));
     }
 
-    // endpoint za čitanje KPI (koristi ProjectAcceptedPage pri učitavanju)
+    /**
+     * Endpoint za čitanje KPI (koristi ProjectAcceptedPage pri učitavanju)
+     */
+
     @GetMapping("/{id}/kpi")
     public ResponseEntity<KpiResponseDTO> getKpi(@PathVariable Long id) {
         KpiResponseDTO kpi = projectService.getKpi(id);
@@ -224,7 +205,6 @@ public class ProjectController {
 
     /**
      * Koordinator zatvara projekat nakon završetka poslednje faze.
-     * PUT /api/projekti/{id}/zatvori
      */
     @PutMapping("/{id}/zatvori")
     public ResponseEntity<ProjectResponseDTO> zatvoriProjekat(
@@ -234,5 +214,32 @@ public class ProjectController {
         return ResponseEntity.ok(projectService.zatvoriProjekat(id, koordinator.getId()));
     }
 
+    /**
+     * Generise PDF izveštaj o efektivnosti projekta, utrošenim sredstvima
+     * i postignutim ishodima. Dostupno samo za projekte u statusu ZAVRSEN.
+     *
+     * <p>Endpoint: GET /api/projekti/{id}/izvestaj
+     * <p>Pristup: samo MANAGER
+     */
+    @GetMapping(value = "/{id}/izvestaj", produces = MediaType.APPLICATION_PDF_VALUE)
+    public ResponseEntity<byte[]> generisiIzvestaj(
+            @PathVariable Long id,
+            @AuthenticationPrincipal UserDetails userDetails) {
+
+        provjeriManagera(userDetails);
+
+        byte[] pdf = projectReportService.generisiIzvestaj(id);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDispositionFormData(
+                "attachment",
+                "izvestaj-projekat-" + id + ".pdf");
+        headers.setContentLength(pdf.length);
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(pdf);
+    }
 
 }

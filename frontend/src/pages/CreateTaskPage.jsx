@@ -56,7 +56,6 @@ const CreateTaskPage = () => {
     };
 
     const handleSave = async () => {
-		if(!v_id) return;
         const body = {
             name: taskName.current.value,
             description: description.current.value,
@@ -90,7 +89,7 @@ const CreateTaskPage = () => {
 
 			<label className="addressLabelInre">Volunteer information</label>
             <div className="volunteer-section">
-                <button className="btn-add-volunteer"
+                <button className="btn-add-volunteer" style={{marginBottom: '5px'}}
 					onClick={handleAddVolunteer}>Add volunteer +</button>
                 <div className="volunteer-row">
 				    {volunteer ? (

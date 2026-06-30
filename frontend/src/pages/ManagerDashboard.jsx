@@ -33,9 +33,17 @@ const ManagerDashboard = () => {
                 </div>
 
                 <div className="dashboard-card" style={{ marginTop: 16 }}>
-                    <h2>Reports</h2>
+                    <h2>Project reports</h2>
                     <p>See a full list of all reports in this organization.</p>
                     <button className="btn-primary" onClick={() => navigate('/manager/reports')}>
+                        See all reports
+                    </button>
+                </div>
+
+                <div className="dashboard-card" style={{ marginTop: 16 }}>
+                    <h2>Beneficiary reports</h2>
+                    <p>See a list of all available beneficiary reports in this organization.</p>
+                    <button className="btn-primary" onClick={() => navigate('/manager/beneficiary-reports')}>
                         See all reports
                     </button>
                 </div>
@@ -49,17 +57,43 @@ const ManagerDashboard = () => {
                 </div>
 
                 <div className="dashboard-card" style={{ marginTop: 16 }}>
+                    <h2>View all beneficiaries</h2>
+                    <p>View all registered beneficiares, thieir statuses and types.</p>
+                    <button className="btn-primary" onClick={() => navigate('/manager/beneficiaries')}>
+                        See all beneficiaries
+                    </button>
+                </div>
+
+
+                <div className="dashboard-card" style={{ marginTop: 16 }}>
                     <h2>Create new distribution location</h2>
                     <p>Create a new distribution location so that it may be used for future distributions.</p>
                     <button className="btn-primary" onClick={() => navigate('/manager/distributionlocation')}>
-                        Create distribution location
+                        Create a distribution location
                     </button>
                 </div>
+
                 <div className="dashboard-card" style={{ marginTop: 16 }}>
-                    <h2>Create a new package</h2>
-                    <p>Create a new package to be distributed to the beneficiaries</p>
-                    <button className="btn-primary" onClick={() => navigate('/manager/createpackage')}>
-                        Create a package
+                    <h2>Distribution locations</h2>
+                    <p>View and manage existing distribution locations.</p>
+                    <button className="btn-primary" onClick={() => navigate('/manager/distributionlocations')}>
+                        See all distribution locations
+                    </button>
+                </div>
+
+                <div className="dashboard-card" style={{ marginTop: 16 }}>
+                    <h2>Create a new distribution</h2>
+                    <p>Create a new aid distribution session so that it may be realized in the future.</p>
+                    <button className="btn-primary" onClick={() => navigate('/manager/distribution/new')}>
+                        Create a distribution
+                    </button>
+                </div>
+
+                <div className="dashboard-card" style={{ marginTop: 16 }}>
+                    <h2>Distributions</h2>
+                    <p>View and manage existing distributions.</p>
+                    <button className="btn-primary" onClick={() => navigate('/manager/distributions')}>
+                        See all distributions
                     </button>
                 </div>
 
@@ -68,6 +102,23 @@ const ManagerDashboard = () => {
                     <p>Register a new volunteer for the organization</p>
                     <button className="btn-primary" onClick={registerVolunteerClick}>
 						Register volunteer
+                    </button>
+                </div>
+
+                <div className="dashboard-card" style={{ marginTop: 16 }}>
+                    <h2>Create a training regiment</h2>
+                    <p>Create a new training regiment for the organization</p>
+                    <button className="btn-primary" onClick={() =>  navigate('/manager/createRegiment')}>
+						Create regiment
+                    </button>
+                </div>
+
+                <div className="dashboard-card" style={{ marginTop: 16 }}>
+                    <h2>Volunteer reports</h2>
+                    <p>Create a new training regiment for the organization</p>
+                    <button className="btn-primary" 
+					onClick={() =>  navigate('/manager/volunteerReports')}>
+						See all reports
                     </button>
                 </div>
 

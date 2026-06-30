@@ -18,8 +18,15 @@ const VolunterProfilePage = () => {
 				console.log(err);
 			}
 		};
+
 		fetchVolunteer();
 	}, []);
+
+	const calculateAge = (user) => {
+		const today = new Date();
+		const birthDay = new Date(user.dateOfBirth);
+		return (today.getFullYear() - birthDay.getFullYear());
+	};
 
 	const navigate = useNavigate();
 	const editClick = () => {
@@ -31,7 +38,6 @@ const VolunterProfilePage = () => {
     return (
         <div className="volunteer-profile">
             <div className="header">
-                <h2>Volunteer profile view</h2>
                 <div className="header-buttons">
                     <button 
 						className="btn-edit"
@@ -39,66 +45,72 @@ const VolunterProfilePage = () => {
                 </div>
             </div>
 
-            <div className="content">
-                <div className="left">
-                    <div className="row">
-                        <div className="field">
-                            <label>First name</label>
-                            <span>{user.name}</span>
-                        </div>
-                        <div className="field">
-                            <label>Last name</label>
-                            <span>{user.surname}</span>
-                        </div>
-                    </div>
+			<label className="addressLabelInre">Basic information</label>
+			<div className="vp-basic-info">
+				<div style={{display: 'flex', justifyContent: 'space-between'}}>
+					<div>
+						<h2 style={{marginTop: '10px'}}>Name</h2>
+						<p>{user.name} {user.surname}</p>
+						<h2>Contact information</h2>
+						<p>Email: {user.email}</p>
+						<p>Phone: {user.phone}</p>
+						<h2>Address</h2>
+						{(user.address) ? (
+						<div style={{display: 'flex', gap: '50px'}}>
+							<div>
+								<p style={{fontSize: '1.3rem'}}>Country</p>
+								<p>{user.address.country}</p>
+							</div>
+							<div>
+								<p style={{fontSize: '1.3rem'}}>City</p>
+								<p>{user.address.city}</p>
+							</div>
+							<div>
+								<p style={{fontSize: '1.3rem'}}>Street</p>
+								<p>{user.address.street}</p>
+							</div>
+						</div>) : (<p style={{color: '#555', fontSize: '1.3rem'}}>No address provided</p>)}
+						<h2>Date of birth</h2>
+						<p>{user.dateOfBirth}</p>
+						<p>Age: {calculateAge(user)}</p>
 
-                    <div className="field">
-                        <label>Bio</label>
-                        <span>{user.bio || "No bio added yet"}</span>
-                    </div>
-
-                    <div className="field">
-                        <label>Date of birth</label>
-                        <span>{user.dateOfBirth}</span>
-                    </div>
-
-                    <div className="field">
-                        <label>Address</label>
-                        <span>
-                            {user.address
-                                ? `${user.address.street}, ${user.address.city}, ${user.address.country}`
-                                : "No address added"}
-                        </span>
-                    </div>
-
-                    <div className="field">
-                        <label>Phone number</label>
-                        <span>{user.phone}</span>
-                    </div>
-
-                    <div className="field">
-                        <label>Email</label>
-                        <span>{user.email}</span>
-                    </div>
-
-				<div className="field">
-				    <label>Skills</label>
-				    {user.skills && user.skills.length > 0 ? (
-				        <div className="skills-list">
-				            {user.skills.map((s, index) => (
-				                <div key={index} className="skill-item">
-				                    <span>{s.name}</span>
-				                </div>
-				            ))}
-				        </div>
-				    ) : (
-				        <span>No skills added yet</span>
-				    )}
+						<h2>Biography</h2>
+						{(user.bio) ? 
+							(<p className="vp-bio-section">{user.bio}</p>)
+							: (<p style={{color: '#555'}}>No bio given</p>)
+						}
+					</div>
+					<div className="image-section">
+						{user.profileImgPath && (
+							<img
+    						    src={`http://localhost:8080/api/volunteer/${user.id}/image`}
+    						    className="profile-image"
+    						/>
+						)}
+					</div>
 				</div>
-                </div>
-            </div>
+			</div>
+
+			<label className="addressLabelInre">Skill types</label>
+			<div className="back-to-shore">
+				{(user.skillTypes.length !== 0) ? (user.skillTypes.map((skill, index) =>
+				(<div key={index} className="skill-card">
+					<h3>{skill.name}</h3>
+					<p>{skill.desc}</p>
+				</div>)))
+				: (<p style={{color: '#555', fontSize: '1.3rem'}}>No skill types set</p>)}
+			</div>
+			<label className="addressLabelInre">Skills</label>
+			<div className="back-to-shore">
+				{(user.skills.length !== 0) ? (user.skills.map((skill, index) =>
+				(<div key={index} className="skill-card">
+					<h3>{skill.name}</h3>
+					<p>{skill.desc}</p>
+				</div>)))
+				: (<p style={{color: '#555', fontSize: '1.3rem'}}>No skills set</p>)}
+			</div>
         </div>
     );
-}
+};
 
 export default VolunterProfilePage;

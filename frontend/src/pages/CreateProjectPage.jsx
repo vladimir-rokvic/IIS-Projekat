@@ -24,10 +24,6 @@ const CreateProjectPage = () => {
     const [sviKoordinatori, setSviKoordinatori] = useState([]);
     const [odabraniPomocni, setOdabraniPomocni] = useState([]);
 
-    // Dokument
-    const fileRef = useRef();
-    const [fileName, setFileName] = useState('No file selected');
-
     const [submitting, setSubmitting] = useState(false);
     const [error, setError] = useState('');
 
@@ -37,11 +33,6 @@ const CreateProjectPage = () => {
             .then(res => setSviKoordinatori(res.data))
             .catch(() => {}); // nije kritično
     }, []);
-
-    const handleFileChange = (e) => {
-        const file = e.target.files[0];
-        setFileName(file ? file.name : 'No file selected');
-    };
 
     const togglePomocni = (id) => {
         setOdabraniPomocni(prev =>
@@ -58,24 +49,27 @@ const CreateProjectPage = () => {
         if (!ciljevi.trim()) { setError('Project goals are required.'); return; }
         if (!rokPocetak) { setError('Start date is required.'); return; }
         if (!rokKraj) { setError('End date is required.'); return; }
-        if (!fileRef.current?.files[0]) { setError('Project document is required.'); return; }
 
         setSubmitting(true);
         try {
             const formData = new FormData();
+
             formData.append('naziv', naziv);
             formData.append('opis', opis);
             formData.append('ciljevi', ciljevi);
             formData.append('rokPocetak', rokPocetak);
             formData.append('rokKraj', rokKraj);
-            if (ciljnaGrupa) formData.append('ciljnaGrupa', ciljnaGrupa);
-            if (geografskaLokacija) formData.append('geografskaLokacija', geografskaLokacija);
-            if (izvoriFinansiranja) formData.append('izvoriFinansiranja', izvoriFinansiranja);
-            formData.append('dokument', fileRef.current.files[0]);
 
-            const res = await api.post('/projekti', formData, {
-                headers: { 'Content-Type': 'multipart/form-data' }
-            });
+            if (ciljnaGrupa)
+                formData.append('ciljnaGrupa', ciljnaGrupa);
+
+            if (geografskaLokacija)
+                formData.append('geografskaLokacija', geografskaLokacija);
+
+            if (izvoriFinansiranja)
+                formData.append('izvoriFinansiranja', izvoriFinansiranja);
+
+            const res = await api.post('/projekti', formData);
 
             // Postavi pomoćne koordinatore ako su odabrani
             if (odabraniPomocni.length > 0) {
@@ -229,23 +223,6 @@ const CreateProjectPage = () => {
                         value={izvoriFinansiranja}
                         onChange={e => setIzvoriFinansiranja(e.target.value)}
                     />
-                </div>
-
-                <div className="form-field">
-                    <label>Project document upload *</label>
-                    <div className="file-upload-row">
-                        <label className="upload-btn">
-                            Upload
-                            <input
-                                type="file"
-                                ref={fileRef}
-                                style={{ display: 'none' }}
-                                onChange={handleFileChange}
-                                accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx"
-                            />
-                        </label>
-                        <span className="file-name">{fileName}</span>
-                    </div>
                 </div>
             </div>
 

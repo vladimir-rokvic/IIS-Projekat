@@ -1,6 +1,7 @@
 package com.iis.projekat.model;
 
 import jakarta.persistence.*;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +23,13 @@ public class Volunteer extends User {
             inverseJoinColumns = @JoinColumn(name = "skill_type_id")
     )
     private List<SkillType> volunteerSkillTypes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "volunteer", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Availability> availabilities = new ArrayList<>();
+
+    private String profileImgPath;
+
+    private Integer hoursWorked;
 
     private String bio;
 
@@ -57,5 +65,29 @@ public class Volunteer extends User {
 
     public void setVolunteerSkillTypes(List<SkillType> volunteerSkillTypes) {
         this.volunteerSkillTypes = volunteerSkillTypes;
+    }
+
+    public Integer getHoursWorked() {
+        return hoursWorked;
+    }
+
+    public void setHoursWorked(Integer hoursWorked) {
+        this.hoursWorked = hoursWorked;
+    }
+
+    public List<Availability> getAvailabilities() {
+        return availabilities;
+    }
+
+    public void setAvailabilities(List<Availability> availabilities) {
+        this.availabilities = availabilities;
+    }
+
+    public String getProfileImgPath() {
+        return profileImgPath;
+    }
+
+    public void setProfileImgPath(String profileImgPath) {
+        this.profileImgPath = profileImgPath;
     }
 }

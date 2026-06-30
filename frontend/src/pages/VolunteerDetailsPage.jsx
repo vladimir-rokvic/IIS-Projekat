@@ -12,7 +12,7 @@ const VolunteerDetailsPage = () => {
 			try {
 				const res = await api.get(`/volunteer/${id}`);
 				setVolunteer(res.data)
-				//console.log(res.data);
+				console.log(res.data);
 			} catch (err) {
 				console.log(err);
 			}
@@ -20,71 +20,72 @@ const VolunteerDetailsPage = () => {
 		fetchVolunteer();
 	}, []);
 
+	const calculateAge = (user) => {
+		const today = new Date();
+		const birthDay = new Date(user.dateOfBirth);
+		return (today.getFullYear() - birthDay.getFullYear());
+	};
+
 	if(!volunteer) return<p>heh</p>;
 	return (
-        <div className="volunteer-details-page">
-            <div className="header">
-                <h2>Volunteer profile view</h2>
-            </div>
+        <div className="volunteer-profile">
 
-            <div className="content">
-                <div className="left">
-                    <div className="row">
-                        <div className="field">
-                            <label>First name</label>
-                            <div className="value-box">{volunteer.name}</div>
-                        </div>
-                        <div className="field">
-                            <label>Last name</label>
-                            <div className="value-box">{volunteer.surname}</div>
-                        </div>
-                    </div>
+			<label className="addressLabelInre">Basic information</label>
+			<div className="vp-basic-info">
+				<div>
+					<div>
+					<h2 style={{marginTop: '10px'}}>Name</h2>
+					<p>{volunteer.name} {volunteer.surname}</p>
+					<h2>Contact information</h2>
+					<p>Email: {volunteer.email}</p>
+					<p>Phone: {volunteer.phone}</p>
+					<h2>Address</h2>
+					{(volunteer.address !== null) ? (
+					<div style={{display: 'flex', gap: '50px'}}>
+						<div>
+							<p style={{fontSize: '1.3rem'}}>Country</p>
+							<p>{volunteer.address.country}</p>
+						</div>
+						<div>
+							<p style={{fontSize: '1.3rem'}}>City</p>
+							<p>{volunteer.address.city}</p>
+						</div>
+						<div>
+							<p style={{fontSize: '1.3rem'}}>Street</p>
+							<p>{volunteer.address.street}</p>
+						</div>
+					</div>) : (<p style={{color: '#555', fontSize: '1.3rem'}}>No address provided</p>)}
+					<h2>Date of birth</h2>
+					<p>{volunteer.dateOfBirth}</p>
+					<p>Age: {calculateAge(volunteer)}</p>
 
-                    <div className="field">
-                        <label>Bio</label>
-                        <div className="value-box bio-box">{volunteer.bio || "No bio added yet"}</div>
-                    </div>
+					<h2>Biography</h2>
+					{(volunteer.bio) ? 
+						(<p className="vp-bio-section">{volunteer.bio}</p>)
+						: (<p style={{color: '#555'}}>No bio given</p>)
+					}
+					</div>
+				</div>
+			</div>
 
-                    <div className="field">
-                        <label>Date of birth</label>
-                        <input type="date" value={volunteer.dateOfBirth || ""} readOnly />
-                    </div>
-
-                    <div className="field">
-                        <label>Address</label>
-                        <div className="value-box">
-                            {volunteer.address
-                                ? `${volunteer.address.street}, ${volunteer.address.city}, ${volunteer.address.country}`
-                                : "No address"}
-                        </div>
-                    </div>
-
-                    <div className="field">
-                        <label>Phone number</label>
-                        <div className="value-box">{volunteer.phone || "No phone"}</div>
-                    </div>
-
-                    <div className="field">
-                        <label>Email</label>
-                        <div className="value-box">{volunteer.email}</div>
-                    </div>
-
-                    <div className="skills-section">
-                        {volunteer.skills && volunteer.skills.length > 0 ? (
-                            <div className="skills-grid">
-                                {volunteer.skills.map((s, index) => (
-                                    <div key={index} className="skill-entry">
-                                        <span className="skill-name">{s.name}</span>
-                                        <span className="skill-desc">{s.desc || ""}</span>
-                                    </div>
-                                ))}
-                            </div>
-                        ) : (
-                            <span>No skills added</span>
-                        )}
-                    </div>
-                </div>
-            </div>
+			<label className="addressLabelInre">Skill types</label>
+			<div className="back-to-shore">
+				{(volunteer.skillTypes.length !== 0) ? (volunteer.skillTypes.map((skill, index) =>
+				(<div key={index} className="skill-card">
+					<h3>{skill.name}</h3>
+					<p>{skill.desc}</p>
+				</div>)))
+				: (<p style={{color: '#555', fontSize: '1.3rem'}}>No skill types set</p>)}
+			</div>
+			<label className="addressLabelInre">Skills</label>
+			<div className="back-to-shore">
+				{(volunteer.skills.length !== 0) ? (volunteer.skills.map((skill, index) =>
+				(<div key={index} className="skill-card">
+					<h3>{skill.name}</h3>
+					<p>{skill.desc}</p>
+				</div>)))
+				: (<p style={{color: '#555', fontSize: '1.3rem'}}>No skills set</p>)}
+			</div>
         </div>
     );
 };

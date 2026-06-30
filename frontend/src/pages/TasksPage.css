@@ -32,7 +32,7 @@
     align-items: center;
 }
 
-.btn-create, .btn-details {
+.btn-create {
     padding: 8px 18px;
     border: none;
     border-radius: 8px;
@@ -40,6 +40,17 @@
     color: black;
     background-color: #369FBC;
     font-size: 14px;
+}
+
+.btn-details {
+    padding: 8px 18px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    color: black;
+    background-color: #369FBC;
+    font-size: 14px;
+	margin: 0 auto;
 }
 
 .tasks-container {
@@ -99,9 +110,4 @@
 .task-card span {
     font-size: 13px;
     color: #333;
-}
-
-.btn-details {
-    margin-top: 12px;
-    width: fit-content;
 }

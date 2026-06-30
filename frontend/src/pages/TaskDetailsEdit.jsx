@@ -1,13 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 import api from "../api/axios";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import "./TaskDetailsEdit.css";
 
-const TaskDetailsPage = () => {
+const TaskDetailsEdit = () => {
 	const {id} = useParams();
 	const [task, setTask] = useState(null);
 	const [volunteer, setVolunteer] = useState(null);
 	const navigate = useNavigate();
+
+	const location = useLocation();
 
     const taskName = useRef();
     const description = useRef();
@@ -19,6 +21,9 @@ const TaskDetailsPage = () => {
 	const comment = useRef('');
 	const grade = useRef(3);
 
+	const weekDays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+	const [startDay, setStartDay] = useState(0);
+	const [endDay, setEndDay] = useState(0);
 	useEffect(() => {
 		const fetchTask = async () => {
 			try {
@@ -27,6 +32,8 @@ const TaskDetailsPage = () => {
 				console.log(res.data);
 				setVolunteer(res.data.volunteer);
 				setSkills(res.data.requiredSkillTypes);
+				setStartDay(new Date(res.data.startDate).getDay());
+				setEndDay(new Date(res.data.endDate).getDay());
 			} catch (err){
 				console.log(err);
 			}
@@ -41,8 +48,20 @@ const TaskDetailsPage = () => {
 			}
 		};
 
+		const fetchVolunteer = async () => {
+			try {
+				const res = await api.get(`/volunteer/${location.state?.v_id}`);
+				setVolunteer(res.data);
+				console.log(res.data);
+			} catch (err) {
+				console.log(err);
+			}
+		};
+
+
 		fetchTask();
 		fetchSkillTypes();
+		fetchVolunteer();
 	}, []);
 
     const addSkill = () => {
@@ -116,8 +135,6 @@ const TaskDetailsPage = () => {
 							<p className="contact-info">Email: {task.coordinator.email}</p>
 							{task.coordinator.phone ? 
 							<p className="contact-info">Phone: {task.coordinator.phone}</p> : <p style={{color: '#555', fontSize: '1.3rem'}}>No phone given</p>}
-							<h3>Address</h3>
-							<p className="contact-info">{volunteer.address.street}  {volunteer.address.city} {volunteer.address.country}</p>
 						</div>
 				    )}
                 </div>
@@ -133,7 +150,7 @@ const TaskDetailsPage = () => {
 														>Change volunteer</button>)}
             <div className="volunteer-section">
                 <div className="volunteer-row">
-				    {volunteer ? (
+				    {(volunteer) ? (
 						<div className="choosen-volunteer">
 							<div style={{display: 'flex'}}>
                     		<div className="avatar-small" />
@@ -165,7 +182,7 @@ fontSize: '1.3rem'}}>Volunteer doesn't have any skills yet</p> :
 				<div className="volunteer-section">
 				<div className="v-field">
 					<input type="text" placeholder={task.name}
-					ref={taskName}/>
+					ref={taskName} style={{marginLeft: '10px'}}/>
 				</div>
             	<textarea
             	    ref={description}
@@ -174,7 +191,11 @@ fontSize: '1.3rem'}}>Volunteer doesn't have any skills yet</p> :
             	    placeholder={task.description}
             	/>
 
-				<p className="contact-info">Time: {task.startDate} - {task.endDate}</p>
+				<div className="time-details">
+				<p style={{marginBottom: '10px', fontWeight: 'bold'}} className="contact-info">Time period of the task</p>
+				<p style={{marginBottom: '10px'}} className="contact-info">Start date: {weekDays[startDay]} {(task.startDate)}</p>
+				<p className="contact-info">End date: {weekDays[endDay]} {(task.endDate)}</p>
+				</div>
 			</div>
 
 
@@ -257,4 +278,4 @@ fontSize: '1.3rem'}}>Volunteer doesn't have any skills yet</p> :
     );
 };
 
-export default TaskDetailsPage;
+export default TaskDetailsEdit;

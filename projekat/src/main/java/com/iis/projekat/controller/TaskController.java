@@ -116,4 +116,9 @@ public class TaskController {
 
         return ResponseEntity.ok(grade);
     }
+
+    @GetMapping("/ratings/{volunteerId}")
+    public ResponseEntity<List<PerformanceDTO>> getRatingsForVolunteer(@PathVariable Long volunteerId) {
+        return ResponseEntity.ok(taskService.findRatingsForVolunteer(volunteerId));
+    }
 }

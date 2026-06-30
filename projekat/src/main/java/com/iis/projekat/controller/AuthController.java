@@ -4,6 +4,7 @@ import com.iis.projekat.dto.LoginRequest;
 import com.iis.projekat.dto.RegisterRequest;
 import com.iis.projekat.model.User;
 import com.iis.projekat.repository.*;
+import com.iis.projekat.repository.Beneficiary.BeneficiaryRepository;
 import com.iis.projekat.security.JwtUtil;
 import com.iis.projekat.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -2,7 +2,7 @@ import "./RegisterVolunteerPage.css"
 import LabelInput from "../components/LabelInput";
 import { useRef } from "react";
 import api from "../api/axios";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const RegisterVolunteerPage = () => {
 

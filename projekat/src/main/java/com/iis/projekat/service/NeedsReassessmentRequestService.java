@@ -1,14 +1,13 @@
 package com.iis.projekat.service;
 
 import com.iis.projekat.dto.NeedsReassessmentRequestDTO;
-import com.iis.projekat.model.Beneficiary;
-import com.iis.projekat.model.NeedsReassessmentRequest;
-import com.iis.projekat.repository.BeneficiaryRepository;
+import com.iis.projekat.model.Beneficiary.Beneficiary;
+import com.iis.projekat.model.Beneficiary.NeedsReassessmentRequest;
+import com.iis.projekat.repository.Beneficiary.BeneficiaryRepository;
 import com.iis.projekat.repository.NeedsReassessmentRequestRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service

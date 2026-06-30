@@ -20,21 +20,41 @@ export default function BeneficiaryMyAccount() {
     confirmPassword: "",
   });
 
+  const [beneficiary, setBeneficiary] = useState(null);
+
   useEffect(() => {
-    if (user) {
-      setForm((prev) => ({
-        ...prev,
-        name: user.name || "",
-        surname: user.surname || "",
-        phone: user.phone || "",
-        city: user.city || "",
-        street: user.street || "",
-        country: user.country || "",
-        // Ako user.dateOfBirth dolazi kao "2000-03-15" već je u ispravnom formatu
-        dateOfBirth: user.dateOfBirth || "",
-      }));
+    const fetchBeneficiary = async () => {
+      try {
+        const response = await api.get(`/beneficiary/${user.id}`);
+        setBeneficiary(response.data);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    if (user?.id) {
+      fetchBeneficiary();
     }
   }, [user]);
+
+  useEffect(() => {
+
+    if (beneficiary) {
+
+      setForm(prev => ({
+        ...prev,
+
+        name: beneficiary.name || "",
+        surname: beneficiary.surname || "",
+        phone: beneficiary.phone || "",
+        city: beneficiary.city || "",
+        street: beneficiary.street || "",
+        country: beneficiary.country || "",
+        dateOfBirth: beneficiary.dateOfBirth || "",
+      }));
+    }
+
+  }, [beneficiary]);
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -65,65 +85,58 @@ export default function BeneficiaryMyAccount() {
 
   return (
     <div className="ben-page">
-      {/* ── Top bar ── */}
-      <nav className="ben-topbar">
-        <span className="ben-topbar-title">My Account - Beneficiary</span>
-        <button className="btn-nav btn-nav-active" onClick={() => navigate("/beneficiary/profile")}>
-          My Account
-        </button>
-        <button className="btn-nav">Available surveys</button>
-        <button className="btn-nav">Aid History</button>
-        <div className="ben-topbar-spacer" />
-        <button className="btn-logout" onClick={logout}>Log Out</button>
-      </nav>
+      <header className="dashboard-header">
+        <div>
+          <h1>{user?.name} {user?.surname}</h1>
+          <p style={{ fontSize: '0.9rem', color: '#555', marginTop: 2 }}>Aid type:{" "}
+            {beneficiary?.type?.replaceAll("_", " ")} | Status:{" "}
+            {beneficiary?.eligible ? "Eligible" : "Not eligible"}</p>
+        </div>
+        <div className="user-info" onClick={() => { logout(); navigate('/login'); }} title="Logout">
+          <div className="avatar" />
+          <span>{user?.name} {user?.surname}</span>
+        </div>
+      </header>
 
       <hr className="ben-divider" />
 
       {/* ── Content card ── */}
       <div className="ben-card">
-        {/* Header */}
-        <div className="ben-account-header">
-          <h2>My Account</h2>
-          <button className="btn-docs">My Documents</button>
-        </div>
+        <div className="form-section">
+          <div className="form-section-header">
+            <h3>My Account</h3>
 
-        {/* Body: fields + notice */}
-        <div className="ben-account-body">
-          <div className="ben-account-fields">
+            <div className="btn-secondary" onClick={() => navigate('/beneficiary/documents')}>
+              My Documents
+            </div>
+          </div>
 
-            {/* First name */}
-            <div className="field-row">
-              <label className="field-label">
-                First Name: <span>{form.name}</span>
-              </label>
+          <div className="form-row">
+            <div className="form-field">
+              <label>First Name</label>
               <input
-                className="field-input"
                 name="name"
                 value={form.name ?? ""}
                 onChange={handleChange}
-                placeholder="Enter new first name"
+                placeholder="Enter first name"
               />
             </div>
 
-            {/* Last name */}
-            <div className="field-row">
-              <label className="field-label">
-                Last Name: <span>{form.surname}</span>
-              </label>
+            <div className="form-field">
+              <label>Last Name</label>
               <input
-                className="field-input"
                 name="surname"
                 value={form.surname ?? ""}
                 onChange={handleChange}
-                placeholder="Enter new last name"
+                placeholder="Enter last name"
               />
             </div>
+          </div>
 
-            {/* Date of birth */}
-            <div className="field-row">
-              <label className="field-label">Date Of Birth:</label>
+          <div className="form-row">
+            <div className="form-field">
+              <label>Date Of Birth</label>
               <input
-                className="field-input field-input--date"
                 type="date"
                 name="dateOfBirth"
                 value={form.dateOfBirth ?? ""}
@@ -131,94 +144,78 @@ export default function BeneficiaryMyAccount() {
               />
             </div>
 
-            {/* Phone */}
-            <div className="field-row">
-              <label className="field-label">
-                Phone Number: <span>{form.phone}</span>
-              </label>
+            <div className="form-field">
+              <label>Phone Number</label>
               <input
-                className="field-input"
                 name="phone"
                 value={form.phone ?? ""}
                 onChange={handleChange}
-                placeholder="Enter new phone number"
+                placeholder="Enter phone number"
               />
             </div>
+          </div>
 
-            {/* City */}
-            <div className="field-row">
-              <label className="field-label">
-                City: <span>{form.city}</span>
-              </label>
+          <div className="form-row">
+            <div className="form-field">
+              <label>City</label>
               <input
-                className="field-input"
                 name="city"
                 value={form.city ?? ""}
                 onChange={handleChange}
-                placeholder="Enter new city"
+                placeholder="Enter city"
               />
             </div>
 
-            {/* Street */}
-            <div className="field-row">
-              <label className="field-label">
-                Street: <span>{form.street}</span>
-              </label>
+            <div className="form-field">
+              <label>Street</label>
               <input
-                className="field-input"
                 name="street"
                 value={form.street ?? ""}
                 onChange={handleChange}
-                placeholder="Enter new street"
+                placeholder="Enter street"
               />
             </div>
 
-            {/* Country */}
-            <div className="field-row">
-              <label className="field-label">
-                Country: <span>{form.country}</span>
-              </label>
+            <div className="form-field">
+              <label>Country</label>
               <input
-                className="field-input"
                 name="country"
                 value={form.country ?? ""}
                 onChange={handleChange}
-                placeholder="Enter new country"
+                placeholder="Enter country"
               />
             </div>
+          </div>
 
-            {/* Change password */}
-            <div className="field-row">
-              <label className="field-label">Change password</label>
+          <div className="form-row">
+            <div className="form-field">
+              <label>New Password</label>
               <input
-                className="field-input"
-                name="password"
                 type="password"
+                name="password"
                 value={form.password ?? ""}
                 onChange={handleChange}
-                placeholder="New password"
-                style={{ marginBottom: "6px" }}
-              />
-              <input
-                className="field-input"
-                name="confirmPassword"
-                type="password"
-                value={form.confirmPassword ?? ""}
-                onChange={handleChange}
-                placeholder="Confirm new password"
+                placeholder="Enter new password"
               />
             </div>
 
-            <button className="btn-update" onClick={handleUpdate}>
+            <div className="form-field">
+              <label>Confirm Password</label>
+              <input
+                type="password"
+                name="confirmPassword"
+                value={form.confirmPassword ?? ""}
+                onChange={handleChange}
+                placeholder="Confirm password"
+              />
+            </div>
+          </div>
+
+          <div className="form-actions">
+            <button className="btn-primary" onClick={handleUpdate}>
               Update
             </button>
           </div>
-
-          {/* Notice */}
-          <p className="ben-notice">
-            Please ensure your personal information is accurate and up to date.
-            All details must match the information on your official Identity Card.
-          </p>
         </div>
       </div>
     </div>
