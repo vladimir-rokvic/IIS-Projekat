@@ -33,9 +33,17 @@ const ManagerDashboard = () => {
                 </div>
 
                 <div className="dashboard-card" style={{ marginTop: 16 }}>
-                    <h2>Reports</h2>
+                    <h2>Project reports</h2>
                     <p>See a full list of all reports in this organization.</p>
                     <button className="btn-primary" onClick={() => navigate('/manager/reports')}>
+                        See all reports
+                    </button>
+                </div>
+
+                <div className="dashboard-card" style={{ marginTop: 16 }}>
+                    <h2>Beneficiary reports</h2>
+                    <p>See a list of all available beneficiary reports in this organization.</p>
+                    <button className="btn-primary" onClick={() => navigate('/manager/beneficiary-reports')}>
                         See all reports
                     </button>
                 </div>
