@@ -112,12 +112,6 @@ public class ProjectReportService {
                 .map(e -> e.getName() + " " + e.getSurname())
                 .collect(Collectors.toList());
 
-        // KPI
-        kpiRepository.findByProjectId(project.getId()).ifPresent(kpi -> {
-            dto.kpiOpis            = kpi.getOpis();
-            dto.kpiIntervalMerenja = kpi.getIntervalMerenja().name();
-        });
-
         // Finansije — donacije za ovaj projekat
         List<Donation> donacije = donationRepository.findAll().stream()
                 .filter(d -> d.getProject() != null &&
@@ -201,7 +195,6 @@ public class ProjectReportService {
         dodajNaslov(doc, dto);
         dodajOsnovnePodatke(doc, dto);
         dodajFinansije(doc, dto);
-        dodajKpi(doc, dto);
         dodajFaze(doc, dto);
         dodajStatistikuVolontera(doc, dto);
         dodajFooter(doc, writer);
@@ -252,10 +245,10 @@ public class ProjectReportService {
 
         dodajRed(tabla, "Naziv projekta",     dto.naziv,     false);
         dodajRed(tabla, "Status",             statusSrp(dto.status), true);
-        dodajRed(tabla, "Datum početka",      fmt(dto.rokPocetak),  false);
+        dodajRed(tabla, "Datum pocetka",      fmt(dto.rokPocetak),  false);
         dodajRed(tabla, "Datum kraja",        fmt(dto.rokKraj),     true);
         dodajRed(tabla, "Koordinator",        dto.koordinatorIme,   false);
-        dodajRed(tabla, "Pomoćni koord.",
+        dodajRed(tabla, "Pomocni koord.",
                 dto.pomocniKoordinatori.isEmpty()
                         ? "–"
                         : String.join(", ", dto.pomocniKoordinatori), true);
@@ -271,7 +264,7 @@ public class ProjectReportService {
     }
 
     private void dodajFinansije(Document doc, ProjectReportDTO dto) {
-        dodajSectionHeader(doc, "2. UTROŠENA SREDSTVA I FINANSIRANJE");
+        dodajSectionHeader(doc, "2. UTROSENA SREDSTVA I FINANSIRANJE");
 
         PdfPTable tabla = novaTabla(new float[]{50f, 50f});
         tabla.setSpacingAfter(14);
@@ -286,30 +279,16 @@ public class ProjectReportService {
         doc.add(tabla);
     }
 
-    private void dodajKpi(Document doc, ProjectReportDTO dto) {
-        if (dto.kpiOpis == null) return;
-
-        dodajSectionHeader(doc, "3. KLJUČNI INDIKATORI UČINKA (KPI)");
-
-        PdfPTable tabla = novaTabla(new float[]{35f, 65f});
-        tabla.setSpacingAfter(14);
-
-        dodajRed(tabla, "Opis KPI",            dto.kpiOpis,           false);
-        dodajRed(tabla, "Interval merenja",    nvl(dto.kpiIntervalMerenja), true);
-
-        doc.add(tabla);
-    }
-
     private void dodajFaze(Document doc, ProjectReportDTO dto) {
-        dodajSectionHeader(doc, "4. FAZE PROJEKTA");
+        dodajSectionHeader(doc, "3. FAZE PROJEKTA");
 
         // Sažetak
         PdfPTable sumarTable = novaTabla(new float[]{50f, 50f});
         sumarTable.setSpacingAfter(10);
         dodajRed(sumarTable, "Ukupno faza",    String.valueOf(dto.ukupnoFaza),     false);
-        dodajRed(sumarTable, "Završenih faza", String.valueOf(dto.zavrsenihFaza),  true);
+        dodajRed(sumarTable, "Zavrsenih faza", String.valueOf(dto.zavrsenihFaza),  true);
         dodajRed(sumarTable, "Ukupno zadataka", String.valueOf(dto.ukupnoZadataka), false);
-        dodajRed(sumarTable, "Završenih zadataka", String.valueOf(dto.zavrseniZadaci), true);
+        dodajRed(sumarTable, "Zavrsenih zadataka", String.valueOf(dto.zavrseniZadaci), true);
         doc.add(sumarTable);
 
         if (dto.faze == null || dto.faze.isEmpty()) return;
@@ -348,18 +327,18 @@ public class ProjectReportService {
     }
 
     private void dodajStatistikuVolontera(Document doc, ProjectReportDTO dto) {
-        dodajSectionHeader(doc, "5. VOLONTERI I OSTVARENI ISHODI");
+        dodajSectionHeader(doc, "4. VOLONTERI I OSTVARENI ISHODI");
 
         PdfPTable tabla = novaTabla(new float[]{55f, 45f});
         tabla.setSpacingAfter(14);
 
-        dodajRed(tabla, "Ukupno angažovanih volontera",
+        dodajRed(tabla, "Ukupno angazovanih volontera",
                 String.valueOf(dto.ukupnoVolontera), false);
-        dodajRed(tabla, "Prosečna ocena volontera",
+        dodajRed(tabla, "Prosecna ocena volontera",
                 dto.prosecnaOcenaVolontera != null
                         ? String.format("%.2f / 5.00", dto.prosecnaOcenaVolontera)
                         : "Nema ocena", true);
-        dodajRed(tabla, "Procenat završenih zadataka",
+        dodajRed(tabla, "Procenat zavrsenih zadataka",
                 dto.ukupnoZadataka > 0
                         ? String.format("%.1f%%",
                         100.0 * dto.zavrseniZadaci / dto.ukupnoZadataka)
