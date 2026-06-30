@@ -88,6 +88,14 @@ public class VolunteerController {
         return ResponseEntity.ok(ret);
     }
 
+    @GetMapping("/{id}/image")
+    public ResponseEntity<byte[]> getImage(@PathVariable Long id) throws IOException {
+        byte[] v = volunteerService.getImage(id);
+        return ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_JPEG)
+                .body(v);
+    }
+
     //Odavde mi krece Availability
     @PostMapping("/saveAvailability")
     public ResponseEntity<?> saveAvailability(@RequestBody List<AvailabilityDTO> availabilities) {
