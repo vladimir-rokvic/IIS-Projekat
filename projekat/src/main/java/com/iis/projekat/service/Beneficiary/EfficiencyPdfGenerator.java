@@ -19,6 +19,7 @@ public class EfficiencyPdfGenerator {
 
     private final EfficiencyReportService efficiencyReportService;
 
+    private static com.lowagie.text.Font fontTableHdr(){ return new com.lowagie.text.Font(com.lowagie.text.Font.HELVETICA, 10, com.lowagie.text.Font.BOLD,   Color.WHITE); }
     private static final Color COLOR_HEADER_BG  = new Color(30, 77, 120);
     private static final Color COLOR_TEXT       = new Color(33, 37, 41);
 
@@ -213,7 +214,7 @@ public class EfficiencyPdfGenerator {
     // HELPERS
     // =========================
     private void addHeader(PdfPTable table, String text) {
-        PdfPCell cell = new PdfPCell(new Phrase(text, fontText()));
+        PdfPCell cell = new PdfPCell(new Phrase(text, fontTableHdr()));
         cell.setBackgroundColor(COLOR_HEADER_BG);
         table.addCell(cell);
     }

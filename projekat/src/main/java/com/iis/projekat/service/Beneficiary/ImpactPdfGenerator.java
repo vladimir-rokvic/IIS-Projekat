@@ -18,6 +18,7 @@ import java.io.ByteArrayOutputStream;
 @RequiredArgsConstructor
 public class ImpactPdfGenerator {
 
+    private static com.lowagie.text.Font fontTableHdr(){ return new com.lowagie.text.Font(com.lowagie.text.Font.HELVETICA, 10, com.lowagie.text.Font.BOLD,   Color.WHITE); }
     private static final Color HEADER = new Color(30, 77, 120);
     private static final Color TEXT = new Color(33, 37, 41);
 
@@ -201,7 +202,7 @@ public class ImpactPdfGenerator {
     // HELPERS
     // =========================
     private void addHeader(PdfPTable table, String text) {
-        PdfPCell cell = new PdfPCell(new Phrase(text, textFont()));
+        PdfPCell cell = new PdfPCell(new Phrase(text, fontTableHdr()));
         cell.setBackgroundColor(HEADER);
         table.addCell(cell);
     }
