@@ -1,15 +1,13 @@
 package com.iis.projekat.service.Beneficiary;
 
-import com.iis.projekat.dto.Beneficiary.AidHistoryResponse;
-import com.iis.projekat.dto.Beneficiary.AidPackageDTO;
-import com.iis.projekat.dto.Beneficiary.PackageItemDTO;
-import com.iis.projekat.dto.Beneficiary.PackageItemResponse;
-import com.iis.projekat.model.Beneficiary.AidPackage;
-import com.iis.projekat.model.Beneficiary.Beneficiary;
-import com.iis.projekat.model.Beneficiary.DistributionStatus;
-import com.iis.projekat.model.Beneficiary.PackageItem;
+import com.iis.projekat.dto.Beneficiary.*;
+import com.iis.projekat.model.Beneficiary.*;
+import com.iis.projekat.repository.Beneficiary.AidDistributionRepository;
 import com.iis.projekat.repository.Beneficiary.AidPackageRepository;
 import com.iis.projekat.repository.Beneficiary.BeneficiaryRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -24,8 +22,13 @@ public class AidPackageService {
     @Autowired
     private AidPackageRepository aidPackageRepository;
 
+    @PersistenceContext
+    private EntityManager entityManager;
+
     @Autowired
     private BeneficiaryRepository beneficiaryRepository;
+    @Autowired
+    private AidDistributionRepository aidDistributionRepository;
 
     private boolean isBlank(String s) {
         return s == null || s.trim().isEmpty();
@@ -52,7 +55,29 @@ public class AidPackageService {
             throw new IllegalArgumentException("Beneficiary not found");
         }
 
+        Optional<AidDistribution> dis =
+                aidDistributionRepository.findById(dto.getDistributionId());
+
+        if (dis.isEmpty()) {
+            throw new IllegalArgumentException("Disitribution not found");
+        }
+
+        CapacityCheckResult capacity = checkDistributionCapacity(dto.getDistributionId());
+
+        if (!capacity.hasSpace()) {
+            throw new IllegalStateException(
+                    "Nema slobodnog mesta na lokaciji za distribuciju %d (dodeljeno: %d, kapacitet: %s)"
+                            .formatted(
+                                    dto.getDistributionId(),
+                                    capacity.assignedPackages(),
+                                    capacity.locationCapacity()
+                            )
+            );
+        }
+
         AidPackage aidPackage = new AidPackage();
+
+        aidPackage.setDistribution(dis.get());
 
         aidPackage.setBeneficiary(opt.get());
 
@@ -79,6 +104,22 @@ public class AidPackageService {
         aidPackage.setItems(packageItems);
 
         return aidPackageRepository.save(aidPackage);
+    }
+
+    private CapacityCheckResult checkDistributionCapacity(Long distributionId) {
+        Query query = entityManager.createNativeQuery(
+                "SELECT * FROM funk_distribution_capacity_check(?1)"
+        );
+        query.setParameter(1, distributionId);
+
+        Object[] row = (Object[]) query.getSingleResult();
+
+        Integer assigned = (Integer) row[0];
+        Integer capacity = (Integer) row[1];
+        Integer remaining = (Integer) row[2];
+        Boolean hasSpace = (Boolean) row[3];
+
+        return new CapacityCheckResult(assigned, capacity, remaining, hasSpace);
     }
 
     public List<AidHistoryResponse> getHistory(Long id) {

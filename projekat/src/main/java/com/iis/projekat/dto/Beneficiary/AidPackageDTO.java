@@ -1,29 +1,21 @@
 package com.iis.projekat.dto.Beneficiary;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.List;
 
+@Getter
+@Setter
 public class AidPackageDTO {
 
     private Long beneficiaryId;
 
     private List<PackageItemDTO> items;
 
+    private Long distributionId;
+
     public AidPackageDTO() {
     }
 
-    public Long getBeneficiaryId() {
-        return beneficiaryId;
-    }
-
-    public List<PackageItemDTO> getItems() {
-        return items;
-    }
-
-    public void setBeneficiaryId(Long beneficiaryId) {
-        this.beneficiaryId = beneficiaryId;
-    }
-
-    public void setItems(List<PackageItemDTO> items) {
-        this.items = items;
-    }
 }

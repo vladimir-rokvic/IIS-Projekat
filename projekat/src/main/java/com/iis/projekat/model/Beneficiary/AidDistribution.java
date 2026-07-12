@@ -38,7 +38,6 @@ public class AidDistribution {
     @Builder.Default
     private List<AidPackage> packages = new ArrayList<>();
 
-
     @ManyToMany
     @JoinTable(
             name = "distribution_volunteers",

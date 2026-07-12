@@ -1,0 +1,42 @@
+2026-07-12T16:08:21.168+02:00  INFO 27032 --- [projekat] [main] com.iis.projekat.ProjekatApplication     : Starting ProjekatApplication using Java 17.0.12 with PID 27032 (C:\IIS PROJEKAT\IIS-Projekat\projekat\target\classes started by mihaj in C:\IIS PROJEKAT\IIS-Projekat\projekat)
+2026-07-12T16:08:21.170+02:00 DEBUG 27032 --- [projekat] [main] com.iis.projekat.ProjekatApplication     : Running with Spring Boot v3.4.5, Spring v6.2.6
+2026-07-12T16:08:21.171+02:00  INFO 27032 --- [projekat] [main] com.iis.projekat.ProjekatApplication     : No active profile set, falling back to 1 default profile: "default"
+2026-07-12T16:08:21.860+02:00  INFO 27032 --- [projekat] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-07-12T16:08:21.954+02:00  INFO 27032 --- [projekat] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 76 ms. Found 28 JPA repository interfaces.
+2026-07-12T16:08:22.347+02:00  INFO 27032 --- [projekat] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2026-07-12T16:08:22.356+02:00  INFO 27032 --- [projekat] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-07-12T16:08:22.356+02:00  INFO 27032 --- [projekat] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.40]
+2026-07-12T16:08:22.398+02:00  INFO 27032 --- [projekat] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-07-12T16:08:22.399+02:00  INFO 27032 --- [projekat] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1186 ms
+2026-07-12T16:08:22.488+02:00  INFO 27032 --- [projekat] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-07-12T16:08:22.528+02:00  INFO 27032 --- [projekat] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.13.Final
+2026-07-12T16:08:22.554+02:00  INFO 27032 --- [projekat] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-07-12T16:08:22.777+02:00  INFO 27032 --- [projekat] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-07-12T16:08:22.800+02:00  INFO 27032 --- [projekat] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-07-12T16:08:23.666+02:00  INFO 27032 --- [projekat] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@3a8fb023
+2026-07-12T16:08:23.667+02:00  INFO 27032 --- [projekat] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-07-12T16:08:23.780+02:00  WARN 27032 --- [projekat] [main] org.hibernate.orm.deprecation            : HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-07-12T16:08:23.917+02:00  INFO 27032 --- [projekat] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 17.6
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-07-12T16:08:25.216+02:00  INFO 27032 --- [projekat] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-07-12T16:08:38.980+02:00  INFO 27032 --- [projekat] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-07-12T16:08:39.218+02:00 DEBUG 27032 --- [projekat] [main] c.i.p.security.JwtAuthenticationFilter   : Filter 'jwtAuthenticationFilter' configured for use
+2026-07-12T16:08:39.250+02:00  INFO 27032 --- [projekat] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2026-07-12T16:08:39.303+02:00  INFO 27032 --- [projekat] [main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-07-12T16:08:40.217+02:00  WARN 27032 --- [projekat] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-07-12T16:08:40.654+02:00  INFO 27032 --- [projekat] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2026-07-12T16:08:40.665+02:00  INFO 27032 --- [projekat] [main] com.iis.projekat.ProjekatApplication     : Started ProjekatApplication in 19.935 seconds (process running for 20.514)
+2026-07-12T16:08:47.931+02:00  INFO 27032 --- [projekat] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-07-12T16:08:47.931+02:00  INFO 27032 --- [projekat] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-07-12T16:08:47.933+02:00  INFO 27032 --- [projekat] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2026-07-12T16:08:58.807+02:00  INFO 27032 --- [projekat] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2026-07-12T16:08:58.846+02:00  INFO 27032 --- [projekat] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2026-07-12T16:08:58.853+02:00  INFO 27032 --- [projekat] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-07-12T16:08:58.855+02:00  INFO 27032 --- [projekat] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-07-12T16:08:59.697+02:00  INFO 27032 --- [projekat] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
